@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+//Class for managing multiple players. Type bool is used to keep the data small.
 public class WekitPlayerContainer : WekitPlayer<bool, bool>
 {
     [SerializeField] private List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
@@ -11,10 +12,12 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
     public float ButtonWidth = 100;
 
 
-    public void Reset()
+    public override void Reset()
     {
+        base.Reset();
         UncompressedFileExtension = "WEKITData";
         PlayerName = "Container";
+        Provider = true;
     }
 
     private float _index;
@@ -88,7 +91,7 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
 
     public override bool Load()
     {
-        base.Load();
+        int localmaxframes=0;
         for (int i=ActiveWekitPlayers.Count-1;i>=0;i--)
         {
             WekitPlayer_Base player = ActiveWekitPlayers[i];
@@ -101,6 +104,19 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
                 player.ClearFrameList();
                 ActiveWekitPlayers.Remove(player);
             }
+            else
+            {
+                if (player.FrameCount > localmaxframes)
+                {
+                    localmaxframes = player.FrameCount;
+                    ReplayFps = player.ReplayFps;
+                }
+            }
+        }
+        //If there is no file for the container but there is one for at least one player, make a list the size of that player's
+        if (!base.Load()&&localmaxframes!=0)
+        {
+            FrameList=new List<bool>(new bool[localmaxframes+1]);
         }
         return true;
     }

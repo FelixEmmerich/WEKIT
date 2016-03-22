@@ -25,6 +25,9 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
     public List<T> FrameList;
     public TProvider Provider;
 
+    //Location where data is saved. By default Unity's persistent data path.
+    public string SavePath;
+
     //File extension for files not saved as .zip
     public string UncompressedFileExtension;
     //Directory within persistent datapath that files are saved in and loaded from
@@ -40,10 +43,15 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
             return Math.Max(0,FrameList.Count-1);
         }
     }
+
+    public virtual void Reset()
+    {
+        SavePath = Application.persistentDataPath;
+    }
         
     public override void Save()
     {
-        string filestring= Application.persistentDataPath + "/" + CustomDirectory + "/";
+        string filestring= @SavePath + "/" + CustomDirectory + "/";
         Directory.CreateDirectory(filestring);
         DataContainer container = new DataContainer(FrameList, ReplayFps);
 
@@ -78,7 +86,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
 
     public override bool Load()
     {
-        string filestring= Application.persistentDataPath + "/"+CustomDirectory+"/";
+        string filestring= @SavePath + "/"+CustomDirectory+"/";
         DataContainer container;
 
         //Load uncompressed file
@@ -111,7 +119,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
                 filestring += (LoadFileName + ".zip");
                 if (File.Exists(filestring))
                 {
-                    container = Compression.GetItemFromArchive<DataContainer>(Application.persistentDataPath + "/" + CustomDirectory, LoadFileName);
+                    container = Compression.GetItemFromArchive<DataContainer>(@SavePath + "/" + CustomDirectory, LoadFileName);
                     FrameList = container.FrameList;
                     ReplayFps = container.Fps;
                     Debug.Log("Loaded " + filestring);
@@ -138,7 +146,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
 
     public override void Delete()
     {
-        string filestring= Application.persistentDataPath+"/"+CustomDirectory+"/";
+        string filestring= @SavePath+"/"+CustomDirectory+"/";
 
         //Delete uncompressed file
         if (!Zip)

@@ -3,8 +3,9 @@
 public class LeapPlayer : WekitPlayer<HandList,LeapProvider>
 {
     //Standard values
-    public void Reset()
+    public override void Reset()
     {
+        base.Reset();
         UncompressedFileExtension = "LeapData";
         CustomDirectory = "Leap";
         PlayerName = "Leap";

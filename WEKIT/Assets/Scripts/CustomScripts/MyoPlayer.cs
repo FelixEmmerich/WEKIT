@@ -1,8 +1,9 @@
 ﻿public class MyoPlayer : WekitPlayer<MyoData,JointOrientation>
 {
     //Standard values
-    public void Reset()
+    public override void Reset()
     {
+        base.Reset();
         UncompressedFileExtension = "MyoData";
         CustomDirectory = "Myo";
         PlayerName = "Myo";

@@ -14,8 +14,9 @@ public class KinectPlayer : WekitPlayer<SerialSkeletonFrame,KinectInterface>
     }
 
     //Standard values
-    public void Reset()
+    public override void Reset()
     {
+        base.Reset();
         UncompressedFileExtension = "KinectData";
         CustomDirectory = "Kinect";
         PlayerName = "Kinect";
