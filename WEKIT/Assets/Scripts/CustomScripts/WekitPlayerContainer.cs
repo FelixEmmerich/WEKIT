@@ -11,13 +11,29 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
 
     public float ButtonWidth = 100;
 
-
     public override void Reset()
     {
         base.Reset();
         UncompressedFileExtension = "WEKITData";
         PlayerName = "Container";
         Provider = true;
+    }
+
+    private float _speed;
+    public override float Speed
+    {
+        get { return _speed; }
+        set
+        {
+            if (value!=_speed)
+            {
+                _speed = value;
+                foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+                {
+                    player.Speed = value;
+                } 
+            }
+        }
     }
 
     private float _index;
@@ -27,15 +43,19 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
         set
         {
             _index = value;
-            foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+            if (value == 0)
             {
-                player.Index = Mathf.Min(value,player.FrameCount);
+                foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+                {
+                    player.Index = 0;
+                }
             }
         }
     }
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         ActiveWekitPlayers = new List<WekitPlayer_Base>(_wekitPlayers);
         foreach (WekitPlayer_Base player in _wekitPlayers)
         {
@@ -63,6 +83,7 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
             player.Replaying = Replaying;
+            player.Speed = Speed;
             player.Replay();
         }
         base.Replay();
@@ -74,7 +95,7 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
             player.CountDown = CountDown;
-            player.Stepsize = Stepsize;
+            //player.Stepsize = Stepsize;
             player.CurrentStep = CurrentStep;
             player.Record();
         }
@@ -92,9 +113,9 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
     public override bool Load()
     {
         int localmaxframes=0;
-        for (int i=ActiveWekitPlayers.Count-1;i>=0;i--)
+        for (int i=_wekitPlayers.Count-1;i>=0;i--)
         {
-            WekitPlayer_Base player = ActiveWekitPlayers[i];
+            WekitPlayer_Base player = _wekitPlayers[i];
             player.Zip = Zip;
             player.UseCompoundArchive = UseCompoundArchive;
             player.LoadFileName=LoadFileName;
@@ -154,8 +175,10 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
         {
             for (int i = 0; i < _wekitPlayers.Count; i++)
             {
+                float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2 + i*ButtonWidth;
+                _wekitPlayers[i].Stepsize= (int)GUI.HorizontalSlider(new Rect(x, Screen.height - 40, ButtonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
                 bool contained = ActiveWekitPlayers.Contains(_wekitPlayers[i]);
-                if (GUI.Button(new Rect(Screen.width / 2f - ButtonWidth * _wekitPlayers.Count / 2 + i * ButtonWidth, Screen.height - 20, ButtonWidth, 20), _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive")))
+                if (GUI.Button(new Rect(x, Screen.height - 20, ButtonWidth, 20), _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive")))
                 {
                     if (contained)
                     {
@@ -168,6 +191,8 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
                         _wekitPlayers[i].Playing = Playing;
                         _wekitPlayers[i].Recording = Recording;
                         _wekitPlayers[i].Replaying = Replaying;
+                        _wekitPlayers[i].Speed = Speed;
+                        _wekitPlayers[i].Index = Index;
                         _wekitPlayers[i].Enabled(true);
                         ActiveWekitPlayers.Add(_wekitPlayers[i]);
                         Debug.Log("Added " + _wekitPlayers[i] + " to List");

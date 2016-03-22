@@ -99,14 +99,14 @@ public class SkeletonWrapper : MonoBehaviour {
 			}*/
 
             //Felix
-            if (((!Player.Replaying)&&kinect.pollSkeleton())||(Player!=null&&Player.Replaying&&(!Player.FrameListIsEmpty())))
+            if ((!Player.Replaying&&kinect.pollSkeleton())||(Player!=null&&Player.Replaying&&(Player.FrameCount!=0)))
             {
                 newSkeleton = true;
                 System.Int64 cur = kinect.getSkeleton().liTimeStamp;
                 System.Int64 diff = cur - ticks;
                 ticks = cur;
                 deltaTime = diff / (float)1000;
-                processSkeletonFromFrame(Player!=null&&Player.Replaying?(NuiSkeletonFrame)Player.GetCurrentFrame():kinect.getSkeleton());
+                processSkeletonFromFrame(Player!=null && Player.Replaying && Player.FrameCount!=0? (NuiSkeletonFrame)Player.GetCurrentFrame():kinect.getSkeleton());
             }
         }
 		return newSkeleton;

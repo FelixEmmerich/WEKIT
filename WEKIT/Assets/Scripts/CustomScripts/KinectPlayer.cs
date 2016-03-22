@@ -22,8 +22,9 @@ public class KinectPlayer : WekitPlayer<SerialSkeletonFrame,KinectInterface>
         PlayerName = "Kinect";
     }
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         Provider = DevOrEmu.getKinect();
     }
 }

@@ -44,9 +44,18 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
         }
     }
 
+    private IEnumerator _coroutine;
+
     public virtual void Reset()
     {
+        Debug.Log(PlayerName + ": File location:" + Application.persistentDataPath);
         SavePath = Application.persistentDataPath;
+    }
+
+    public virtual void Start()
+    {
+        Debug.Log(PlayerName+" start");
+        Speed = 1;
     }
         
     public override void Save()
@@ -287,13 +296,18 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
             if (!Recording)
             {
                 //Start countdown
-                StartCoroutine(RecordAfterTime(CountDown));
+                _coroutine=RecordAfterTime(CountDown);
+                StartCoroutine(_coroutine);
             }
             else
             {
                 if (Playing)
                 {
-                    ReplayFps = (ReplayFps+Time.deltaTime)/2*Stepsize;
+                    ReplayFps = (ReplayFps + Time.deltaTime)/2*Stepsize;
+                }
+                else
+                {
+                    StopCoroutine(_coroutine);
                 }
                 Recording = false;
                 Playing = false;

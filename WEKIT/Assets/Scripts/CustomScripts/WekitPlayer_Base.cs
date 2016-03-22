@@ -17,9 +17,10 @@ public class WekitPlayer_Base : MonoBehaviour
     }
 
     [HideInInspector]
-    public float CountDown=3, Speed=1, ReplayFps;
+    public float CountDown=3, ReplayFps;
 
     public virtual float Index { get; set; }
+    public virtual float Speed { get; set; }
 
     [HideInInspector] public int PreviousIndex = -1, CurrentStep = 0, Stepsize = 1;
 
@@ -62,16 +63,6 @@ public class WekitPlayer_Base : MonoBehaviour
     public virtual void Enabled(bool value)
     {
         transform.root.gameObject.SetActive(value);
-    }
-
-    void Start()
-    {
-        Debug.Log("File location:" + Application.persistentDataPath);
-    }
-
-    public virtual bool FrameListIsEmpty()
-    {
-        return false;
     }
 
     public virtual void ClearFrameList()
