@@ -46,14 +46,35 @@ public class JointOrientation : MonoBehaviour
     // Update is called once per frame.
     void Update ()
     {
-        Transform tf = myo.transform;
+        //Felix
+        //Transform tf = myo.transform;
+        Transform tf;
+        if (Player != null)
+        {
+            tf = myo.transform;
+        }
+        else
+        {
+            transform.localRotation= new Quaternion(thalmicMyo._myoQuaternion.Y, thalmicMyo._myoQuaternion.Z, -thalmicMyo._myoQuaternion.X, -thalmicMyo._myoQuaternion.W);
+            tf = transform;
+        }
 
         // Update references when the pose becomes fingers spread or the r key is pressed.
         bool updateReference = false;
-        if (thalmicMyo.pose != _lastPose) {
+        /*if (thalmicMyo.pose != _lastPose) {
             _lastPose = thalmicMyo.pose;
 
             if (thalmicMyo.pose == Pose.FingersSpread) {
+                updateReference = true;
+
+                ExtendUnlockAndNotifyUserAction(thalmicMyo);
+            }
+        }*/
+        Pose pose = Player != null ? thalmicMyo.pose : thalmicMyo._myoPose;
+        if (pose != _lastPose) {
+            _lastPose = pose;
+
+            if (pose == Pose.FingersSpread) {
                 updateReference = true;
 
                 ExtendUnlockAndNotifyUserAction(thalmicMyo);
@@ -98,7 +119,7 @@ public class JointOrientation : MonoBehaviour
         // the orientation of the joint.
         //Felix
         //transform.rotation = _antiYaw * antiRoll * Quaternion.LookRotation (tf.forward);
-        transform.rotation = Player.Replaying?tf.localRotation:_antiYaw * antiRoll * Quaternion.LookRotation(tf.forward);
+        transform.rotation = Player!=null&&Player.Replaying?tf.localRotation:_antiYaw * antiRoll * Quaternion.LookRotation(tf.forward);
 
         // The above calculations were done assuming the Myo armbands's +x direction, in its own coordinate system,
         // was facing toward the wearer's elbow. If the Myo armband is worn with its +x direction facing the other way,
@@ -169,7 +190,10 @@ public class JointOrientation : MonoBehaviour
         if (hub.lockingPolicy == LockingPolicy.Standard) {
             myo.Unlock (UnlockType.Timed);
         }
-
-        myo.NotifyUserAction ();
+        if (Player==null)
+        {
+            myo.NotifyUserAction();
+        }
+        //myo.NotifyUserAction ();
     }
 }

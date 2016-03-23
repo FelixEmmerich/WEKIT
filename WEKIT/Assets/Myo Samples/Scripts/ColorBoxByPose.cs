@@ -24,6 +24,9 @@ public class ColorBoxByPose : MonoBehaviour
     // which they are active.
     private Pose _lastPose = Pose.Unknown;
 
+    //Felix
+    public bool OnPlayer = false;
+
     // Update is called once per frame.
     void Update ()
     {
@@ -35,30 +38,37 @@ public class ColorBoxByPose : MonoBehaviour
         // currently detected pose (e.g. Pose.Fist for the user making a fist). If no pose is currently
         // detected, pose will be set to Pose.Rest. If pose detection is unavailable, e.g. because Myo
         // is not on a user's arm, pose will be set to Pose.Unknown.
-        if (thalmicMyo.pose != _lastPose) {
-            _lastPose = thalmicMyo.pose;
+
+        //Felix
+        Pose pose = OnPlayer ? thalmicMyo.pose : thalmicMyo._myoPose;
+        if (pose != _lastPose) {
+            _lastPose = pose;
 
             // Vibrate the Myo armband when a fist is made.
-            if (thalmicMyo.pose == Pose.Fist) {
-                thalmicMyo.Vibrate (VibrationType.Medium);
-
+            if (pose == Pose.Fist) {
+                //Felix
+                if (!OnPlayer)
+                {
+                    thalmicMyo.Vibrate(VibrationType.Medium);
+                }
+                //thalmicMyo.Vibrate(VibrationType.Medium);
                 ExtendUnlockAndNotifyUserAction (thalmicMyo);
 
             // Change material when wave in, wave out or double tap poses are made.
-            } else if (thalmicMyo.pose == Pose.WaveIn) {
+            } else if (pose == Pose.WaveIn) {
                 GetComponent<Renderer>().material = waveInMaterial;
 
                 ExtendUnlockAndNotifyUserAction (thalmicMyo);
-            } else if (thalmicMyo.pose == Pose.WaveOut) {
+            } else if (pose == Pose.WaveOut) {
                 GetComponent<Renderer>().material = waveOutMaterial;
                 ExtendUnlockAndNotifyUserAction (thalmicMyo);
-            } else if (thalmicMyo.pose == Pose.DoubleTap) {
+            } else if (pose == Pose.DoubleTap) {
                 GetComponent<Renderer>().material = doubleTapMaterial;
 
                 ExtendUnlockAndNotifyUserAction (thalmicMyo);
             }
             //Felix
-            else if (thalmicMyo.pose == Pose.Rest)
+            else if (pose == Pose.Rest)
             {
                 GetComponent<Renderer>().material = doubleTapMaterial;
 
@@ -77,6 +87,10 @@ public class ColorBoxByPose : MonoBehaviour
             myo.Unlock (UnlockType.Timed);
         }
 
-        myo.NotifyUserAction ();
+        if (!OnPlayer)
+        {
+            Debug.Log("colourboxevent");
+            myo.NotifyUserAction(); 
+        }
     }
 }

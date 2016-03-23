@@ -194,10 +194,11 @@ public class ThalmicMyo : MonoBehaviour
     private bool _myoArmSynced = false;
     private Arm _myoArm = Arm.Unknown;
     private XDirection _myoXDirection = XDirection.Unknown;
-    private Thalmic.Myo.Quaternion _myoQuaternion = null;
+    //Felix
+    /*private*/ public Thalmic.Myo.Quaternion _myoQuaternion = null;
     private Thalmic.Myo.Vector3 _myoAccelerometer = null;
     private Thalmic.Myo.Vector3 _myoGyroscope = null;
-    private Pose _myoPose = Pose.Unknown;
+    /*private*/ public Pose _myoPose = Pose.Unknown;
     private bool _myoUnlocked = false;
 
     private Thalmic.Myo.Myo _myo;

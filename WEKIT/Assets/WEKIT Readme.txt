@@ -6,7 +6,7 @@
 This Unity project serves the purpose of recording and replaying data from different input devices.
 It is framerate independent, though a higher framerate generally means more precise data.
 Currently supported are the Microsoft Kinect, Leap Motion and Thalmic Myo.
-An implementation including all of the aforementioned devices can be found in the Wekit scene.
+An implementation including all of the aforementioned devices can be found under Assets/WEKITScene. 
 
   ___ _   _ _  _  ___ _____ ___ ___  _  _   _   _    ___ _______   __
  | __| | | | \| |/ __|_   _|_ _/ _ \| \| | /_\ | |  |_ _|_   _\ \ / /
@@ -26,11 +26,12 @@ Record/Stop			F8			Start or stop the recording process.
 								Recording starts after a countdown which can be set in the text field below the button. 
 								The slider below sets a step size from 1 to 3, i.e. a setting of 1 records every frame, 
 								a setting of 2 every second frame, etc. Can be used to reduce file size.
+								If you are using a WekitPlayerContainer, each device will have its own TimeStep slider situated above their name.
 
 Replay/Stop			F9			Replay or stop replaying the data that was last recorded or loaded. 
 								A slider underneath the Pause/Unpause switch indicates the currently played frame and 
 								can be moved back and forth to go to specific sections in the replay.
-								The slider and text box below that are responsible for replay speed, 1 being the original tempo.
+								The slider and text box just below that are responsible for replay speed, 1 being the original tempo.
 
 Pause/Unpause		F10			Only visible in replay mode. Pauses or unpauses the replay. 
 								Replay speed and current frame can be changed while pause.
@@ -62,9 +63,10 @@ If you need an agnostic reference to a player, like for instance the GUI, create
 
 The player can be further customized with the following strings: 
 
-UncompressedFileExtension	The extension files receive when not put in a zip archive
-CustomDirectory		Name of the folder within the standard directory (see Load, Save, Delete above) where data from this player is saved. Folder will be created automatically if nonexistant.
-PlayerName			What this player is referred to as if part of a WekitPlayerContainer.
+UncompressedFileExtension	The extension files receive when not put in a zip archive.
+SavePath					The standard directory where files will be saved, loaded and deleted from. By default Unity's persistentDataPath.
+CustomDirectory				Name of the folder within the standard directory where data from this player is saved. Folder will be created automatically if nonexistant.
+PlayerName					What this player is referred to as if part of a WekitPlayerContainer.
 
 Standard values for these variables can be set by implementing Unity's Reset() method. Note that this doesn't automatically change values on instances of the script that are already placed in a scene.
 

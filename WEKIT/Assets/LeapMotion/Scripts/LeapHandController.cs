@@ -10,7 +10,10 @@ namespace Leap {
     /** The scale factors for hand movement. Set greater than 1 to give the hands a greater range of motion. */
     public Vector3 handMovementScale = Vector3.one;
 
-    public LeapProvider Provider { get; set; }
+        //Felix
+    //public LeapProvider Provider { get; set; }
+      public LeapProvider Provider;
+
     public HandFactory Factory { get; set; }
 
         //Felix
@@ -72,7 +75,12 @@ namespace Leap {
     // Use this for initialization
     void Start()
     {
-      Provider = GetComponent<LeapProvider>();
+            //Felix
+        if (Provider == null)
+        {
+                Provider = GetComponent<LeapProvider>();
+            }
+      //Provider = GetComponent<LeapProvider>();
       Factory = GetComponent<HandFactory>();
             //Felix
         if (Player == null)
@@ -94,7 +102,7 @@ namespace Leap {
     void Update()
         {
       //Felix
-        if (!Player.Replaying)
+        if (Player==null||!Player.Replaying)
         {
             Frame frame = Provider.CurrentFrame;
             if (frame.Id != prev_graphics_id_ && graphicsEnabled)
@@ -103,7 +111,7 @@ namespace Leap {
                 prev_graphics_id_ = frame.Id;
             }
         }
-        else
+        else if (Player!=null)
         {
             _hl = Player.GetCurrentFrame();
             if ((int)Player.Index != Player.PreviousIndex)
@@ -231,7 +239,7 @@ namespace Leap {
             }*/
 
             //Felix
-            if (!Player.Replaying)
+            if (Player==null||!Player.Replaying)
             {
                 Frame frame = Provider.CurrentFrame;
                 Provider.PerFrameFixedUpdateOffset = frame.Timestamp * NS_TO_S - Time.fixedTime;
@@ -241,7 +249,7 @@ namespace Leap {
                     prev_physics_id_ = frame.Id;
                 }
             }
-            else
+            else if (Player!=null)
             {
                 //HandList hl = Player.GetCurrentFrame();
                 if ((int)Player.Index != Player.PreviousIndex && _hl!=null)
