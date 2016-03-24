@@ -99,7 +99,7 @@ public class SkeletonWrapper : MonoBehaviour {
 			}*/
 
             //Felix
-            if ((!Player.Replaying&&kinect.pollSkeleton())||(Player!=null&&Player.Replaying&&(Player.FrameCount!=0)))
+            if ((kinect.pollSkeleton()&&(Player==null||!Player.Replaying))||(Player!=null&&Player.Replaying&&(Player.FrameCount!=0)))
             {
                 newSkeleton = true;
                 System.Int64 cur = kinect.getSkeleton().liTimeStamp;
