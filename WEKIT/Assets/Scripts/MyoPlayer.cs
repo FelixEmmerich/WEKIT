@@ -13,9 +13,4 @@
     {
         return new MyoData(Provider.transform.rotation,Provider.thalmicMyo.pose);
     }
-
-    public override MyoData DefaultFrame()
-    {
-        return new MyoData();
-    }
 }
