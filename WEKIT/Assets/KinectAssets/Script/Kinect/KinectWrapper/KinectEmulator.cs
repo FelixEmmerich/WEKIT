@@ -71,16 +71,20 @@ public class KinectEmulator : MonoBehaviour, KinectInterface {
 	}
 	
 	void LoadPlaybackFile(string filePath)  {
-		FileStream input = new FileStream(@filePath, FileMode.Open);
-		BinaryFormatter bf = new BinaryFormatter();
-		SerialSkeletonFrame[] serialSkeleton = (SerialSkeletonFrame[])bf.Deserialize(input);
-		skeletonFrame = new NuiSkeletonFrame[serialSkeleton.Length];
-		for(int ii = 0; ii < serialSkeleton.Length; ii++){
-			skeletonFrame[ii] = serialSkeleton[ii].deserialize();
-		}
-		input.Close();
-		timer = 0;
-		Debug.Log("Simulating "+@filePath);
+        if (File.Exists(@filePath))
+        {
+            FileStream input = new FileStream(@filePath, FileMode.Open);
+            BinaryFormatter bf = new BinaryFormatter();
+            SerialSkeletonFrame[] serialSkeleton = (SerialSkeletonFrame[])bf.Deserialize(input);
+            skeletonFrame = new NuiSkeletonFrame[serialSkeleton.Length];
+            for (int ii = 0; ii < serialSkeleton.Length; ii++)
+            {
+                skeletonFrame[ii] = serialSkeleton[ii].deserialize();
+            }
+            input.Close();
+            timer = 0;
+            Debug.Log("Simulating " + @filePath); 
+        }
 	}
 	
 	float KinectInterface.getSensorHeight() {

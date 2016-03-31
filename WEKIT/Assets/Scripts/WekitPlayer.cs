@@ -229,7 +229,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
             if (Playing)
             {
                 //Update index, looping
-                Index = ((Index += Speed*(Time.deltaTime/ReplayFps))%FrameList.Count);
+                Index = (Index + Speed * (Time.deltaTime / ReplayFps)) % FrameList.Count;
             }
         }
         return myFrame;
