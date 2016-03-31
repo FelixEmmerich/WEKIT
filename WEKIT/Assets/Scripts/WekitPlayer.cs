@@ -348,4 +348,16 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
     {
         FrameList.Clear();
     }
+
+    public override object GetListAsObject()
+    {
+        return new DataContainer(FrameList, ReplayFps);
+    }
+
+    public override void MakeDataContainerFromObject(object source)
+    {
+        DataContainer container = (DataContainer)source;
+        FrameList = container.FrameList;
+        ReplayFps = container.Fps;
+    }
 }

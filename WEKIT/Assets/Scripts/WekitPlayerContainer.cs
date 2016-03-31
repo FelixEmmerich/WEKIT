@@ -1,9 +1,43 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 
 //Class for managing multiple players. Type bool is used to keep the data small.
-public class WekitPlayerContainer : WekitPlayer<bool, bool>
+public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bool>
 {
+    [Serializable]
+    public class Content
+    {
+        public int Framecount;
+        public List<ObjectWithName> Lists;
+
+        public Content()
+        {
+            Framecount = 0;
+            Lists = null;
+        }
+
+        public Content(int framecount, List<ObjectWithName> lists)
+        {
+            Framecount = framecount;
+            Lists = lists;
+        }
+    }
+
+    [Serializable]
+    public class ObjectWithName
+    {
+        public object MyObject;
+        public string MyName;
+
+        public ObjectWithName(object myObject, string myName)
+        {
+            MyObject = myObject;
+            MyName = myName;
+        }
+    }
+
+
     [SerializeField] private List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
 
     [HideInInspector]
@@ -73,9 +107,9 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
         }
     }
 
-    public override bool AddFrame()
+    public override Content AddFrame()
     {
-        return new bool();
+        return new Content();
     }
 
     public override void Replay()
@@ -112,7 +146,38 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
 
     public override bool Load()
     {
-        int localmaxframes=0;
+        if (!base.Load()) return false;
+        int localMaxFrames = 0;
+        for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
+        {
+            WekitPlayer_Base player = _wekitPlayers[i];
+            for (int j = FrameList[0].Lists.Count - 1; j >= 0; j--)
+            {
+                if (FrameList[0].Lists[j].MyName == player.PlayerName)
+                {
+                    player.MakeDataContainerFromObject(FrameList[0].Lists[j].MyObject);
+                    if (player.FrameCount > localMaxFrames)
+                    {
+                        localMaxFrames = player.FrameCount;
+                        ReplayFps = player.ReplayFps;
+                    }
+                    break;
+                }
+            }
+            if (player.FrameCount == 0)
+            {
+                player.Enabled(false);
+                player.ClearFrameList();
+                ActiveWekitPlayers.Remove(player);
+            }
+        }
+        if (localMaxFrames != 0)
+        {
+            FrameList = new List<Content>(new Content[localMaxFrames + 1]);
+            return true;
+        }
+        return false;
+        /*int localmaxframes=0;
         for (int i=_wekitPlayers.Count-1;i>=0;i--)
         {
             WekitPlayer_Base player = _wekitPlayers[i];
@@ -137,22 +202,29 @@ public class WekitPlayerContainer : WekitPlayer<bool, bool>
         //If there is no file for the container but there is one for at least one player, make a list the size of that player's
         if (!base.Load()&&localmaxframes!=0)
         {
-            FrameList=new List<bool>(new bool[localmaxframes+1]);
-        }
+            FrameList=new List<Content>(new Content[localmaxframes+1]);
+        }*/
         return true;
     }
 
     public override void Save()
     {
-        base.Save();
+        Content content = new Content(FrameCount,new List<ObjectWithName>());
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+        {
+            content.Lists.Add(new ObjectWithName(player.GetListAsObject(),player.PlayerName));
+        }
+        FrameList.Clear();
+        FrameList.Add(content);
+        base.Save();
+        /*foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
             player.Zip = Zip;
             player.UseCompoundArchive = UseCompoundArchive;
             player.CompoundZipName = CompoundZipName;
             player.FileName = FileName;
             player.Save();
-        }
+        }*/
     }
 
     public override void Delete()

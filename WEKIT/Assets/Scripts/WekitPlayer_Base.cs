@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class WekitPlayer_Base : MonoBehaviour
 {
@@ -66,6 +67,15 @@ public class WekitPlayer_Base : MonoBehaviour
     }
 
     public virtual void ClearFrameList()
+    {
+    }
+
+    public virtual object GetListAsObject()
+    {
+        return new object();
+    }
+
+    public virtual void MakeDataContainerFromObject(object source)
     {
     }
 }
