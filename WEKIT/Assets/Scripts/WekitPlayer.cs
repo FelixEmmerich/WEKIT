@@ -10,7 +10,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
 {
     //Data is saved along with approximate framerate, for the sake of retaining intended speed
     [Serializable]
-    struct DataContainer
+    private struct DataContainer
     {
         public readonly List<T> FrameList;
         public readonly float Fps;
@@ -222,15 +222,13 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
         T myFrame = FrameList[(int)Index];
 
         //Only update index once per frame
-        if (!_updatedIndex)
+        if (_updatedIndex) return myFrame;
+        _updatedIndex = true;
+        PreviousIndex = (int) Index;
+        if (Playing)
         {
-            _updatedIndex = true;
-            PreviousIndex = (int) Index;
-            if (Playing)
-            {
-                //Update index, looping
-                Index = (Index + Speed * (Time.deltaTime / ReplayFps)) % FrameList.Count;
-            }
+            //Update index, looping
+            Index = (Index + Speed * (Time.deltaTime / ReplayFps)) % FrameList.Count;
         }
         return myFrame;
     }
@@ -246,72 +244,64 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
         _updatedIndex = false;
 
         //Record data
-        if (Playing && Recording && !Replaying && Provider != null)
+        if (!Playing || !Recording || Replaying || Provider == null) return;
+        CurrentStep = ++CurrentStep%Stepsize;
+        //Don't record every frame if stepsize >1
+        if (CurrentStep == 0)
         {
-            CurrentStep = ++CurrentStep%Stepsize;
-            //Don't record every frame if stepsize >1
-            if (CurrentStep == 0)
-            {
-                FrameList.Add(AddFrame());
-            }
+            FrameList.Add(AddFrame());
         }
     }
 
     public override void Pause()
     {
-        if (Replaying)
+        if (!Replaying) return;
+        Playing = !Playing;
+        if (Playing)
         {
-            Playing = !Playing;
-            if (Playing)
-            {
-                PreviousIndex = -1;
-            }
+            PreviousIndex = -1;
         }
     }
 
     public override void Replay()
     {
-        if (!Recording)
+        if (Recording) return;
+        Replaying = !Replaying;
+        if (Replaying)
         {
-            Replaying = !Replaying;
-            if (Replaying)
-            {
-                Playing = true;
-                PreviousIndex = -1;
-            }
-            else
-            {
-                Index = 0;
-                Speed = 1;
-                Playing = false;
-            } 
+            Playing = true;
+            PreviousIndex = -1;
+        }
+        else
+        {
+            Index = 0;
+            Speed = 1;
+            Playing = false;
         }
     }
 
     public override void Record()
     {
-        if (!Replaying)
+        if (Replaying) return;
+        //If not recording, begin recording, otherwise stop
+        if (!Recording)
         {
-            //If not recording, begin recording, otherwise stop
-            if (!Recording)
+            //Start countdown
+            _coroutine=RecordAfterTime(CountDown);
+            StartCoroutine(_coroutine);
+        }
+        else
+        {
+            if (Playing)
             {
-                //Start countdown
-                _coroutine=RecordAfterTime(CountDown);
-                StartCoroutine(_coroutine);
+                ReplayFps = (ReplayFps + Time.deltaTime)/2*Stepsize;
             }
             else
             {
-                if (Playing)
-                {
-                    ReplayFps = (ReplayFps + Time.deltaTime)/2*Stepsize;
-                }
-                else
-                {
-                    StopCoroutine(_coroutine);
-                }
-                Recording = false;
-                Playing = false;
-            } 
+                StopCoroutine(_coroutine);
+            }
+            Recording = false;
+            Playing = false;
         }
     }
 
@@ -327,20 +317,16 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
 
     private IEnumerator RecordAfterTime(float time)
     {
-        if (!Recording)
-        {
-            Recording = true;
-            Index = 0;
-            yield return new WaitForSeconds(time);
-            //After countdown, only begin the recording process if it wasn't cancelled
-            if (Recording)
-            {
-                Debug.Log("Start recording " + PlayerName);
-                FrameList.Clear();
-                Playing = true;
-                ReplayFps = Time.deltaTime;
-            }
-        }
+        if (Recording) yield break;
+        Recording = true;
+        Index = 0;
+        yield return new WaitForSeconds(time);
+        //After countdown, only begin the recording process if it wasn't cancelled
+        if (!Recording) yield break;
+        Debug.Log("Start recording " + PlayerName);
+        FrameList.Clear();
+        Playing = true;
+        ReplayFps = Time.deltaTime;
     }
 
     //Method is necessary if the type of FrameList isn't known

@@ -233,7 +233,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     //Buttons to activate/deactivate players
     void OnGUI()
     {
-        SingleSaveFile = GUI.Toggle(new Rect(Screen.width/2f, Screen.height - 60, ButtonWidth, 20), SingleSaveFile, "Single file");
+        SingleSaveFile = GUI.Toggle(new Rect((Screen.width-ButtonWidth)/2f, Screen.height - 60, ButtonWidth, 20), SingleSaveFile, "Save as single file");
         if (Recording) return;
         float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2;
         for (int i = 0; i < _wekitPlayers.Count; i++)
