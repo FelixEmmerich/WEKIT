@@ -3,26 +3,8 @@ using UnityEngine;
 using System.Collections.Generic;
 
 //Class for managing multiple players. Type bool is used to keep the data small.
-public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bool>
+public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithName, bool>
 {
-    [Serializable]
-    public class Content
-    {
-        public int Framecount;
-        public List<ObjectWithName> Lists;
-
-        public Content()
-        {
-            Framecount = 0;
-            Lists = null;
-        }
-
-        public Content(int framecount, List<ObjectWithName> lists)
-        {
-            Framecount = framecount;
-            Lists = lists;
-        }
-    }
 
     [Serializable]
     public class ObjectWithName
@@ -35,15 +17,24 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bo
             MyObject = myObject;
             MyName = myName;
         }
+
+        public ObjectWithName()
+        {
+            MyObject = null;
+            MyName = "";
+        }
     }
 
 
-    [SerializeField] private List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
+    [SerializeField]
+    private List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
 
     [HideInInspector]
     public List<WekitPlayer_Base> ActiveWekitPlayers;
 
     public float ButtonWidth = 100;
+
+    public bool SingleSaveFile=true;
 
     public override void Reset()
     {
@@ -59,13 +50,11 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bo
         get { return _speed; }
         set
         {
-            if (value!=_speed)
+            if (value == _speed) return;
+            _speed = value;
+            foreach (WekitPlayer_Base player in ActiveWekitPlayers)
             {
-                _speed = value;
-                foreach (WekitPlayer_Base player in ActiveWekitPlayers)
-                {
-                    player.Speed = value;
-                } 
+                player.Speed = value;
             }
         }
     }
@@ -77,12 +66,10 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bo
         set
         {
             _index = value;
-            if (value == 0)
+            if (value != 0) return;
+            foreach (WekitPlayer_Base player in ActiveWekitPlayers)
             {
-                foreach (WekitPlayer_Base player in ActiveWekitPlayers)
-                {
-                    player.Index = 0;
-                }
+                player.Index = 0;
             }
         }
     }
@@ -91,8 +78,9 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bo
     {
         base.Start();
         ActiveWekitPlayers = new List<WekitPlayer_Base>(_wekitPlayers);
-        foreach (WekitPlayer_Base player in _wekitPlayers)
+        foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
+
             player.CountDown = CountDown;
         }
     }
@@ -107,9 +95,9 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bo
         }
     }
 
-    public override Content AddFrame()
+    public override ObjectWithName AddFrame()
     {
-        return new Content();
+        return new ObjectWithName();
     }
 
     public override void Replay()
@@ -148,88 +136,90 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bo
     {
         if (!base.Load()) return false;
         int localMaxFrames = 0;
-        for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
+        if (SingleSaveFile)
         {
-            WekitPlayer_Base player = _wekitPlayers[i];
-            for (int j = FrameList[0].Lists.Count - 1; j >= 0; j--)
+            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
             {
-                if (FrameList[0].Lists[j].MyName == player.PlayerName)
+                WekitPlayer_Base player = _wekitPlayers[i];
+                for (int j = FrameList.Count - 1; j >= 0; j--)
                 {
-                    player.MakeDataContainerFromObject(FrameList[0].Lists[j].MyObject);
+                    if (FrameList[j].MyName == player.PlayerName)
+                    {
+                        player.MakeDataContainerFromObject(FrameList[j].MyObject);
+                        if (player.FrameCount > localMaxFrames)
+                        {
+                            localMaxFrames = player.FrameCount;
+                            ReplayFps = player.ReplayFps;
+                        }
+                        break;
+                    }
+                }
+                if (player.FrameCount == 0)
+                {
+                    player.Enabled(false);
+                    player.ClearFrameList();
+                    ActiveWekitPlayers.Remove(player);
+                }
+            } 
+        }
+        else
+        {
+            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
+            {
+                WekitPlayer_Base player = _wekitPlayers[i];
+                player.Zip = Zip;
+                player.UseCompoundArchive = UseCompoundArchive;
+                player.LoadFileName = LoadFileName;
+                if (!player.Load())
+                {
+                    player.Enabled(false);
+                    player.ClearFrameList();
+                    ActiveWekitPlayers.Remove(player);
+                }
+                else
+                {
                     if (player.FrameCount > localMaxFrames)
                     {
                         localMaxFrames = player.FrameCount;
                         ReplayFps = player.ReplayFps;
                     }
-                    break;
                 }
-            }
-            if (player.FrameCount == 0)
-            {
-                player.Enabled(false);
-                player.ClearFrameList();
-                ActiveWekitPlayers.Remove(player);
-            }
+            } 
         }
-        if (localMaxFrames != 0)
-        {
-            FrameList = new List<Content>(new Content[localMaxFrames + 1]);
-            return true;
-        }
-        return false;
-        /*int localmaxframes=0;
-        for (int i=_wekitPlayers.Count-1;i>=0;i--)
-        {
-            WekitPlayer_Base player = _wekitPlayers[i];
-            player.Zip = Zip;
-            player.UseCompoundArchive = UseCompoundArchive;
-            player.LoadFileName=LoadFileName;
-            if (!player.Load())
-            {
-                player.Enabled(false);
-                player.ClearFrameList();
-                ActiveWekitPlayers.Remove(player);
-            }
-            else
-            {
-                if (player.FrameCount > localmaxframes)
-                {
-                    localmaxframes = player.FrameCount;
-                    ReplayFps = player.ReplayFps;
-                }
-            }
-        }
-        //If there is no file for the container but there is one for at least one player, make a list the size of that player's
-        if (!base.Load()&&localmaxframes!=0)
-        {
-            FrameList=new List<Content>(new Content[localmaxframes+1]);
-        }*/
+        if (localMaxFrames == 0) return false;
+        FrameList = new List<ObjectWithName>(new ObjectWithName[localMaxFrames + 1]);
         return true;
     }
 
     public override void Save()
     {
-        Content content = new Content(FrameCount,new List<ObjectWithName>());
-        foreach (WekitPlayer_Base player in ActiveWekitPlayers)
-        {
-            content.Lists.Add(new ObjectWithName(player.GetListAsObject(),player.PlayerName));
-        }
+        //List is copied so we can replace it with a list more suited for saving, then reinstate the old one
+        var listcopy = new List<ObjectWithName>(FrameList);
         FrameList.Clear();
-        FrameList.Add(content);
+        if (SingleSaveFile)
+        {
+            foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+            {
+                FrameList.Add(new ObjectWithName(player.GetListAsObject(), player.PlayerName));
+            }
+        }
         base.Save();
-        /*foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+        FrameList = listcopy;
+        if (SingleSaveFile) return;
+        foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
             player.Zip = Zip;
             player.UseCompoundArchive = UseCompoundArchive;
             player.CompoundZipName = CompoundZipName;
             player.FileName = FileName;
             player.Save();
-        }*/
+        }
     }
 
     public override void Delete()
     {
         base.Delete();
+        if (SingleSaveFile) return;
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
             player.Zip = Zip;
@@ -243,35 +233,33 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.Content, bo
     //Buttons to activate/deactivate players
     void OnGUI()
     {
-        if (!Recording)
+        SingleSaveFile = GUI.Toggle(new Rect(Screen.width/2f, Screen.height - 60, ButtonWidth, 20), SingleSaveFile, "Single file");
+        if (Recording) return;
+        float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2;
+        for (int i = 0; i < _wekitPlayers.Count; i++)
         {
-            for (int i = 0; i < _wekitPlayers.Count; i++)
+            _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*ButtonWidth, Screen.height - 40, ButtonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
+            bool contained = ActiveWekitPlayers.Contains(_wekitPlayers[i]);
+            if (!GUI.Button(new Rect(x + i*ButtonWidth, Screen.height - 20, ButtonWidth, 20),
+                _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
+
+            if (contained)
             {
-                float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2 + i*ButtonWidth;
-                _wekitPlayers[i].Stepsize= (int)GUI.HorizontalSlider(new Rect(x, Screen.height - 40, ButtonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
-                bool contained = ActiveWekitPlayers.Contains(_wekitPlayers[i]);
-                if (GUI.Button(new Rect(x, Screen.height - 20, ButtonWidth, 20), _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive")))
-                {
-                    if (contained)
-                    {
-                        _wekitPlayers[i].Enabled(false);
-                        ActiveWekitPlayers.Remove(_wekitPlayers[i]);
-                        Debug.Log("Removed " + _wekitPlayers[i].PlayerName + " from List");
-                    }
-                    else
-                    {
-                        _wekitPlayers[i].Playing = Playing;
-                        _wekitPlayers[i].Recording = Recording;
-                        _wekitPlayers[i].Replaying = Replaying;
-                        _wekitPlayers[i].Speed = Speed;
-                        _wekitPlayers[i].Index = Index;
-                        _wekitPlayers[i].Enabled(true);
-                        ActiveWekitPlayers.Add(_wekitPlayers[i]);
-                        Debug.Log("Added " + _wekitPlayers[i] + " to List");
-                    }
-                }
-            } 
+                _wekitPlayers[i].Enabled(false);
+                ActiveWekitPlayers.Remove(_wekitPlayers[i]);
+                Debug.Log("Removed " + _wekitPlayers[i].PlayerName + " from List");
+            }
+            else
+            {
+                _wekitPlayers[i].Playing = Playing;
+                _wekitPlayers[i].Recording = Recording;
+                _wekitPlayers[i].Replaying = Replaying;
+                _wekitPlayers[i].Speed = Speed;
+                _wekitPlayers[i].Index = Index;
+                _wekitPlayers[i].Enabled(true);
+                ActiveWekitPlayers.Add(_wekitPlayers[i]);
+                Debug.Log("Added " + _wekitPlayers[i] + " to List");
+            }
         }
     }
-
 }
