@@ -77,4 +77,6 @@ public class WekitPlayer_Base : MonoBehaviour
     public virtual void MakeDataContainerFromObject(object source)
     {
     }
+
+    public virtual void SetIndex(float index, bool relative) { }
 }

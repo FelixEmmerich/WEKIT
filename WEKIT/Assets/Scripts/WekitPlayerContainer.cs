@@ -59,21 +59,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
 
-    private float _index;
-    public override float Index
-    {
-        get { return _index; }
-        set
-        {
-            _index = value;
-            if (value != 0) return;
-            foreach (WekitPlayer_Base player in ActiveWekitPlayers)
-            {
-                player.Index = 0;
-            }
-        }
-    }
-
     public override void Start()
     {
         base.Start();
@@ -230,11 +215,21 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
 
+    public override void SetIndex(float index, bool relative)
+    {
+        if ((int) index == (int) Index) return;
+        base.SetIndex(index, relative);
+        foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+        {
+            player.SetIndex(index / FrameCount, true);
+        }
+    }
+
     //Buttons to activate/deactivate players
     void OnGUI()
     {
-        SingleSaveFile = GUI.Toggle(new Rect((Screen.width-ButtonWidth)/2f, Screen.height - 60, ButtonWidth, 20), SingleSaveFile, "Save as single file");
         if (Recording) return;
+        SingleSaveFile = GUI.Toggle(new Rect((Screen.width - ButtonWidth) / 2f, Screen.height - 60, ButtonWidth, 20), SingleSaveFile, "Save as single file");
         float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2;
         for (int i = 0; i < _wekitPlayers.Count; i++)
         {

@@ -95,7 +95,14 @@ public class WekitPlayerGui : MonoBehaviour
                     {
                         Player.Pause();
                     }
-                    Player.Index = GUI.HorizontalSlider(new Rect(230 - (100 - StandardWidth)*2, 60, StandardWidth, 10), Player.Index, 0, Player.FrameCount);
+                    //Index
+                    float index = GUI.HorizontalSlider(new Rect(230 - (100 - StandardWidth)*2, 60, StandardWidth, 10), Player.Index, 0, Player.FrameCount);
+                    if (index != Player.Index)
+                    {
+                        Player.SetIndex(index,false);
+                    }
+
+                    //Speed
                     Player.Speed = GUI.HorizontalSlider(new Rect(230 - (100 - StandardWidth)*2, 80, StandardWidth, 10), Player.Speed, 0.1f, 2);
                     Player.Speed = Mathf.Clamp(float.Parse(GUI.TextField(new Rect(230 - (100 - StandardWidth)*2, 100, StandardWidth, 20), Player.Speed.ToString(), 25)),0.1f,2);
                 }
