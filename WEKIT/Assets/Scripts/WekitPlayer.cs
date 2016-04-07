@@ -350,5 +350,6 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
     public override void SetIndex(float index, bool relative)
     {
         Index = relative ? FrameCount*index : index;
+        _updatedIndex = true;
     }
 }
