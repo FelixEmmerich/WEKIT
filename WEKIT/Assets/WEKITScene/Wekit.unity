@@ -1471,7 +1471,7 @@ MonoBehaviour:
   CurrentStep: 0
   Stepsize: 1
   FrameList: []
-  SavePath: C:/Users/Felix/AppData/LocalLow/OUNL/WEKIT
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: KinectData
   CustomDirectory: Kinect
   DevOrEmu: {fileID: 1802622954}
@@ -2499,13 +2499,13 @@ MonoBehaviour:
   Stepsize: 1
   FrameList: []
   Provider: 1
-  SavePath: C:/Users/Felix/AppData/LocalLow/OUNL/WEKIT
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: WEKITData
   CustomDirectory: 
   _wekitPlayers:
   - {fileID: 2119502951}
-  - {fileID: 970503736}
   - {fileID: 373142367}
+  - {fileID: 970503736}
   ActiveWekitPlayers: []
   ButtonWidth: 100
   SingleSaveFile: 1
@@ -2527,7 +2527,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 604643274}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc7e1adfd192ffe488f80c7e3cb6cd16, type: 3}
   m_Name: 
@@ -3830,7 +3830,7 @@ MonoBehaviour:
   Stepsize: 1
   FrameList: []
   Provider: {fileID: 830305378}
-  SavePath: C:/Users/Felix/AppData/LocalLow/OUNL/WEKIT
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: MyoData
   CustomDirectory: Myo
 --- !u!4 &970503737
@@ -8015,7 +8015,7 @@ MonoBehaviour:
   Stepsize: 1
   FrameList: []
   Provider: {fileID: 320940791}
-  SavePath: C:/Users/Felix/AppData/LocalLow/OUNL/WEKIT
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: LeapData
   CustomDirectory: Leap
 --- !u!114 &2119502952

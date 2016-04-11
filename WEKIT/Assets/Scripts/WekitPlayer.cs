@@ -26,6 +26,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
     public TProvider Provider;
 
     //Location where data is saved. By default Unity's persistent data path.
+    [HideInInspector]
     public string SavePath;
 
     //File extension for files not saved as .zip
@@ -48,14 +49,15 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
 
     public virtual void Reset()
     {
-        Debug.Log(PlayerName + ": File location:" + Application.persistentDataPath);
-        SavePath = Application.persistentDataPath;
+        //Debug.Log(PlayerName + ": File location:" + Application.persistentDataPath);
+        SavePath = /*Application.persistentDataPath*/Application.streamingAssetsPath+@"/Replays";
     }
 
     public virtual void Start()
     {
         Debug.Log(PlayerName+" start");
         Speed = 1;
+        SavePath = /*Application.persistentDataPath*/Application.streamingAssetsPath + @"/Replays";
     }
         
     public override void Save()

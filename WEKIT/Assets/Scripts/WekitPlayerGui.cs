@@ -33,6 +33,10 @@ public class WekitPlayerGui : MonoBehaviour
         {
             _showOptions = !_showOptions;
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     void OnGUI()
@@ -61,6 +65,7 @@ public class WekitPlayerGui : MonoBehaviour
                     //Record button
                     if (GUI.Button(new Rect(120 - (100 - StandardWidth), 5, StandardWidth, 20), "Record"+ (KeyInput != null ? KeyToText(KeyInput.RecordKey) : "")))
                     {
+                        _currentTime = Player.CountDown;
                         Player.Record();
                     }
                     Player.CountDown = float.Parse(GUI.TextField(new Rect(120 - (100 - StandardWidth), 30, StandardWidth, 20), Player.CountDown.ToString(), 25));
