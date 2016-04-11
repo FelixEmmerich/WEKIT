@@ -35,7 +35,16 @@ public class WekitPlayerGui : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            if (Application.isEditor)
+            {
+                Application.Quit();
+            }
+            //Using Application.Quit() for some reason doesn't always work on standalone. 
+            //Check if the program is running in editor is needed, otherwise the code below would close the editor itself
+            else
+            {
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+            }
         }
     }
 

@@ -41,10 +41,8 @@ Load, Save, Delete				Save the current replay, or load or delete an existing one
 								The zip and compound archive toggles on the left can be used to save the data as a standalone zip 
 								archive or as an entry in a zip archive with other replays (In this case, the name of the archive 
 								is specified via a text field). Zip archives are smaller than regular files but take more time to 
-								save and load. Files are located at Unity's persistent datapath. 
-								For windows this path is C:\Users\[Username]\AppData\LocalLow\OUNL\WEKIT. 
-								If you are unsure about the file location on your OS, simply run the application from the Unity editor; 
-								the file location will be logged to the console upon starting the application.
+								save and load. Files are located at Unity's StreamingAssets path which is visible in the editor and
+								included in builds.
 
   ___ ___ _____ _   _ ___ 
  / __| __|_   _| | | | _ \
