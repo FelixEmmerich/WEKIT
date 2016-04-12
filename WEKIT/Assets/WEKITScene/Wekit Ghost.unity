@@ -400,6 +400,12 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 477824, guid: e3a43bd58b4bb1f45ae4eb8a70dce1cd, type: 2}
   m_PrefabInternal: {fileID: 126406843}
+--- !u!114 &126406845 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11429470, guid: e3a43bd58b4bb1f45ae4eb8a70dce1cd,
+    type: 2}
+  m_PrefabInternal: {fileID: 126406843}
+  m_Script: {fileID: 11500000, guid: cbb8933f8f23b6a45b8c612cc9bbcda4, type: 3}
 --- !u!1 &128416269
 GameObject:
   m_ObjectHideFlags: 0
@@ -2547,7 +2553,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &613137420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3184,7 +3190,7 @@ Prefab:
     - target: {fileID: 11473502, guid: 11e3d9606d2329647a0d06e4165ba169, type: 2}
       propertyPath: sw
       value: 
-      objectReference: {fileID: 1802622953}
+      objectReference: {fileID: 126406845}
     - target: {fileID: 424910, guid: 11e3d9606d2329647a0d06e4165ba169, type: 2}
       propertyPath: m_LocalRotation.y
       value: 0
@@ -3624,13 +3630,15 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 119060, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &830305378 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11401486, guid: a18c06cb1aebd894db7e60730c18edb3,
+    type: 2}
+  m_PrefabInternal: {fileID: 830305377}
+  m_Script: {fileID: 11500000, guid: d5674e407eb1d41e2bff42bedb2741b2, type: 3}
 --- !u!4 &830305379 stripped
 Transform:
   m_PrefabParentObject: {fileID: 448580, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
@@ -3821,7 +3829,7 @@ MonoBehaviour:
   CurrentStep: 0
   Stepsize: 1
   FrameList: []
-  Provider: {fileID: 1054844019}
+  Provider: {fileID: 830305378}
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: MyoData
   CustomDirectory: Myo
@@ -4185,12 +4193,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &1054844019 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11401486, guid: a18c06cb1aebd894db7e60730c18edb3,
-    type: 2}
-  m_PrefabInternal: {fileID: 2017607275}
-  m_Script: {fileID: 11500000, guid: d5674e407eb1d41e2bff42bedb2741b2, type: 3}
 --- !u!1 &1069596196
 GameObject:
   m_ObjectHideFlags: 0
@@ -4561,7 +4563,6 @@ GameObject:
   - 4: {fileID: 1165045947}
   - 114: {fileID: 1165045950}
   - 114: {fileID: 1165045948}
-  - 114: {fileID: 1165045949}
   m_Layer: 0
   m_Name: LeapHandController (1)
   m_TagString: Untagged
@@ -4602,21 +4603,6 @@ MonoBehaviour:
   LeftPhysicsModel: {fileID: 741904070}
   RightPhysicsModel: {fileID: 496442355}
   ModelPool: []
---- !u!114 &1165045949
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1165045946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 025cc0fa7b46aa541aba29d28d35ac09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PerFrameFixedUpdateOffset: 0
-  isHeadMounted: 0
-  overrideDeviceType: 0
-  overrideDeviceTypeWith: 1
 --- !u!114 &1165045950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4630,8 +4616,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handMovementScale: {x: 1, y: 1, z: 1}
-  Provider: {fileID: 1165045949}
-  Player: {fileID: 2119502951}
+  Provider: {fileID: 320940791}
+  Player: {fileID: 0}
 --- !u!1 &1168032455
 GameObject:
   m_ObjectHideFlags: 0
@@ -6450,7 +6436,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11483652, guid: e3a43bd58b4bb1f45ae4eb8a70dce1cd, type: 2}
       propertyPath: skeltonTrackingMode
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11483652, guid: e3a43bd58b4bb1f45ae4eb8a70dce1cd, type: 2}
       propertyPath: enableNearMode
@@ -7034,10 +7020,6 @@ Prefab:
     - target: {fileID: 181844, guid: d3125159d55ddb34aace98bc850076ab, type: 2}
       propertyPath: m_Name
       value: ReplayLeapHandController
-      objectReference: {fileID: 0}
-    - target: {fileID: 181844, guid: d3125159d55ddb34aace98bc850076ab, type: 2}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d3125159d55ddb34aace98bc850076ab, type: 2}
@@ -7681,7 +7663,7 @@ Prefab:
     - target: {fileID: 11401486, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
       propertyPath: Player
       value: 
-      objectReference: {fileID: 970503736}
+      objectReference: {fileID: 0}
     - target: {fileID: 11401486, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
       propertyPath: GiveFeedback
       value: 0
@@ -8032,7 +8014,7 @@ MonoBehaviour:
   CurrentStep: 0
   Stepsize: 1
   FrameList: []
-  Provider: {fileID: 1165045949}
+  Provider: {fileID: 320940791}
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: LeapData
   CustomDirectory: Leap
