@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using Leap;
 using System;
 
-public class CapsuleHand : IHandModel {
+public class CapsuleHand : IHandModel
+{
 
-  private const int THUMB_BASE_INDEX = (int)Finger.FingerType.TYPE_THUMB * 4 + (int)Finger.FingerJoint.JOINT_MCP;
+  protected const int THUMB_BASE_INDEX = (int)Finger.FingerType.TYPE_THUMB * 4 + (int)Finger.FingerJoint.JOINT_MCP;
   private const int PINKY_BASE_INDEX = (int)Finger.FingerType.TYPE_PINKY * 4 + (int)Finger.FingerJoint.JOINT_MCP;
 
   private const float SPHERE_RADIUS = 0.008f;
@@ -24,11 +25,11 @@ public class CapsuleHand : IHandModel {
 
   private Material jointMat;
 
-  private Transform[] _jointSpheres;
-  private Transform mockThumbJointSphere;
-  private Transform palmPositionSphere;
+  protected Transform[] _jointSpheres;
+  protected Transform mockThumbJointSphere;
+  protected Transform palmPositionSphere;
 
-  private Transform wristPositionSphere;
+  protected Transform wristPositionSphere;
 
   private List<Renderer> _armRenderers;
   private List<Transform> _capsuleTransforms;
@@ -36,7 +37,7 @@ public class CapsuleHand : IHandModel {
   private List<Transform> _sphereBTransforms;
 
   private Transform armFrontLeft, armFrontRight, armBackLeft, armBackRight;
-  private Hand hand_;
+  protected Hand hand_;
 
   public override ModelType HandModelType {
     get {
@@ -101,7 +102,8 @@ public class CapsuleHand : IHandModel {
 
   //Transform updating methods
 
-  private void updateSpheres() {
+  public virtual void updateSpheres()
+  {
     //Update all spheres
     FingerList fingers = hand_.Fingers;
     for (int i = 0; i < fingers.Count; i++) {
@@ -109,8 +111,7 @@ public class CapsuleHand : IHandModel {
       for (int j = 0; j < 4; j++) {
         int key = getFingerJointIndex((int)finger.Type, j);
         Transform sphere = _jointSpheres[key];
-        sphere.position = finger.JointPosition((Finger.FingerJoint)j).ToUnityScaled();
-
+          sphere.position = finger.JointPosition((Finger.FingerJoint) j).ToUnityScaled();
       }
     }
 
@@ -121,9 +122,11 @@ public class CapsuleHand : IHandModel {
 
     Transform thumbBase = _jointSpheres[THUMB_BASE_INDEX];
 
-    Vector3 thumbBaseToPalm = thumbBase.position - hand_.PalmPosition.ToUnity();
+    Vector3 thumbBaseToPalm = thumbBase.position - (hand_.PalmPosition.ToUnity());
     mockThumbJointSphere.position = hand_.PalmPosition.ToUnity() + Vector3.Reflect(thumbBaseToPalm, hand_.Basis.xBasis.ToUnity().normalized);
+
   }
+
 
   private void updateArm() {
     var arm = hand_.Arm;
@@ -240,9 +243,10 @@ public class CapsuleHand : IHandModel {
     createCapsule("ArmRight", armFrontRight, armBackRight, true);
   }
 
-  private int getFingerJointIndex(int fingerIndex, int jointIndex) {
-    return fingerIndex * 4 + jointIndex;
-  }
+    protected int getFingerJointIndex(int fingerIndex, int jointIndex)
+    {
+        return fingerIndex * 4 + jointIndex;
+    }
 
   private Transform createSphere(string name, float radius, bool isPartOfArm = false) {
     GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
