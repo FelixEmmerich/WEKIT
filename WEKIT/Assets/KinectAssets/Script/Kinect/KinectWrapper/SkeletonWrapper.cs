@@ -84,7 +84,8 @@ public class SkeletonWrapper : MonoBehaviour {
 	/// <returns>
 	/// A <see cref="System.Boolean"/>
 	/// </returns>
-	public bool pollSkeleton () {
+	public bool pollSkeleton ()
+    {
 		if (!updatedSkeleton)
 		{
 			updatedSkeleton = true;
@@ -99,16 +100,24 @@ public class SkeletonWrapper : MonoBehaviour {
 			}*/
 
             //Felix
-            if ((kinect.pollSkeleton()&&(Player==null||!Player.Replaying))||(Player!=null&&Player.Replaying&&(Player.FrameCount!=0)))
-            {
-                newSkeleton = true;
-                System.Int64 cur = kinect.getSkeleton().liTimeStamp;
-                System.Int64 diff = cur - ticks;
-                ticks = cur;
-                deltaTime = diff / (float)1000;
-                processSkeletonFromFrame(Player!=null && Player.Replaying && Player.FrameCount!=0? (NuiSkeletonFrame)Player.GetCurrentFrame():kinect.getSkeleton());
-            }
-        }
+		    if ((kinect.pollSkeleton() && (Player == null || !Player.Replaying)) ||
+		        (Player != null && Player.Replaying && (Player.FrameCount != 0)))
+		    {
+		        newSkeleton = true;
+		        System.Int64 cur = kinect.getSkeleton().liTimeStamp;
+		        System.Int64 diff = cur - ticks;
+		        ticks = cur;
+		        deltaTime = diff/(float) 1000;
+		        processSkeletonFromFrame(Player != null && Player.Replaying && Player.FrameCount != 0
+		            ? (NuiSkeletonFrame) Player.GetCurrentFrame()
+		            : kinect.getSkeleton());
+		    }
+            //If no kinect is connected and no replay is running, hide assets
+		    else if (Player != null&&Player.Focus)
+		    {
+		        Player.SetFocus(false);
+		    }
+		}
 		return newSkeleton;
 	}
 	
@@ -251,11 +260,21 @@ public class SkeletonWrapper : MonoBehaviour {
         switch (trackedCount)
         {
             case 0:
+                //Felix
+                //Make kinect assets invisible if no player is tracked and no replay is running
+                Player.SetFocus(Player.Replaying);
+
                 trackedPlayers[0] = -1;
                 trackedPlayers[1] = -1;
                 break;
             case 1:
                 //last frame there were no players: assign new player to p1
+
+                if (!Player.Focus)
+                {
+                    Player.SetFocus(true);
+                }
+
                 if (trackedPlayers[0] < 0 && trackedPlayers[1] < 0)
                     trackedPlayers[0] = tracked[0];
                 //last frame there was one player, keep that player in the same spot

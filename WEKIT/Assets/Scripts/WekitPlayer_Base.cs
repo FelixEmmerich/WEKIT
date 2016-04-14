@@ -19,6 +19,8 @@ public class WekitPlayer_Base : MonoBehaviour
     [HideInInspector]
     public float CountDown=3, ReplayFps;
 
+    public bool Focus { get; protected set; }
+
     public virtual float Index { get; set; }
     public virtual float Speed { get; set; }
 
@@ -62,6 +64,7 @@ public class WekitPlayer_Base : MonoBehaviour
 
     public virtual void Enabled(bool value)
     {
+        SetFocus(value);
         transform.root.gameObject.SetActive(value);
     }
 
@@ -78,5 +81,13 @@ public class WekitPlayer_Base : MonoBehaviour
     {
     }
 
-    public virtual void SetIndex(float index, bool relative) { }
+    public virtual void SetIndex(float index, bool relative)
+    {
+    }
+
+
+    public virtual void SetFocus(bool focus)
+    {
+        Focus = focus;
+    }
 }

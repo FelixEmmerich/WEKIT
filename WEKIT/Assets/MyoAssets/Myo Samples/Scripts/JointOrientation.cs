@@ -57,7 +57,8 @@ public class JointOrientation : MonoBehaviour
         {
             if (thalmicMyo._myoQuaternion != null)
             {
-                transform.localRotation = new Quaternion(thalmicMyo._myoQuaternion.Y, thalmicMyo._myoQuaternion.Z, -thalmicMyo._myoQuaternion.X, -thalmicMyo._myoQuaternion.W);
+                transform.localRotation = new Quaternion(thalmicMyo._myoQuaternion.Y, thalmicMyo._myoQuaternion.Z,
+                    -thalmicMyo._myoQuaternion.X, -thalmicMyo._myoQuaternion.W);
             }
             tf = transform;
         }

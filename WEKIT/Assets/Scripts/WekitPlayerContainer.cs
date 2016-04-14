@@ -224,7 +224,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             player.SetIndex(index / FrameCount, true);
         }
     }
-
+    
     //Buttons to activate/deactivate players
     void OnGUI()
     {
