@@ -97,13 +97,26 @@ public class ThalmicMyo : MonoBehaviour
                 MyoData mData = Player.GetCurrentFrame();
                 pose = mData.Pose;
                 transform.localRotation = mData.Quaternion;
+                if (Player != null && !Player.Focus)
+                {
+                    Player.SetFocus(true);
+                }
             }
             else
             {
                 pose = _myoPose;
-                if (_myoQuaternion != null)
+                if (armSynced&&_myoQuaternion != null)
                 {
-                    transform.localRotation = new Quaternion(_myoQuaternion.Y, _myoQuaternion.Z, -_myoQuaternion.X, -_myoQuaternion.W);
+                    transform.localRotation = new Quaternion(_myoQuaternion.Y, _myoQuaternion.Z, -_myoQuaternion.X,
+                        -_myoQuaternion.W);
+                    if (Player != null && !Player.Focus)
+                    {
+                        Player.SetFocus(true);
+                    }
+                }
+                else if (Player!=null)
+                {
+                    Player.SetFocus(false);
                 }
             }
             unlocked = _myoUnlocked;

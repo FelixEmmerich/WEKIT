@@ -152,7 +152,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
             {
                 WekitPlayer_Base player = _wekitPlayers[i];
-                player.Zip = Zip;
+                player.UseZip = UseZip;
                 player.UseCompoundArchive = UseCompoundArchive;
                 player.LoadFileName = LoadFileName;
                 if (!player.Load())
@@ -193,7 +193,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         if (SingleSaveFile) return;
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
-            player.Zip = Zip;
+            player.UseZip = UseZip;
             player.UseCompoundArchive = UseCompoundArchive;
             player.CompoundZipName = CompoundZipName;
             player.FileName = FileName;
@@ -207,7 +207,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         if (SingleSaveFile) return;
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
-            player.Zip = Zip;
+            player.UseZip = UseZip;
             player.UseCompoundArchive = UseCompoundArchive;
             player.DeleteFileName = DeleteFileName;
             player.CompoundZipName = CompoundZipName;

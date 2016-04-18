@@ -49,15 +49,15 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
 
     public virtual void Reset()
     {
-        //Debug.Log(PlayerName + ": File location:" + Application.persistentDataPath);
-        SavePath = /*Application.persistentDataPath*/Application.streamingAssetsPath+@"/Replays";
+        SavePath = Application.streamingAssetsPath+@"/Replays";
     }
 
     public virtual void Start()
     {
         Debug.Log(PlayerName+" start");
         Speed = 1;
-        SavePath = /*Application.persistentDataPath*/Application.streamingAssetsPath + @"/Replays";
+        SavePath = Application.streamingAssetsPath + @"/Replays";
+        Focus = true;
     }
         
     public override void Save()
@@ -67,7 +67,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
         DataContainer container = new DataContainer(FrameList, ReplayFps);
 
         //Save uncompressed
-        if (!Zip)
+        if (!UseZip)
         {
             filestring += (FileName + "."+UncompressedFileExtension);
             BinaryFormatter bf = new BinaryFormatter();
@@ -101,9 +101,9 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
         DataContainer container;
 
         //Load uncompressed file
-        if (!Zip)
+        if (!UseZip)
         {
-            filestring += (LoadFileName + "."+UncompressedFileExtension);
+            filestring += LoadFileName + "." + UncompressedFileExtension;
             if (File.Exists(filestring))
             {
                 BinaryFormatter bf = new BinaryFormatter();
@@ -160,7 +160,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
         string filestring= @SavePath+"/"+CustomDirectory+"/";
 
         //Delete uncompressed file
-        if (!Zip)
+        if (!UseZip)
         {
             filestring += (DeleteFileName + "."+UncompressedFileExtension);
             if (File.Exists(filestring))

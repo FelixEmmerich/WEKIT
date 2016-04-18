@@ -838,7 +838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bda2bdbfaf2e648b0fb69799abc246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Zip: 0
+  UseZip: 0
   UseCompoundArchive: 0
   Recording: 0
   Playing: 0
@@ -1645,7 +1645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf280ad21ef6534c8d0ad9736598f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Zip: 0
+  UseZip: 0
   UseCompoundArchive: 0
   Recording: 0
   Playing: 0
@@ -2334,7 +2334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a4de43dd0c67ee49a8b3a4c467fc241, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Zip: 0
+  UseZip: 0
   UseCompoundArchive: 0
   Recording: 0
   Playing: 0
@@ -2354,6 +2354,8 @@ MonoBehaviour:
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: MyoData
   CustomDirectory: Myo
+  Visualisation:
+  - {fileID: 2083415113}
 --- !u!4 &970503737
 Transform:
   m_ObjectHideFlags: 0
@@ -4392,6 +4394,10 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!1 &2083415113 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 119060, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
+  m_PrefabInternal: {fileID: 2017607275}
 --- !u!1 &2084409210
 GameObject:
   m_ObjectHideFlags: 0
@@ -4537,7 +4543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb2340ab82b615a4482768157965ed9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Zip: 0
+  UseZip: 0
   UseCompoundArchive: 0
   Recording: 0
   Playing: 0

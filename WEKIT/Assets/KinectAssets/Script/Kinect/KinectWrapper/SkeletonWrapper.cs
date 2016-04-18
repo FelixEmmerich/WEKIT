@@ -65,6 +65,7 @@ public class SkeletonWrapper : MonoBehaviour {
 
 		//final transform matrix offsets the rotation of the kinect, then translates to a new center
 		kinectToWorld = flipMatrix*trans*rot;
+	    pollSkeleton();
 	}
 	
 	// Update is called once per frame
@@ -88,7 +89,7 @@ public class SkeletonWrapper : MonoBehaviour {
     {
 		if (!updatedSkeleton)
 		{
-			updatedSkeleton = true;
+            updatedSkeleton = true;
 			/*if (kinect.pollSkeleton())
 			{
 				newSkeleton = true;
@@ -103,7 +104,7 @@ public class SkeletonWrapper : MonoBehaviour {
 		    if ((kinect.pollSkeleton() && (Player == null || !Player.Replaying)) ||
 		        (Player != null && Player.Replaying && (Player.FrameCount != 0)))
 		    {
-		        newSkeleton = true;
+                newSkeleton = true;
 		        System.Int64 cur = kinect.getSkeleton().liTimeStamp;
 		        System.Int64 diff = cur - ticks;
 		        ticks = cur;
@@ -113,9 +114,9 @@ public class SkeletonWrapper : MonoBehaviour {
 		            : kinect.getSkeleton());
 		    }
             //If no kinect is connected and no replay is running, hide assets
-		    else if (Player != null&&Player.Focus)
+		    else 
 		    {
-		        Player.SetFocus(false);
+                if (Player != null && Player.Focus) { Player.SetFocus(false);}
 		    }
 		}
 		return newSkeleton;

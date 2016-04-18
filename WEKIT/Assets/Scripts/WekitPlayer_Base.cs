@@ -3,7 +3,7 @@
 public class WekitPlayer_Base : MonoBehaviour
 {
     [HideInInspector]
-    public bool Zip, UseCompoundArchive, Recording, Playing, Replaying;
+    public bool UseZip, UseCompoundArchive, Recording, Playing, Replaying;
 
     [HideInInspector] public string FileName = "Replay Name",
         LoadFileName = "Replay Name",
