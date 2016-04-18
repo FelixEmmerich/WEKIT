@@ -2,7 +2,6 @@
 
 public class MyoPlayer : WekitPlayer<MyoData,JointOrientation>
 {
-    public GameObject [] Visualisation;
     //Standard values
     public override void Reset()
     {
@@ -17,12 +16,4 @@ public class MyoPlayer : WekitPlayer<MyoData,JointOrientation>
         return new MyoData(Provider.transform.rotation,Provider.thalmicMyo.pose);
     }
 
-    public override void SetFocus(bool focus)
-    {
-        base.SetFocus(focus);
-        foreach (GameObject go in Visualisation)
-        {
-            go.SetActive(focus);
-        }
-    }
 }

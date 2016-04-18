@@ -3,7 +3,7 @@
 public class WekitPlayer_Base : MonoBehaviour
 {
     [HideInInspector]
-    public bool UseZip, UseCompoundArchive, Recording, Playing, Replaying;
+    public bool UseZip, UseCompoundArchive, Recording, Playing, Replaying, ForceFocus=false;
 
     [HideInInspector] public string FileName = "Replay Name",
         LoadFileName = "Replay Name",
@@ -88,6 +88,7 @@ public class WekitPlayer_Base : MonoBehaviour
 
     public virtual void SetFocus(bool focus)
     {
-        Focus = focus;
+        //Always true if focus is enforced
+        Focus = ForceFocus || focus;
     }
 }

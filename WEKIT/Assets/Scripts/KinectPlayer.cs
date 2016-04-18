@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class KinectPlayer : WekitPlayer<SerialSkeletonFrame,KinectInterface>
 {
-    public GameObject [] Visualisation;
     public DeviceOrEmulator DevOrEmu;
     public override SerialSkeletonFrame AddFrame()
     {
@@ -30,12 +29,4 @@ public class KinectPlayer : WekitPlayer<SerialSkeletonFrame,KinectInterface>
         Provider = DevOrEmu.getKinect();
     }
 
-    public override void SetFocus(bool focus)
-    {
-        base.SetFocus(focus);
-        foreach (GameObject go in Visualisation)
-        {
-            go.SetActive(focus);
-        }
-    }
 }

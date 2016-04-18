@@ -16,9 +16,4 @@ public class LeapPlayer : WekitPlayer<HandList,LeapProvider>
     {
         return Provider.CurrentFrame.Hands;
     }
-
-    public override void SetFocus(bool focus)
-    {
-        base.SetFocus(focus);
-    }
 }

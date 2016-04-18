@@ -57,15 +57,15 @@ public class WekitPlayerGui : MonoBehaviour
             if (!Player.Recording)
             {
                 //Compression options
-                Player.UseZip = GUI.Toggle(new Rect(10, 30, StandardWidth / 2, 20), Player.UseZip, "Zip");
+                Player.UseZip = GUI.Toggle(new Rect(10, 55, StandardWidth / 2, 20), Player.UseZip, "Zip");
 
                 if (Player.UseZip)
                 {
-                    Player.UseCompoundArchive = GUI.Toggle(new Rect(10, 55, StandardWidth, 30), Player.UseCompoundArchive, "Compound \n archive");
+                    Player.UseCompoundArchive = GUI.Toggle(new Rect(10, 75, StandardWidth, 30), Player.UseCompoundArchive, "Compound \n archive");
 
                     if (Player.UseCompoundArchive)
                     {
-                        Player.CompoundZipName = GUI.TextField(new Rect(10, 85, StandardWidth, 20), Player.CompoundZipName, 25);
+                        Player.CompoundZipName = GUI.TextField(new Rect(10, 105, StandardWidth, 20), Player.CompoundZipName, 25);
                     }
                 }
 

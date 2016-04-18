@@ -229,15 +229,25 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     void OnGUI()
     {
         if (Recording) return;
-        SingleSaveFile = GUI.Toggle(new Rect((Screen.width - ButtonWidth) / 2f, Screen.height - 60, ButtonWidth, 20), SingleSaveFile, "Save as single file");
+        SingleSaveFile = GUI.Toggle(new Rect(10,30, ButtonWidth, 20), SingleSaveFile, "Save as single file");
         float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2;
         for (int i = 0; i < _wekitPlayers.Count; i++)
         {
             _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*ButtonWidth, Screen.height - 40, ButtonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
             bool contained = ActiveWekitPlayers.Contains(_wekitPlayers[i]);
+            if (contained)
+            {
+                bool focus = GUI.Toggle(new Rect(x + i * ButtonWidth, Screen.height - 60, ButtonWidth, 20), _wekitPlayers[i].ForceFocus, "Force focus");
+                if (focus != _wekitPlayers[i].ForceFocus)
+                {
+                    _wekitPlayers[i].ForceFocus = focus;
+                    _wekitPlayers[i].SetFocus(true);
+                }
+            }
             if (!GUI.Button(new Rect(x + i*ButtonWidth, Screen.height - 20, ButtonWidth, 20),
                 _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
 
+            //(De)activate button pressed
             if (contained)
             {
                 _wekitPlayers[i].Enabled(false);

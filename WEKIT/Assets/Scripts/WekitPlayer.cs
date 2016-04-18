@@ -22,6 +22,9 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
         }
     }
 
+    [Tooltip("GameObjects to hide if focus is lost")]
+    public GameObject [] Visualisation;
+
     public List<T> FrameList;
     public TProvider Provider;
 
@@ -353,5 +356,14 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
     {
         Index = relative ? FrameCount*index : index;
         _updatedIndex = true;
+    }
+
+    public override void SetFocus(bool focus)
+    {
+        base.SetFocus(focus);
+        foreach (GameObject go in Visualisation)
+        {
+            go.SetActive(Focus);
+        }
     }
 }
