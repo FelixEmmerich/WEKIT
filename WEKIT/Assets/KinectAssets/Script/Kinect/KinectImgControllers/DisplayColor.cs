@@ -6,6 +6,8 @@ public class DisplayColor : MonoBehaviour {
 	
 	public DeviceOrEmulator devOrEmu;
 	private Kinect.KinectInterface kinect;
+
+    public KinectVideoPlayer Player; 
 	
 	private Texture2D tex;
 	
@@ -20,10 +22,17 @@ public class DisplayColor : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (kinect.pollColor())
+		if (kinect.pollColor()||(Player!=null && Player.Replaying))
 		{
 			//tex.SetPixels32(kinect.getColor());
-			tex.SetPixels32(mipmapImg(kinect.getColor(),640,480));
+		    /*if (Player != null && Player.Replaying)
+		    {
+                tex.SetPixels32(mipmapImg(Player.GetCurrentFrame().Colors, 640, 480));
+            }
+		    else*/
+		    {
+                tex.SetPixels32(mipmapImg(kinect.getColor(), 640, 480));
+            }
 			tex.Apply(false);
 		}
 	}

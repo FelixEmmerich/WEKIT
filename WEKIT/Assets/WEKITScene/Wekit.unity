@@ -299,7 +299,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 463922, guid: 6dea6891e5058b34fa428f5d96f4fe0f, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 11455608, guid: 6dea6891e5058b34fa428f5d96f4fe0f, type: 2}
       propertyPath: sw
@@ -324,6 +324,10 @@ Prefab:
     - target: {fileID: 463922, guid: 6dea6891e5058b34fa428f5d96f4fe0f, type: 2}
       propertyPath: m_LocalScale.z
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 179244, guid: 6dea6891e5058b34fa428f5d96f4fe0f, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6dea6891e5058b34fa428f5d96f4fe0f, type: 2}
@@ -674,7 +678,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 403080, guid: 300197f53a6f9d045aaf126973d7ceae, type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 11431768, guid: 300197f53a6f9d045aaf126973d7ceae, type: 2}
       propertyPath: devOrEmu
@@ -684,6 +688,10 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11431768, guid: 300197f53a6f9d045aaf126973d7ceae, type: 2}
+      propertyPath: Player
+      value: 
+      objectReference: {fileID: 2065755015}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 300197f53a6f9d045aaf126973d7ceae, type: 2}
   m_IsPrefabParent: 0
@@ -826,7 +834,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1551368675}
-  m_RootOrder: 5
+  m_RootOrder: 4
 --- !u!114 &373142367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -843,6 +851,7 @@ MonoBehaviour:
   Recording: 0
   Playing: 0
   Replaying: 0
+  ForceFocus: 0
   FileName: Replay Name
   LoadFileName: Replay Name
   DeleteFileName: Replay Name
@@ -853,13 +862,13 @@ MonoBehaviour:
   PreviousIndex: -1
   CurrentStep: 0
   Stepsize: 1
+  Visualisation:
+  - {fileID: 1559737739}
+  - {fileID: 1031276040}
   FrameList: []
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: KinectData
   CustomDirectory: Kinect
-  Visualisation:
-  - {fileID: 1559737739}
-  - {fileID: 1031276040}
   DevOrEmu: {fileID: 1802622954}
 --- !u!1 &373978575
 GameObject:
@@ -1235,7 +1244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _showArm: 0
-  _material: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  _material: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 3}
   handedness: 0
 --- !u!1 &481494651
 GameObject:
@@ -1598,7 +1607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _showArm: 0
-  _material: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  _material: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 3}
   handedness: 1
 --- !u!1 &604643274
 GameObject:
@@ -1650,6 +1659,7 @@ MonoBehaviour:
   Recording: 0
   Playing: 0
   Replaying: 0
+  ForceFocus: 0
   FileName: Replay Name
   LoadFileName: Replay Name
   DeleteFileName: Replay Name
@@ -1660,6 +1670,7 @@ MonoBehaviour:
   PreviousIndex: -1
   CurrentStep: 0
   Stepsize: 1
+  Visualisation: []
   FrameList: []
   Provider: 1
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
@@ -1669,6 +1680,7 @@ MonoBehaviour:
   - {fileID: 2119502951}
   - {fileID: 373142367}
   - {fileID: 970503736}
+  - {fileID: 2065755015}
   ActiveWekitPlayers: []
   ButtonWidth: 100
   SingleSaveFile: 1
@@ -2091,7 +2103,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 424910, guid: 11e3d9606d2329647a0d06e4165ba169, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11473502, guid: 11e3d9606d2329647a0d06e4165ba169, type: 2}
       propertyPath: sw
@@ -2107,6 +2119,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11473502, guid: 11e3d9606d2329647a0d06e4165ba169, type: 2}
       propertyPath: scale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 159062, guid: 11e3d9606d2329647a0d06e4165ba169, type: 2}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2212,7 +2228,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 448578, guid: f8a0281f5ca2bdf428faadde5c0f8a4a, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11499996, guid: f8a0281f5ca2bdf428faadde5c0f8a4a, type: 2}
       propertyPath: dw
@@ -2220,7 +2236,7 @@ Prefab:
       objectReference: {fileID: 1802622952}
     - target: {fileID: 189336, guid: f8a0281f5ca2bdf428faadde5c0f8a4a, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f8a0281f5ca2bdf428faadde5c0f8a4a, type: 2}
@@ -2339,6 +2355,7 @@ MonoBehaviour:
   Recording: 0
   Playing: 0
   Replaying: 0
+  ForceFocus: 0
   FileName: Replay Name
   LoadFileName: Replay Name
   DeleteFileName: Replay Name
@@ -2349,13 +2366,13 @@ MonoBehaviour:
   PreviousIndex: -1
   CurrentStep: 0
   Stepsize: 1
+  Visualisation:
+  - {fileID: 2083415113}
   FrameList: []
   Provider: {fileID: 1054844019}
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: MyoData
   CustomDirectory: Myo
-  Visualisation:
-  - {fileID: 2083415113}
 --- !u!4 &970503737
 Transform:
   m_ObjectHideFlags: 0
@@ -3381,12 +3398,12 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 284026734}
   - {fileID: 808394513}
   - {fileID: 753974512}
   - {fileID: 1802622951}
   - {fileID: 151334133}
   - {fileID: 373142366}
+  - {fileID: 284026734}
   m_Father: {fileID: 0}
   m_RootOrder: 6
 --- !u!1 &1559737739 stripped
@@ -3634,7 +3651,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 477824, guid: e3a43bd58b4bb1f45ae4eb8a70dce1cd, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11429470, guid: e3a43bd58b4bb1f45ae4eb8a70dce1cd, type: 2}
       propertyPath: Player
@@ -4276,6 +4293,66 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!1 &2065755013
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2065755014}
+  - 114: {fileID: 2065755015}
+  m_Layer: 0
+  m_Name: KinectVideo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2065755014
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2065755013}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+--- !u!114 &2065755015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2065755013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0087ef330b451049bc58ea1dbb6e042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseZip: 0
+  UseCompoundArchive: 0
+  Recording: 0
+  Playing: 0
+  Replaying: 0
+  ForceFocus: 0
+  FileName: Replay Name
+  LoadFileName: Replay Name
+  DeleteFileName: Replay Name
+  CompoundZipName: Archive Name
+  PlayerName: KinectVideo
+  CountDown: 3
+  ReplayFps: 0
+  PreviousIndex: -1
+  CurrentStep: 0
+  Stepsize: 1
+  Visualisation: []
+  Provider: {fileID: 1802622954}
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
+  UncompressedFileExtension: KinectVidData
+  CustomDirectory: KinectVid
 --- !u!1 &2071581187
 GameObject:
   m_ObjectHideFlags: 0
@@ -4548,6 +4625,7 @@ MonoBehaviour:
   Recording: 0
   Playing: 0
   Replaying: 0
+  ForceFocus: 0
   FileName: Replay Name
   LoadFileName: Replay Name
   DeleteFileName: Replay Name
@@ -4558,6 +4636,7 @@ MonoBehaviour:
   PreviousIndex: -1
   CurrentStep: 0
   Stepsize: 1
+  Visualisation: []
   FrameList: []
   Provider: {fileID: 1165045949}
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays

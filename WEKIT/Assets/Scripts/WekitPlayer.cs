@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 //Base class for players
-public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
+public class WekitPlayer <T,TProvider>: WekitPlayer_Base
 {
     //Data is saved along with approximate framerate, for the sake of retaining intended speed
     [Serializable]
@@ -240,7 +240,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base where T : new()
 
     public virtual T DefaultFrame()
     {
-        return new T();
+        return default(T);
     }
 
     public virtual void Update()
