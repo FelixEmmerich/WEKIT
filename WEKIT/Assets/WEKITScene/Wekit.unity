@@ -691,7 +691,7 @@ Prefab:
     - target: {fileID: 11431768, guid: 300197f53a6f9d045aaf126973d7ceae, type: 2}
       propertyPath: Player
       value: 
-      objectReference: {fileID: 2065755015}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 300197f53a6f9d045aaf126973d7ceae, type: 2}
   m_IsPrefabParent: 0
@@ -1680,7 +1680,6 @@ MonoBehaviour:
   - {fileID: 2119502951}
   - {fileID: 373142367}
   - {fileID: 970503736}
-  - {fileID: 2065755015}
   ActiveWekitPlayers: []
   ButtonWidth: 100
   SingleSaveFile: 1
@@ -4293,66 +4292,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!1 &2065755013
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 2065755014}
-  - 114: {fileID: 2065755015}
-  m_Layer: 0
-  m_Name: KinectVideo
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2065755014
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2065755013}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
---- !u!114 &2065755015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2065755013}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0087ef330b451049bc58ea1dbb6e042, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseZip: 0
-  UseCompoundArchive: 0
-  Recording: 0
-  Playing: 0
-  Replaying: 0
-  ForceFocus: 0
-  FileName: Replay Name
-  LoadFileName: Replay Name
-  DeleteFileName: Replay Name
-  CompoundZipName: Archive Name
-  PlayerName: KinectVideo
-  CountDown: 3
-  ReplayFps: 0
-  PreviousIndex: -1
-  CurrentStep: 0
-  Stepsize: 1
-  Visualisation: []
-  Provider: {fileID: 1802622954}
-  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
-  UncompressedFileExtension: KinectVidData
-  CustomDirectory: KinectVid
 --- !u!1 &2071581187
 GameObject:
   m_ObjectHideFlags: 0

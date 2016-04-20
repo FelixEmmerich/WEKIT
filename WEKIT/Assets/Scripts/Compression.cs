@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using Ionic.Zip;
 
 public class Compression
@@ -46,6 +47,25 @@ public class Compression
         }
     }
 
+    public static void AddItemToCompoundArchive<T>(string fullpath, string entryName, ref T item, XmlSerializer formatter)
+    {
+        if (!item.GetType().IsSerializable)
+            throw new ArgumentException("item must be serializable");
+
+
+        using (ZipFile zipFile = new ZipFile(fullpath))
+        {
+            //serialize item to memorystream
+            using (MemoryStream m = new MemoryStream())
+            {
+                formatter.Serialize(m, item);
+                m.Position = 0;
+                zipFile.AddEntry(entryName, m);
+                zipFile.Save();
+            }
+        }
+    }
+
     public static T GetItemFromArchive<T>(string folder, string fileName)
     {
         //get the stream from the archive
@@ -76,6 +96,23 @@ public class Compression
                 m.Position = 0;
                 //now serialize it back to the correct type
                 IFormatter formatter = new BinaryFormatter();
+                T item = (T)formatter.Deserialize(m);
+                return item;
+            }
+        }
+    }
+
+    public static T GetItemFromCompoundArchive<T>(string fullpath, string entryName, XmlSerializer formatter)
+    {
+        //get the stream from the archive
+        using (MemoryStream m = new MemoryStream())
+        {
+            using (ZipFile zipFile = new ZipFile(fullpath))
+            {
+                ZipEntry e = zipFile[entryName];
+                e.Extract(m);
+                m.Position = 0;
+                //now serialize it back to the correct type
                 T item = (T)formatter.Deserialize(m);
                 return item;
             }

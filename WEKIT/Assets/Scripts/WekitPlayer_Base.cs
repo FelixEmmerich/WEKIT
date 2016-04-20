@@ -1,7 +1,56 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class WekitPlayer_Base : MonoBehaviour
 {
+
+    [Serializable]
+    public class XMLData
+    {
+        public XMLFileInfo[] Files;
+
+        public XMLData(XMLFileInfo fileInfo)
+        {
+            Files=new XMLFileInfo[1];
+            Files[0] = fileInfo;
+        }
+
+        public XMLData(XMLFileInfo[] fileInfo)
+        {
+            Files = fileInfo;
+        }
+
+        public XMLData()
+        {
+            Files=new XMLFileInfo[1];
+        }
+    }
+
+    [Serializable]
+    public class XMLFileInfo
+    {
+        public string FileName;
+        /// <summary>
+        /// Name of the entry if data is saved in a zipfile
+        /// </summary>
+        public string EntryName;
+        public bool Zip;
+
+        public XMLFileInfo(string fileName, string entryName, bool zip)
+        {
+            FileName = fileName;
+            EntryName = entryName;
+            Zip = zip;
+        }
+
+        public XMLFileInfo()
+        {
+            FileName = "";
+            EntryName = "";
+            Zip = false;
+        }
+    }
+
     [HideInInspector]
     public bool UseZip, UseCompoundArchive, Recording, Playing, Replaying, ForceFocus=false;
 

@@ -65,7 +65,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
         
     public override void Save()
     {
-        string filestring= @SavePath + "/" + CustomDirectory + "/";
+        string filestring= SavePath + "/" + CustomDirectory + "/";
         Directory.CreateDirectory(filestring);
         DataContainer container = new DataContainer(FrameList, ReplayFps);
 
@@ -100,7 +100,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
 
     public override bool Load()
     {
-        string filestring= @SavePath + "/"+CustomDirectory+"/";
+        string filestring= SavePath + "/"+CustomDirectory+"/";
         DataContainer container;
 
         //Load uncompressed file

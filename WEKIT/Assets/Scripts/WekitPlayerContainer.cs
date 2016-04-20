@@ -1,10 +1,15 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 
 //Class for managing multiple players. Type bool is used to keep the data small.
 public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithName, bool>
 {
+    public XMLData XmlData;
+    private int _jsonDataIndex;
 
     [Serializable]
     public class ObjectWithName
@@ -120,6 +125,17 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     public override bool Load()
     {
         if (!base.Load()) return false;
+        if (!UseZip)
+        {
+            XmlData =
+                JsonUtility.FromJson<XMLData>(
+                    File.ReadAllText(SavePath + "/" + CustomDirectory + "/" + LoadFileName + ".txt"));
+        }
+        else
+        {
+            XmlData = Compression.GetItemFromCompoundArchive<XMLData>(SavePath + "/" + CustomDirectory + "/"+(UseCompoundArchive?CompoundZipName:LoadFileName)+".zip", LoadFileName+".txt", new XmlSerializer(typeof(XMLData)));
+        }
+        _jsonDataIndex = 0;
         int localMaxFrames = 0;
         if (SingleSaveFile)
         {
@@ -188,7 +204,25 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                 FrameList.Add(new ObjectWithName(player.GetListAsObject(), player.PlayerName));
             }
         }
+
         base.Save();
+
+        XMLData data = new XMLData(new XMLFileInfo(UseCompoundArchive ? CompoundZipName : FileName,
+            UseCompoundArchive ? FileName : "", UseZip));
+
+        if (!UseZip)
+        {
+            XmlSerializer serializer=new XmlSerializer(typeof(XMLData));
+            FileStream file = File.Open(SavePath + "/" + CustomDirectory + "/" + FileName + ".txt", FileMode.OpenOrCreate);
+            serializer.Serialize(file, data);
+            file.Close();
+        }
+        else
+        {
+            string filestring = SavePath + "/" + CustomDirectory + "/" + (UseCompoundArchive?CompoundZipName:FileName) + ".zip";
+            Compression.AddItemToCompoundArchive(filestring, FileName + ".txt", ref data, new XmlSerializer(typeof(XMLData)));
+        }
+
         FrameList = listcopy;
         if (SingleSaveFile) return;
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
