@@ -2,7 +2,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 
 //Class for managing multiple players. Type bool is used to keep the data small.
@@ -122,7 +121,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
 
-    public override bool Load()
+    /*public override bool Load()
     {
         if (!base.Load()) return false;
         if (!UseZip)
@@ -186,6 +185,78 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                     }
                 }
             } 
+        }
+        if (localMaxFrames == 0) return false;
+        FrameList = new List<ObjectWithName>(new ObjectWithName[localMaxFrames + 1]);
+        return true;
+    }*/
+
+    public override bool Load(bool useZip, string fileName, string entryName)
+    {
+        if (!base.Load(useZip,fileName,entryName)) return false;
+        if (!useZip)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
+            StreamReader reader = new StreamReader(SavePath + "/" + CustomDirectory + "/" + fileName + ".txt");
+            XmlData = (XMLData)serializer.Deserialize(reader);
+            reader.Close();
+            
+        }
+        else
+        {
+            XmlData = Compression.GetItemFromCompoundArchive<WekitPlayer_Base.XMLData>(SavePath + "/" + CustomDirectory + "/" + fileName + ".zip", LoadFileName + ".txt", new XmlSerializer(typeof(WekitPlayer_Base.XMLData)));
+        }
+        _jsonDataIndex = 0;
+        int localMaxFrames = 0;
+        if (SingleSaveFile)
+        {
+            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
+            {
+                WekitPlayer_Base player = _wekitPlayers[i];
+                for (int j = FrameList.Count - 1; j >= 0; j--)
+                {
+                    if (FrameList[j].MyName == player.PlayerName)
+                    {
+                        player.MakeDataContainerFromObject(FrameList[j].MyObject);
+                        if (player.FrameCount > localMaxFrames)
+                        {
+                            localMaxFrames = player.FrameCount;
+                            ReplayFps = player.ReplayFps;
+                        }
+                        break;
+                    }
+                }
+                if (player.FrameCount == 0)
+                {
+                    player.Enabled(false);
+                    player.ClearFrameList();
+                    ActiveWekitPlayers.Remove(player);
+                }
+            }
+        }
+        else
+        {
+            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
+            {
+                WekitPlayer_Base player = _wekitPlayers[i];
+                /*player.UseZip = UseZip;
+                player.UseCompoundArchive = UseCompoundArchive;
+                player.LoadFileName = LoadFileName;*/
+                if (!player.Load(useZip,fileName,entryName))
+                {
+                    player.Enabled(false);
+                    player.ClearFrameList();
+                    ActiveWekitPlayers.Remove(player);
+                }
+                else
+                {
+                    if (player.FrameCount > localMaxFrames)
+                    {
+                        localMaxFrames = player.FrameCount;
+                        ReplayFps = player.ReplayFps;
+                    }
+                }
+            }
         }
         if (localMaxFrames == 0) return false;
         FrameList = new List<ObjectWithName>(new ObjectWithName[localMaxFrames + 1]);

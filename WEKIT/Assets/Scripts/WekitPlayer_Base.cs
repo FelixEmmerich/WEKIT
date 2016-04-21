@@ -91,6 +91,12 @@ public class WekitPlayer_Base : MonoBehaviour
         return true;
     }
 
+    public virtual bool Load(bool zip, string fileName, string entryName)
+    {
+        Debug.Log("Load");
+        return true;
+    }
+
     public virtual void Delete()
     {
         Debug.Log("Delete");
