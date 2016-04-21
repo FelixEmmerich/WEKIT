@@ -340,8 +340,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
         base.Save();
 
-        XMLData data = new XMLData(new XMLFileInfo(UseCompoundArchive ? CompoundZipName : FileName,
-            UseCompoundArchive ? FileName : "", UseZip));
+        XMLData data = new XMLData(new XMLFileInfo(UseCompoundArchive ? CompoundZipName : FileName, FileName, UseZip));
 
         if (!UseZip)
         {
@@ -438,23 +437,23 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         //Previous replay
         if (_xmlDataIndex>0)
         {
-            //Todo: Position
-            if (GUI.Button(new Rect(Screen.width / 2, Screen.height * 0.25f, 100, 100), "Previous"))
+            if (GUI.Button(new Rect(0, Screen.height/2f, Screen.width/10f, Screen.height/5f), "Previous"))
             {
                 _xmlDataIndex--;
                 XMLFileInfo data = XmlData.Files[_xmlDataIndex];
                 Load(data.Zip, data.FileName, data.EntryName);
+                SetIndex(0,false);
             } 
         }
         //Next replay
         if (_xmlDataIndex<XmlData.Files.Length-1)
         {
-            //Todo: Position
-            if (GUI.Button(new Rect(Screen.width/2, Screen.height*0.75f, 100, 100), "Next"))
+            if (GUI.Button(new Rect(Screen.width*0.9f, Screen.height/2f, Screen.width/10f, Screen.height/5f), "Next"))
             {
                 _xmlDataIndex++;
                 XMLFileInfo data = XmlData.Files[_xmlDataIndex];
                 Load(data.Zip, data.FileName, data.EntryName);
+                SetIndex(0, false);
             } 
         }
     }
