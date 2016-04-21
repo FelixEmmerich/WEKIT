@@ -7,8 +7,6 @@ using System.Xml.Serialization;
 //Class for managing multiple players. Type bool is used to keep the data small.
 public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithName, bool>
 {
-    public XMLData XmlData;
-    private int _jsonDataIndex;
 
     [Serializable]
     public class ObjectWithName
@@ -29,6 +27,55 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
 
+    [Serializable]
+    public class XMLData
+    {
+        public XMLFileInfo[] Files;
+
+        public XMLData(XMLFileInfo fileInfo)
+        {
+            Files = new XMLFileInfo[1];
+            Files[0] = fileInfo;
+        }
+
+        public XMLData(XMLFileInfo[] fileInfo)
+        {
+            Files = fileInfo;
+        }
+
+        public XMLData()
+        {
+            Files = new XMLFileInfo[0];
+        }
+    }
+
+    [Serializable]
+    public class XMLFileInfo
+    {
+        public string FileName;
+        /// <summary>
+        /// Name of the entry if data is saved in a zipfile
+        /// </summary>
+        public string EntryName;
+        public bool Zip;
+
+        public XMLFileInfo(string fileName, string entryName, bool zip)
+        {
+            FileName = fileName;
+            EntryName = entryName;
+            Zip = zip;
+        }
+
+        public XMLFileInfo()
+        {
+            FileName = "";
+            EntryName = "";
+            Zip = false;
+        }
+    }
+
+    public XMLData XmlData;
+    private int _xmlDataIndex;
 
     [SerializeField]
     private List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
@@ -121,10 +168,23 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
 
-    /*public override bool Load()
+    public override bool Load()
     {
         if (!base.Load()) return false;
         if (!UseZip)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
+            StreamReader reader = new StreamReader(SavePath + "/" + CustomDirectory + "/" + LoadFileName + ".txt");
+            XmlData = (XMLData)serializer.Deserialize(reader);
+            reader.Close();
+        }
+        else
+        {
+            XmlData = Compression.GetItemFromCompoundArchive<XMLData>(SavePath + "/" + CustomDirectory + "/" + (UseCompoundArchive?CompoundZipName:LoadFileName) + ".zip", LoadFileName + ".txt", new XmlSerializer(typeof(XMLData)));
+        }
+        _xmlDataIndex = 0;
+        return true;
+        /*if (!UseZip)
         {
             XmlData =
                 JsonUtility.FromJson<XMLData>(
@@ -188,31 +248,20 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
         if (localMaxFrames == 0) return false;
         FrameList = new List<ObjectWithName>(new ObjectWithName[localMaxFrames + 1]);
-        return true;
-    }*/
+        return true;*/
+    }
 
     public override bool Load(bool useZip, string fileName, string entryName)
     {
         if (!base.Load(useZip,fileName,entryName)) return false;
-        if (!useZip)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
-            StreamReader reader = new StreamReader(SavePath + "/" + CustomDirectory + "/" + fileName + ".txt");
-            XmlData = (XMLData)serializer.Deserialize(reader);
-            reader.Close();
-            
-        }
-        else
-        {
-            XmlData = Compression.GetItemFromCompoundArchive<WekitPlayer_Base.XMLData>(SavePath + "/" + CustomDirectory + "/" + fileName + ".zip", LoadFileName + ".txt", new XmlSerializer(typeof(WekitPlayer_Base.XMLData)));
-        }
-        _jsonDataIndex = 0;
         int localMaxFrames = 0;
         if (SingleSaveFile)
         {
             for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
             {
                 WekitPlayer_Base player = _wekitPlayers[i];
+                player.ClearFrameList();
+
                 for (int j = FrameList.Count - 1; j >= 0; j--)
                 {
                     if (FrameList[j].MyName == player.PlayerName)
@@ -229,8 +278,15 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                 if (player.FrameCount == 0)
                 {
                     player.Enabled(false);
-                    player.ClearFrameList();
                     ActiveWekitPlayers.Remove(player);
+                }
+                else
+                {
+                    player.Enabled(true);
+                    if (!ActiveWekitPlayers.Contains(player))
+                    {
+                        ActiveWekitPlayers.Add(player);
+                    }
                 }
             }
         }
@@ -239,17 +295,23 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
             {
                 WekitPlayer_Base player = _wekitPlayers[i];
+                player.ClearFrameList();
                 /*player.UseZip = UseZip;
                 player.UseCompoundArchive = UseCompoundArchive;
                 player.LoadFileName = LoadFileName;*/
                 if (!player.Load(useZip,fileName,entryName))
                 {
                     player.Enabled(false);
-                    player.ClearFrameList();
                     ActiveWekitPlayers.Remove(player);
                 }
                 else
                 {
+                    player.Enabled(true);
+                    if (!ActiveWekitPlayers.Contains(player))
+                    {
+                        ActiveWekitPlayers.Add(player);
+                    }
+
                     if (player.FrameCount > localMaxFrames)
                     {
                         localMaxFrames = player.FrameCount;
@@ -370,6 +432,30 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                 ActiveWekitPlayers.Add(_wekitPlayers[i]);
                 Debug.Log("Added " + _wekitPlayers[i] + " to List");
             }
+        }
+        //Multi-replay handling
+        if (XmlData == null) return;
+        //Previous replay
+        if (_xmlDataIndex>0)
+        {
+            //Todo: Position
+            if (GUI.Button(new Rect(Screen.width / 2, Screen.height * 0.25f, 100, 100), "Previous"))
+            {
+                _xmlDataIndex--;
+                XMLFileInfo data = XmlData.Files[_xmlDataIndex];
+                Load(data.Zip, data.FileName, data.EntryName);
+            } 
+        }
+        //Next replay
+        if (_xmlDataIndex<XmlData.Files.Length-1)
+        {
+            //Todo: Position
+            if (GUI.Button(new Rect(Screen.width/2, Screen.height*0.75f, 100, 100), "Next"))
+            {
+                _xmlDataIndex++;
+                XMLFileInfo data = XmlData.Files[_xmlDataIndex];
+                Load(data.Zip, data.FileName, data.EntryName);
+            } 
         }
     }
 }
