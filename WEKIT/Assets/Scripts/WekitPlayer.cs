@@ -28,14 +28,8 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
     public List<T> FrameList;
     public TProvider Provider;
 
-    //Location where data is saved. By default Unity's persistent data path.
-    [HideInInspector]
-    public string SavePath;
-
     //File extension for files not saved as .zip
     public string UncompressedFileExtension;
-    //Directory within persistent datapath that files are saved in and loaded from
-    public string CustomDirectory;
 
     private bool _updatedIndex;
 

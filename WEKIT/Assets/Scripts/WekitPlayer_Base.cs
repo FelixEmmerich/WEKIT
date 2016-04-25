@@ -12,10 +12,17 @@ public class WekitPlayer_Base : MonoBehaviour
         CompoundZipName = "Archive Name",
         PlayerName = "Player";
 
+    //Directory within persistent datapath that files are saved in and loaded from
+    public string CustomDirectory;
+
     public static implicit operator string(WekitPlayer_Base wekit)
     {
         return wekit.PlayerName;
     }
+
+    //Location where data is saved. By default Unity's persistent data path.
+    [HideInInspector]
+    public string SavePath;
 
     [HideInInspector]
     public float CountDown=3, ReplayFps;

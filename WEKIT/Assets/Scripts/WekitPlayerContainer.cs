@@ -27,56 +27,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
 
-    [Serializable]
-    public class XMLData
-    {
-        public XMLFileInfo[] Files;
-
-        public XMLData(XMLFileInfo fileInfo)
-        {
-            Files = new XMLFileInfo[1];
-            Files[0] = fileInfo;
-        }
-
-        public XMLData(XMLFileInfo[] fileInfo)
-        {
-            Files = fileInfo;
-        }
-
-        public XMLData()
-        {
-            Files = new XMLFileInfo[0];
-        }
-    }
-
-    [Serializable]
-    public class XMLFileInfo
-    {
-        public string FileName;
-        /// <summary>
-        /// Name of the entry if data is saved in a zipfile
-        /// </summary>
-        public string EntryName;
-        public bool Zip;
-
-        public XMLFileInfo(string fileName, string entryName, bool zip)
-        {
-            FileName = fileName;
-            EntryName = entryName;
-            Zip = zip;
-        }
-
-        public XMLFileInfo()
-        {
-            FileName = "";
-            EntryName = "";
-            Zip = false;
-        }
-    }
-
-    public XMLData XmlData;
-    private int _xmlDataIndex;
-
     [SerializeField]
     private List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
 
@@ -171,18 +121,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     public override bool Load()
     {
         if (!base.Load()) return false;
-        if (!UseZip)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
-            StreamReader reader = new StreamReader(SavePath + "/" + CustomDirectory + "/" + LoadFileName + ".txt");
-            XmlData = (XMLData)serializer.Deserialize(reader);
-            reader.Close();
-        }
-        else
-        {
-            XmlData = Compression.GetItemFromCompoundArchive<XMLData>(SavePath + "/" + CustomDirectory + "/" + (UseCompoundArchive?CompoundZipName:LoadFileName) + ".zip", LoadFileName + ".txt", new XmlSerializer(typeof(XMLData)));
-        }
-        _xmlDataIndex = 0;
         return true;
         /*if (!UseZip)
         {
@@ -340,21 +278,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
         base.Save();
 
-        XMLData data = new XMLData(new XMLFileInfo(UseCompoundArchive ? CompoundZipName : FileName, FileName, UseZip));
-
-        if (!UseZip)
-        {
-            XmlSerializer serializer=new XmlSerializer(typeof(XMLData));
-            FileStream file = File.Open(SavePath + "/" + CustomDirectory + "/" + FileName + ".txt", FileMode.OpenOrCreate);
-            serializer.Serialize(file, data);
-            file.Close();
-        }
-        else
-        {
-            string filestring = SavePath + "/" + CustomDirectory + "/" + (UseCompoundArchive?CompoundZipName:FileName) + ".zip";
-            Compression.AddItemToCompoundArchive(filestring, FileName + ".txt", ref data, new XmlSerializer(typeof(XMLData)));
-        }
-
         FrameList = listcopy;
         if (SingleSaveFile) return;
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
@@ -431,30 +354,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                 ActiveWekitPlayers.Add(_wekitPlayers[i]);
                 Debug.Log("Added " + _wekitPlayers[i] + " to List");
             }
-        }
-        //Multi-replay handling
-        if (XmlData == null) return;
-        //Previous replay
-        if (_xmlDataIndex>0)
-        {
-            if (GUI.Button(new Rect(0, Screen.height/2f, Screen.width/10f, Screen.height/5f), "Previous"))
-            {
-                _xmlDataIndex--;
-                XMLFileInfo data = XmlData.Files[_xmlDataIndex];
-                Load(data.Zip, data.FileName, data.EntryName);
-                SetIndex(0,false);
-            } 
-        }
-        //Next replay
-        if (_xmlDataIndex<XmlData.Files.Length-1)
-        {
-            if (GUI.Button(new Rect(Screen.width*0.9f, Screen.height/2f, Screen.width/10f, Screen.height/5f), "Next"))
-            {
-                _xmlDataIndex++;
-                XMLFileInfo data = XmlData.Files[_xmlDataIndex];
-                Load(data.Zip, data.FileName, data.EntryName);
-                SetIndex(0, false);
-            } 
         }
     }
 }
