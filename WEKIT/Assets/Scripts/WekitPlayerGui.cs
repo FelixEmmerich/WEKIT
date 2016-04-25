@@ -15,6 +15,8 @@ public class WekitPlayerGui : MonoBehaviour
     public float StandardWidth = 100;
     private float StandardHeight;
 
+    private bool _createXML;
+
     void Start()
     {
         _currentTime = Player.CountDown;
@@ -57,20 +59,21 @@ public class WekitPlayerGui : MonoBehaviour
     {
         GUI.skin.label.fontSize = GUI.skin.button.fontSize = GUI.skin.textField.fontSize=GUI.skin.toggle.fontSize = FontSize;
         _showOptions = GUI.Toggle(new Rect(0, 0, StandardWidth, StandardHeight), _showOptions, (_showOptions ? "Hide" : "Show")+KeyToText(HideKey));
+        _createXML = GUI.Toggle(new Rect(0, StandardHeight, StandardWidth, StandardHeight), _createXML, "Create XML file");
         if (_showOptions)
         {
             if (!Player.Recording)
             {
                 //Compression options
-                Player.UseZip = GUI.Toggle(new Rect(0, StandardHeight*2, StandardWidth, StandardHeight), Player.UseZip, "Zip");
+                Player.UseZip = GUI.Toggle(new Rect(0, StandardHeight*3, StandardWidth, StandardHeight), Player.UseZip, "Zip");
 
                 if (Player.UseZip)
                 {
-                    Player.UseCompoundArchive = GUI.Toggle(new Rect(0, StandardHeight*3, StandardWidth, StandardHeight), Player.UseCompoundArchive, "Archive");
+                    Player.UseCompoundArchive = GUI.Toggle(new Rect(0, StandardHeight*4, StandardWidth, StandardHeight), Player.UseCompoundArchive, "Archive");
 
                     if (Player.UseCompoundArchive)
                     {
-                        Player.CompoundZipName = GUI.TextField(new Rect(0, StandardHeight*4, StandardWidth, StandardHeight), Player.CompoundZipName, 25);
+                        Player.CompoundZipName = GUI.TextField(new Rect(0, StandardHeight*5, StandardWidth, StandardHeight), Player.CompoundZipName, 25);
                     }
                 }
 

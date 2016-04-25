@@ -944,7 +944,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &377435494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1676,6 +1676,8 @@ MonoBehaviour:
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: WEKITData
   CustomDirectory: 
+  XmlData:
+    Files: []
   _wekitPlayers:
   - {fileID: 2119502951}
   - {fileID: 373142367}
