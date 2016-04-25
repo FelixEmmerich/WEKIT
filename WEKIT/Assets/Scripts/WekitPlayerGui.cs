@@ -61,7 +61,7 @@ public class WekitPlayerGui : MonoBehaviour
 
     private bool _showOptions=true;
     private float _currentTime;
-    public int FontSize=10;
+    public int FontSize;
     public KeyCode HideKey = KeyCode.H;
 
     public WekitKeyInput KeyInput;
