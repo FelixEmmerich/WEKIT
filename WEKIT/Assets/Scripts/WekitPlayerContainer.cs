@@ -395,7 +395,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     void OnGUI()
     {
         if (Recording) return;
-        SingleSaveFile = GUI.Toggle(new Rect(10,30, ButtonWidth, 20), SingleSaveFile, "Save as single file");
+        SingleSaveFile = GUI.Toggle(new Rect(0,Screen.height/20f, Screen.width/7.5f, Screen.height/20f), SingleSaveFile, "Save as 1 file");
         float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2;
         for (int i = 0; i < _wekitPlayers.Count; i++)
         {

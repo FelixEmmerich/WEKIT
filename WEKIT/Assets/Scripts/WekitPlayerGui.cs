@@ -13,6 +13,7 @@ public class WekitPlayerGui : MonoBehaviour
     public WekitKeyInput KeyInput;
 
     public float StandardWidth = 100;
+    private float StandardHeight;
 
     void Start()
     {
@@ -21,6 +22,10 @@ public class WekitPlayerGui : MonoBehaviour
         {
             KeyInput = GetComponent<WekitKeyInput>();
         }
+        //Make the GUI span the full width of the screen
+        StandardWidth = Screen.width/6f;
+        StandardHeight = Screen.height/20f;
+        FontSize = (int)(StandardWidth/8.5f);
     }
 
     void Update()
@@ -51,89 +56,89 @@ public class WekitPlayerGui : MonoBehaviour
     void OnGUI()
     {
         GUI.skin.label.fontSize = GUI.skin.button.fontSize = GUI.skin.textField.fontSize=GUI.skin.toggle.fontSize = FontSize;
-        _showOptions = GUI.Toggle(new Rect(10, 5, StandardWidth/1.5f, 20), _showOptions, (_showOptions ? "Hide" : "Show")+KeyToText(HideKey));
+        _showOptions = GUI.Toggle(new Rect(0, 0, StandardWidth, StandardHeight), _showOptions, (_showOptions ? "Hide" : "Show")+KeyToText(HideKey));
         if (_showOptions)
         {
             if (!Player.Recording)
             {
                 //Compression options
-                Player.UseZip = GUI.Toggle(new Rect(10, 55, StandardWidth / 2, 20), Player.UseZip, "Zip");
+                Player.UseZip = GUI.Toggle(new Rect(0, StandardHeight*2, StandardWidth, StandardHeight), Player.UseZip, "Zip");
 
                 if (Player.UseZip)
                 {
-                    Player.UseCompoundArchive = GUI.Toggle(new Rect(10, 75, StandardWidth, 30), Player.UseCompoundArchive, "Compound \n archive");
+                    Player.UseCompoundArchive = GUI.Toggle(new Rect(0, StandardHeight*3, StandardWidth, StandardHeight), Player.UseCompoundArchive, "Archive");
 
                     if (Player.UseCompoundArchive)
                     {
-                        Player.CompoundZipName = GUI.TextField(new Rect(10, 105, StandardWidth, 20), Player.CompoundZipName, 25);
+                        Player.CompoundZipName = GUI.TextField(new Rect(0, StandardHeight*4, StandardWidth, StandardHeight), Player.CompoundZipName, 25);
                     }
                 }
 
                 if (!Player.Replaying)
                 {
                     //Record button
-                    if (GUI.Button(new Rect(120 - (100 - StandardWidth), 5, StandardWidth, 20), "Record"+ (KeyInput != null ? KeyToText(KeyInput.RecordKey) : "")))
+                    if (GUI.Button(new Rect(StandardWidth,0,StandardWidth,StandardHeight), "Record"+ (KeyInput != null ? KeyToText(KeyInput.RecordKey) : "")))
                     {
                         _currentTime = Player.CountDown;
                         Player.Record();
                     }
-                    Player.CountDown = float.Parse(GUI.TextField(new Rect(120 - (100 - StandardWidth), 30, StandardWidth, 20), Player.CountDown.ToString(), 25));
-                    Player.Stepsize = (int)GUI.HorizontalSlider(new Rect(120 - (100 - StandardWidth), 60, StandardWidth, 20), Player.Stepsize, 1, 3);
+                    Player.CountDown = float.Parse(GUI.TextField(new Rect(StandardWidth, StandardHeight, StandardWidth, StandardHeight), Player.CountDown.ToString(), 25));
+                    Player.Stepsize = (int)GUI.HorizontalSlider(new Rect(StandardWidth, StandardHeight*2, StandardWidth, StandardHeight), Player.Stepsize, 1, 3);
 
                     //Replay button
-                    if (GUI.Button(new Rect(230 - (100 - StandardWidth)*2, 5, StandardWidth, 20), "Replay" + (KeyInput != null ? KeyToText(KeyInput.ReplayKey) : "")))
+                    if (GUI.Button(new Rect(StandardWidth*2, 0, StandardWidth, StandardHeight), "Replay" + (KeyInput != null ? KeyToText(KeyInput.ReplayKey) : "")))
                     {
                         Player.Replay();
                     }
 
                     //Load button
-                    if (GUI.Button(new Rect(340 - (100 - StandardWidth)*3, 5, StandardWidth, 20), "Load"))
+                    if (GUI.Button(new Rect(StandardWidth*3, 0, StandardWidth, StandardHeight), "Load"))
                     {
                         Player.Load();
                     }
 
-                    Player.LoadFileName = GUI.TextField(new Rect(340 - (100 - StandardWidth)*3, 30, StandardWidth, 20), Player.LoadFileName, 25);
+                    Player.LoadFileName = GUI.TextField(new Rect(StandardWidth*3, StandardHeight, StandardWidth, StandardHeight), Player.LoadFileName, 25);
                 }
 
                 //If not recording but replaying
                 else
                 {
                     //Replay (stop) button
-                    if (GUI.Button(new Rect(230 - (100 - StandardWidth)*2, 5, StandardWidth, 20), "Stop" + (KeyInput!=null?KeyToText(KeyInput.ReplayKey):"")))
+                    if (GUI.Button(new Rect(StandardWidth*2, 0, StandardWidth, StandardHeight), "Stop" + (KeyInput!=null?KeyToText(KeyInput.ReplayKey):"")))
                     {
                         Player.Replay();
                     }
 
                     //Pause/Unpause button
-                    if (GUI.Button(new Rect(230 - (100 - StandardWidth)*2, 30, StandardWidth, 20), (Player.Playing ? "Pause" : "Unpause")+(KeyInput != null ? KeyToText(KeyInput.PauseKey) : "")))
+                    if (GUI.Button(new Rect(StandardWidth*2, StandardHeight, StandardWidth, StandardHeight), (Player.Playing ? "Pause" : "Unpause")+(KeyInput != null ? KeyToText(KeyInput.PauseKey) : "")))
                     {
                         Player.Pause();
                     }
                     //Index
-                    float index = GUI.HorizontalSlider(new Rect(230 - (100 - StandardWidth)*2, 60, StandardWidth, 10), Player.Index, 0, Player.FrameCount);
+                    float index = GUI.HorizontalSlider(new Rect(StandardWidth*2, StandardHeight*2, StandardWidth, StandardHeight), Player.Index, 0, Player.FrameCount);
                     if (index != Player.Index)
                     {
                         Player.SetIndex(index,false);
                     }
 
                     //Speed
-                    Player.Speed = GUI.HorizontalSlider(new Rect(230 - (100 - StandardWidth)*2, 80, StandardWidth, 10), Player.Speed, 0.1f, 2);
-                    Player.Speed = Mathf.Clamp(float.Parse(GUI.TextField(new Rect(230 - (100 - StandardWidth)*2, 100, StandardWidth, 20), Player.Speed.ToString(), 25)),0.1f,2);
+                    Player.Speed = GUI.HorizontalSlider(new Rect(StandardWidth*2, StandardHeight*3, StandardWidth, StandardHeight), Player.Speed, 0.1f, 2);
+                    Player.Speed = Mathf.Clamp(float.Parse(GUI.TextField(new Rect(StandardWidth*2, StandardHeight*4, StandardWidth, StandardHeight), Player.Speed.ToString(), 25)),0.1f,2);
                 }
 
                 //Save button
-                if (GUI.Button(new Rect(450 - (100 - StandardWidth)*4, 5, StandardWidth, 20), "Save"))
+                if (GUI.Button(new Rect(StandardWidth*4, 0, StandardWidth, StandardHeight), "Save"))
                 {
                     Player.Save();
                 }
-                Player.FileName = GUI.TextField(new Rect(450 - (100 - StandardWidth)*4, 30, StandardWidth, 20), Player.FileName, 25);
+                Player.FileName = GUI.TextField(new Rect(StandardWidth*4, StandardHeight, StandardWidth, StandardHeight), Player.FileName, 25);
 
                 //Delete button
-                if (GUI.Button(new Rect(560 - (100 - StandardWidth)*5, 5, StandardWidth, 20), "Delete"))
+                if (GUI.Button(new Rect(StandardWidth*5, 0, StandardWidth, StandardHeight), "Delete"))
                 {
                     Player.Delete();
                 }
-                Player.DeleteFileName = GUI.TextField(new Rect(560 - (100 - StandardWidth)*5, 30, StandardWidth, 20), Player.DeleteFileName, 25);
+                Player.DeleteFileName = GUI.TextField(new Rect(StandardWidth*5, StandardHeight, StandardWidth, StandardHeight), Player.DeleteFileName, 25);
 
             }
 
@@ -141,14 +146,14 @@ public class WekitPlayerGui : MonoBehaviour
             else
             {
                 //Record (stop) button
-                if (GUI.Button(new Rect(120 - (100 - StandardWidth), 5, StandardWidth, 20), "Stop"+ (KeyInput != null ? KeyToText(KeyInput.RecordKey) : "")))
+                if (GUI.Button(new Rect(StandardWidth, 0, StandardWidth, StandardHeight), "Stop"+ (KeyInput != null ? KeyToText(KeyInput.RecordKey) : "")))
                 {
                     _currentTime = Player.CountDown;
                     Player.Record();
                 }
                 if (_currentTime > 0)
                 {
-                    GUI.Label(new Rect(120 - (100 - StandardWidth), 30, StandardWidth, 20), _currentTime.ToString(), new GUIStyle());
+                    GUI.Label(new Rect(StandardWidth, StandardHeight, StandardWidth, StandardHeight), _currentTime.ToString(), new GUIStyle());
                 }
             }
         }
