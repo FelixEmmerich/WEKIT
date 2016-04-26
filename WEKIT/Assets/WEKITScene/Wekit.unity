@@ -857,6 +857,8 @@ MonoBehaviour:
   DeleteFileName: Replay Name
   CompoundZipName: Archive Name
   PlayerName: Kinect
+  CustomDirectory: Kinect
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   CountDown: 3
   ReplayFps: 0
   PreviousIndex: -1
@@ -866,9 +868,7 @@ MonoBehaviour:
   - {fileID: 1559737739}
   - {fileID: 1031276040}
   FrameList: []
-  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: KinectData
-  CustomDirectory: Kinect
   DevOrEmu: {fileID: 1802622954}
 --- !u!1 &373978575
 GameObject:
@@ -1619,6 +1619,7 @@ GameObject:
   - 4: {fileID: 604643277}
   - 114: {fileID: 604643276}
   - 114: {fileID: 604643275}
+  - 114: {fileID: 604643279}
   - 114: {fileID: 604643278}
   m_Layer: 0
   m_Name: Container
@@ -1633,16 +1634,16 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 604643274}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a32262cc1dc8464fa5d0fca5ecf7d3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  XmlData:
+    Files: []
   Player: {fileID: 604643276}
-  FontSize: 10
   HideKey: 104
   KeyInput: {fileID: 604643278}
-  StandardWidth: 100
 --- !u!114 &604643276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1665,6 +1666,8 @@ MonoBehaviour:
   DeleteFileName: Replay Name
   CompoundZipName: Archive Name
   PlayerName: Container
+  CustomDirectory: 
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   CountDown: 3
   ReplayFps: 0
   PreviousIndex: -1
@@ -1673,11 +1676,7 @@ MonoBehaviour:
   Visualisation: []
   FrameList: []
   Provider: 1
-  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: WEKITData
-  CustomDirectory: 
-  XmlData:
-    Files: []
   _wekitPlayers:
   - {fileID: 2119502951}
   - {fileID: 373142367}
@@ -1712,6 +1711,22 @@ MonoBehaviour:
   RecordKey: 289
   ReplayKey: 290
   PauseKey: 291
+--- !u!114 &604643279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 604643274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a3e73596ff6e9429c0e7fa57ff5830, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  XmlData:
+    Files: []
+  Player: {fileID: 604643276}
+  HideKey: 104
+  KeyInput: {fileID: 604643278}
 --- !u!1 &659433806
 GameObject:
   m_ObjectHideFlags: 0
@@ -2362,6 +2377,8 @@ MonoBehaviour:
   DeleteFileName: Replay Name
   CompoundZipName: Archive Name
   PlayerName: Myo
+  CustomDirectory: Myo
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   CountDown: 3
   ReplayFps: 0
   PreviousIndex: -1
@@ -2371,9 +2388,7 @@ MonoBehaviour:
   - {fileID: 2083415113}
   FrameList: []
   Provider: {fileID: 1054844019}
-  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: MyoData
-  CustomDirectory: Myo
 --- !u!4 &970503737
 Transform:
   m_ObjectHideFlags: 0
@@ -4572,6 +4587,8 @@ MonoBehaviour:
   DeleteFileName: Replay Name
   CompoundZipName: Archive Name
   PlayerName: Leap
+  CustomDirectory: Leap
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   CountDown: 3
   ReplayFps: 0
   PreviousIndex: -1
@@ -4580,9 +4597,7 @@ MonoBehaviour:
   Visualisation: []
   FrameList: []
   Provider: {fileID: 1165045949}
-  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   UncompressedFileExtension: LeapData
-  CustomDirectory: Leap
 --- !u!4 &2119502953
 Transform:
   m_ObjectHideFlags: 0

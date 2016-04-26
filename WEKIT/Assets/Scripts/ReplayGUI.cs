@@ -13,13 +13,13 @@ public class ReplayGui : MonoBehaviour
     public WekitPlayer_Base Player;
 
     private bool _showOptions = true;
-    public int FontSize;
+    private int _fontSize;
     public KeyCode HideKey = KeyCode.H;
 
     public WekitKeyInput KeyInput;
 
-    public float StandardWidth = 100;
-    private float StandardHeight;
+    private float _standardWidth = 100;
+    private float _standardHeight;
 
     private bool _useXML;
 
@@ -30,9 +30,9 @@ public class ReplayGui : MonoBehaviour
             KeyInput = GetComponent<WekitKeyInput>();
         }
         //Make the GUI span the full width of the screen
-        StandardWidth = Screen.width / 6f;
-        StandardHeight = Screen.height / 20f;
-        FontSize = (int)(StandardWidth / 8.5f);
+        _standardWidth = Screen.width / 6f;
+        _standardHeight = Screen.height / 20f;
+        _fontSize = (int)(_standardWidth / 8.5f);
     }
 
     void Update()
@@ -58,30 +58,30 @@ public class ReplayGui : MonoBehaviour
 
     void OnGUI()
     {
-        GUI.skin.label.fontSize = GUI.skin.button.fontSize = GUI.skin.textField.fontSize = GUI.skin.toggle.fontSize = FontSize;
-        _showOptions = GUI.Toggle(new Rect(0, 0, StandardWidth, StandardHeight), _showOptions, (_showOptions ? "Hide" : "Show") + KeyToText(HideKey));
+        GUI.skin.label.fontSize = GUI.skin.button.fontSize = GUI.skin.textField.fontSize = GUI.skin.toggle.fontSize = _fontSize;
+        _showOptions = GUI.Toggle(new Rect(0, 0, _standardWidth, _standardHeight), _showOptions, (_showOptions ? "Hide" : "Show") + KeyToText(HideKey));
         //XML file handling
-        _useXML = GUI.Toggle(new Rect(0, StandardHeight, StandardWidth, StandardHeight), _useXML, "Use XML");
+        _useXML = GUI.Toggle(new Rect(0, _standardHeight, _standardWidth, _standardHeight), _useXML, "Use XML");
         if (_showOptions)
         {
             //Compression options
-            Player.UseZip = GUI.Toggle(new Rect(0, StandardHeight*3, StandardWidth, StandardHeight), Player.UseZip,
+            Player.UseZip = GUI.Toggle(new Rect(0, _standardHeight*3, _standardWidth, _standardHeight), Player.UseZip,
                 "Zip");
 
             if (Player.UseZip)
             {
-                Player.UseCompoundArchive = GUI.Toggle(new Rect(0, StandardHeight*4, StandardWidth, StandardHeight),
+                Player.UseCompoundArchive = GUI.Toggle(new Rect(0, _standardHeight*4, _standardWidth, _standardHeight),
                     Player.UseCompoundArchive, "Archive");
 
                 if (Player.UseCompoundArchive)
                 {
                     Player.CompoundZipName = GUI.TextField(
-                        new Rect(0, StandardHeight*5, StandardWidth, StandardHeight), Player.CompoundZipName, 25);
+                        new Rect(0, _standardHeight*5, _standardWidth, _standardHeight), Player.CompoundZipName, 25);
                 }
             }
 
             //Replay button
-            if (GUI.Button(new Rect(StandardWidth * 2, 0, StandardWidth, StandardHeight),
+            if (GUI.Button(new Rect(_standardWidth * 2, 0, _standardWidth, _standardHeight),
                 (Player.Replaying?"Stop":"Replay") + (KeyInput != null ? KeyToText(KeyInput.ReplayKey) : "")))
             {
                 Player.Replay();
@@ -90,7 +90,7 @@ public class ReplayGui : MonoBehaviour
             if (!Player.Replaying)
             {
                 //Load button
-                if (GUI.Button(new Rect(StandardWidth*3, 0, StandardWidth, StandardHeight), "Load"))
+                if (GUI.Button(new Rect(_standardWidth*3, 0, _standardWidth, _standardHeight), "Load"))
                 {
                     Player.Load();
 
@@ -118,7 +118,7 @@ public class ReplayGui : MonoBehaviour
                 }
 
                 Player.LoadFileName =
-                    GUI.TextField(new Rect(StandardWidth*3, StandardHeight, StandardWidth, StandardHeight),
+                    GUI.TextField(new Rect(_standardWidth*3, _standardHeight, _standardWidth, _standardHeight),
                         Player.LoadFileName, 25);
             }
 
@@ -126,14 +126,14 @@ public class ReplayGui : MonoBehaviour
             else
             {
                 //Pause/Unpause button
-                if (GUI.Button(new Rect(StandardWidth*2, StandardHeight, StandardWidth, StandardHeight),
+                if (GUI.Button(new Rect(_standardWidth*2, _standardHeight, _standardWidth, _standardHeight),
                     (Player.Playing ? "Pause" : "Unpause") + (KeyInput != null ? KeyToText(KeyInput.PauseKey) : "")))
                 {
                     Player.Pause();
                 }
                 //Index
                 float index =
-                    GUI.HorizontalSlider(new Rect(StandardWidth*2, StandardHeight*2, StandardWidth, StandardHeight),
+                    GUI.HorizontalSlider(new Rect(_standardWidth*2, _standardHeight*2, _standardWidth, _standardHeight),
                         Player.Index, 0, Player.FrameCount);
                 if (index != Player.Index)
                 {
@@ -142,12 +142,12 @@ public class ReplayGui : MonoBehaviour
 
                 //Speed
                 Player.Speed =
-                    GUI.HorizontalSlider(new Rect(StandardWidth*2, StandardHeight*3, StandardWidth, StandardHeight),
+                    GUI.HorizontalSlider(new Rect(_standardWidth*2, _standardHeight*3, _standardWidth, _standardHeight),
                         Player.Speed, 0.1f, 2);
                 Player.Speed =
                     Mathf.Clamp(
                         Single.Parse(
-                            GUI.TextField(new Rect(StandardWidth*2, StandardHeight*4, StandardWidth, StandardHeight),
+                            GUI.TextField(new Rect(_standardWidth*2, _standardHeight*4, _standardWidth, _standardHeight),
                                 Player.Speed.ToString(), 25)), 0.1f, 2);
             }
         }
