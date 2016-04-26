@@ -260,6 +260,7 @@ public class WekitPlayerGui : MonoBehaviour
                 XMLFileInfo data = XmlData.Files[_xmlDataIndex];
                 Player.Load(data.Zip, data.FileName, data.EntryName);
                 Player.SetIndex(0, false);
+                Player.Speed = 1;
             }
         }
         //Next replay
@@ -271,6 +272,7 @@ public class WekitPlayerGui : MonoBehaviour
                 XMLFileInfo data = XmlData.Files[_xmlDataIndex];
                 Player.Load(data.Zip, data.FileName, data.EntryName);
                 Player.SetIndex(0, false);
+                Player.Speed=1;
             }
         }
 

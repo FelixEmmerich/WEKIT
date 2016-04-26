@@ -1,8 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml.Serialization;
 
 //Class for managing multiple players. Type bool is used to keep the data small.
 public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithName, bool>
@@ -36,6 +34,8 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     public float ButtonWidth = 100;
 
     public bool SingleSaveFile=true;
+
+    public bool RecordGUI=true;
 
     public override void Reset()
     {
@@ -118,77 +118,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
 
-    public override bool Load()
-    {
-        if (!base.Load()) return false;
-        return true;
-        /*if (!UseZip)
-        {
-            XmlData =
-                JsonUtility.FromJson<XMLData>(
-                    File.ReadAllText(SavePath + "/" + CustomDirectory + "/" + LoadFileName + ".txt"));
-        }
-        else
-        {
-            XmlData = Compression.GetItemFromCompoundArchive<XMLData>(SavePath + "/" + CustomDirectory + "/"+(UseCompoundArchive?CompoundZipName:LoadFileName)+".zip", LoadFileName+".txt", new XmlSerializer(typeof(XMLData)));
-        }
-        _jsonDataIndex = 0;
-        int localMaxFrames = 0;
-        if (SingleSaveFile)
-        {
-            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
-            {
-                WekitPlayer_Base player = _wekitPlayers[i];
-                for (int j = FrameList.Count - 1; j >= 0; j--)
-                {
-                    if (FrameList[j].MyName == player.PlayerName)
-                    {
-                        player.MakeDataContainerFromObject(FrameList[j].MyObject);
-                        if (player.FrameCount > localMaxFrames)
-                        {
-                            localMaxFrames = player.FrameCount;
-                            ReplayFps = player.ReplayFps;
-                        }
-                        break;
-                    }
-                }
-                if (player.FrameCount == 0)
-                {
-                    player.Enabled(false);
-                    player.ClearFrameList();
-                    ActiveWekitPlayers.Remove(player);
-                }
-            } 
-        }
-        else
-        {
-            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
-            {
-                WekitPlayer_Base player = _wekitPlayers[i];
-                player.UseZip = UseZip;
-                player.UseCompoundArchive = UseCompoundArchive;
-                player.LoadFileName = LoadFileName;
-                if (!player.Load())
-                {
-                    player.Enabled(false);
-                    player.ClearFrameList();
-                    ActiveWekitPlayers.Remove(player);
-                }
-                else
-                {
-                    if (player.FrameCount > localMaxFrames)
-                    {
-                        localMaxFrames = player.FrameCount;
-                        ReplayFps = player.ReplayFps;
-                    }
-                }
-            } 
-        }
-        if (localMaxFrames == 0) return false;
-        FrameList = new List<ObjectWithName>(new ObjectWithName[localMaxFrames + 1]);
-        return true;*/
-    }
-
     public override bool Load(bool useZip, string fileName, string entryName)
     {
         if (!base.Load(useZip,fileName,entryName)) return false;
@@ -234,9 +163,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             {
                 WekitPlayer_Base player = _wekitPlayers[i];
                 player.ClearFrameList();
-                /*player.UseZip = UseZip;
-                player.UseCompoundArchive = UseCompoundArchive;
-                player.LoadFileName = LoadFileName;*/
                 if (!player.Load(useZip,fileName,entryName))
                 {
                     player.Enabled(false);
@@ -322,17 +248,24 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2;
         for (int i = 0; i < _wekitPlayers.Count; i++)
         {
-            _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*ButtonWidth, Screen.height - 40, ButtonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
             bool contained = ActiveWekitPlayers.Contains(_wekitPlayers[i]);
-            if (contained)
+
+            if (RecordGUI)
             {
-                bool focus = GUI.Toggle(new Rect(x + i * ButtonWidth, Screen.height - 60, ButtonWidth, 20), _wekitPlayers[i].ForceFocus, "Force focus");
-                if (focus != _wekitPlayers[i].ForceFocus)
+                _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*ButtonWidth, Screen.height - 40, ButtonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
+
+                if (contained)
                 {
-                    _wekitPlayers[i].ForceFocus = focus;
-                    _wekitPlayers[i].SetFocus(true);
+                    bool focus = GUI.Toggle(new Rect(x + i * ButtonWidth, Screen.height - 60, ButtonWidth, 20), _wekitPlayers[i].ForceFocus, "Force focus");
+                    if (focus != _wekitPlayers[i].ForceFocus)
+                    {
+                        _wekitPlayers[i].ForceFocus = focus;
+                        _wekitPlayers[i].SetFocus(true);
+                    }
                 }
+
             }
+
             if (!GUI.Button(new Rect(x + i*ButtonWidth, Screen.height - 20, ButtonWidth, 20),
                 _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
 

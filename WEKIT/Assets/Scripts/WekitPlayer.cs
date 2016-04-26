@@ -95,62 +95,6 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
     public override bool Load()
     {
         return Load(UseZip, UseZip && UseCompoundArchive ? CompoundZipName : LoadFileName, LoadFileName);
-        /*string filestring= SavePath + "/"+CustomDirectory+"/";
-        DataContainer container;
-
-        //Load uncompressed file
-        if (!UseZip)
-        {
-            filestring += LoadFileName + "." + UncompressedFileExtension;
-            if (File.Exists(filestring))
-            {
-                BinaryFormatter bf = new BinaryFormatter();
-                FileStream file = File.Open(filestring, FileMode.Open);
-                container = (DataContainer)bf.Deserialize(file);
-                FrameList = container.FrameList;
-                ReplayFps = container.Fps;
-                file.Close();
-                Debug.Log("Loaded " + filestring);
-                return true;
-            }
-            else
-            {
-                Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
-                return false;
-            }
-        }
-
-        //Load from compressed file
-        else
-        {
-            if (!UseCompoundArchive)
-            {
-                filestring += (LoadFileName + ".zip");
-                if (File.Exists(filestring))
-                {
-                    container = Compression.GetItemFromArchive<DataContainer>(@SavePath + "/" + CustomDirectory, LoadFileName);
-                    FrameList = container.FrameList;
-                    ReplayFps = container.Fps;
-                    Debug.Log("Loaded " + filestring);
-                    return true;
-                }
-                Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
-                return false;
-            }
-
-            //Load from compound archive
-            filestring += (CompoundZipName + ".zip");
-            if (File.Exists(filestring))
-            {
-                container = Compression.GetItemFromCompoundArchive<DataContainer>(filestring, LoadFileName);
-                FrameList = container.FrameList;
-                ReplayFps = container.Fps;
-                Debug.Log("Loaded entry" + LoadFileName + " from " + filestring);
-                return true;
-            }
-            Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
-            return false;
-        }*/
     }
 
     public override bool Load(bool useZip, string fileName, string entryName)
@@ -189,7 +133,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
                 container = Compression.GetItemFromCompoundArchive<DataContainer>(filestring, entryName);
                 FrameList = container.FrameList;
                 ReplayFps = container.Fps;
-                Debug.Log("Loaded entry" + LoadFileName + " from " + filestring);
+                Debug.Log("Loaded entry " + LoadFileName + " from " + filestring);
                 return true;
             }
             Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
