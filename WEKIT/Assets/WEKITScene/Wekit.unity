@@ -1634,7 +1634,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 604643274}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a32262cc1dc8464fa5d0fca5ecf7d3d, type: 3}
   m_Name: 
@@ -1684,6 +1684,7 @@ MonoBehaviour:
   ActiveWekitPlayers: []
   ButtonWidth: 100
   SingleSaveFile: 1
+  RecordGUI: 0
 --- !u!4 &604643277
 Transform:
   m_ObjectHideFlags: 0
@@ -1717,7 +1718,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 604643274}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19a3e73596ff6e9429c0e7fa57ff5830, type: 3}
   m_Name: 
