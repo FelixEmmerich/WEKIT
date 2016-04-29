@@ -133,7 +133,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
                 container = Compression.GetItemFromCompoundArchive<DataContainer>(filestring, entryName);
                 FrameList = container.FrameList;
                 ReplayFps = container.Fps;
-                Debug.Log("Loaded entry " + LoadFileName + " from " + filestring);
+                Debug.Log("Loaded entry " + fileName + " from " + filestring);
                 return true;
             }
             Debug.Log("File can't be loaded: " + filestring + " doesn't exist");

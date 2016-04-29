@@ -31,7 +31,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     [HideInInspector]
     public List<WekitPlayer_Base> ActiveWekitPlayers;
 
-    public float ButtonWidth = 100;
+    private float _buttonWidth = 100;
 
     public bool SingleSaveFile=true;
 
@@ -69,6 +69,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
             player.CountDown = CountDown;
         }
+        _buttonWidth=Screen.width / 6f;
     }
 
     public override void Update()
@@ -245,18 +246,18 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     {
         if (Recording) return;
         SingleSaveFile = GUI.Toggle(new Rect(0,Screen.height/20*2, Screen.width/6f, Screen.height/20f), SingleSaveFile, "Save as 1 file");
-        float x = Screen.width/2f - ButtonWidth*_wekitPlayers.Count/2;
+        float x = Screen.width/2f - _buttonWidth*_wekitPlayers.Count/2;
         for (int i = 0; i < _wekitPlayers.Count; i++)
         {
             bool contained = ActiveWekitPlayers.Contains(_wekitPlayers[i]);
 
             if (RecordGUI)
             {
-                _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*ButtonWidth, Screen.height - 40, ButtonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
+                _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*_buttonWidth, Screen.height - 40, _buttonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
 
                 if (contained)
                 {
-                    bool focus = GUI.Toggle(new Rect(x + i * ButtonWidth, Screen.height - 60, ButtonWidth, 20), _wekitPlayers[i].ForceFocus, "Force focus");
+                    bool focus = GUI.Toggle(new Rect(x + i * _buttonWidth, Screen.height - 60, _buttonWidth, 20), _wekitPlayers[i].ForceFocus, "Force focus");
                     if (focus != _wekitPlayers[i].ForceFocus)
                     {
                         _wekitPlayers[i].ForceFocus = focus;
@@ -266,7 +267,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
             }
 
-            if (!GUI.Button(new Rect(x + i*ButtonWidth, Screen.height - 20, ButtonWidth, 20),
+            if (!GUI.Button(new Rect(x + i*_buttonWidth, Screen.height - 20, _buttonWidth, 20),
                 _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
 
             //(De)activate button pressed

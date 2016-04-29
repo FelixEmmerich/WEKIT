@@ -47,7 +47,7 @@ public class WekitGui_Full : WekitGui
                 Player.Save();
                 if (UseXml)
                 {
-                    XMLData data = new XMLData(new XMLFileInfo(Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName, Player.FileName, Player.UseZip));
+                    XMLData data = new XMLData(new XMLFileInfo(Player.UseZip&&Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName, Player.FileName, Player.UseZip));
 
                     if (!Player.UseZip)
                     {

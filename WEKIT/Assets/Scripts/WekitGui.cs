@@ -112,23 +112,6 @@ public class WekitGui : MonoBehaviour
             UseXml = GUI.Toggle(new Rect(0, StandardHeight, StandardWidth, StandardHeight), UseXml, "Use XML");
             GUI.skin.label.fontSize = GUI.skin.button.fontSize = GUI.skin.textField.fontSize = GUI.skin.toggle.fontSize = _fontSize;
 
-            //Compression options
-            Player.UseZip = GUI.Toggle(new Rect(0, StandardHeight * 3, StandardWidth, StandardHeight), Player.UseZip,
-                "Zip");
-
-            if (Player.UseZip)
-            {
-                Player.UseCompoundArchive = GUI.Toggle(new Rect(0, StandardHeight * 4, StandardWidth, StandardHeight),
-                    Player.UseCompoundArchive, "Archive");
-
-                if (Player.UseCompoundArchive)
-                {
-                    Player.CompoundZipName = GUI.TextField(
-                        new Rect(0, StandardHeight * 5, StandardWidth, StandardHeight), Player.CompoundZipName, 25);
-                }
-            }
-
-
             if (!Player.Recording)
             {
                 if (GUI.Button(new Rect(StandardWidth * 2, 0, StandardWidth, StandardHeight),
@@ -136,59 +119,77 @@ public class WekitGui : MonoBehaviour
                 {
                     Player.Replay();
                 }
-            }
+                //Compression options
+                Player.UseZip = GUI.Toggle(new Rect(0, StandardHeight * 3, StandardWidth, StandardHeight), Player.UseZip,
+                    "Zip");
 
-            if (Player.Replaying)
-            {
+                if (Player.UseZip)
                 {
-                    //Pause/Unpause button
-                    if (GUI.Button(new Rect(StandardWidth * 2, StandardHeight, StandardWidth, StandardHeight), (Player.Playing ? "Pause" : "Unpause") + (KeyInput != null ? KeyToText(KeyInput.PauseKey) : "")))
-                    {
-                        Player.Pause();
-                    }
-                    //Index
-                    float index = GUI.HorizontalSlider(new Rect(StandardWidth * 2, StandardHeight * 2, StandardWidth, StandardHeight), Player.Index, 0, Player.FrameCount);
-                    if (index != Player.Index)
-                    {
-                        Player.SetIndex(index, false);
-                    }
+                    Player.UseCompoundArchive = GUI.Toggle(new Rect(0, StandardHeight * 4, StandardWidth, StandardHeight),
+                        Player.UseCompoundArchive, "Archive");
 
-                    //Speed
-                    Player.Speed = GUI.HorizontalSlider(new Rect(StandardWidth * 2, StandardHeight * 3, StandardWidth, StandardHeight), Player.Speed, 0.1f, 2);
-                    Player.Speed = Mathf.Clamp(Single.Parse(GUI.TextField(new Rect(StandardWidth * 2, StandardHeight * 4, StandardWidth, StandardHeight), Player.Speed.ToString(), 25)), 0.1f, 2);
-                }
-            }
-
-            //Multi-replay handling
-            if (XmlData != null)
-            {
-                //Previous replay
-                if (XmlDataIndex > 0)
-                {
-                    if (GUI.Button(new Rect(0, Screen.height/2f, Screen.width/10f, Screen.height/5f), "Previous"))
+                    if (Player.UseCompoundArchive)
                     {
-                        XmlDataIndex--;
-                        XMLFileInfo data = XmlData.Files[XmlDataIndex];
-                        Player.Load(data.Zip, data.FileName, data.EntryName);
-                        Player.SetIndex(0, false);
-                        Player.Speed = 1;
+                        Player.CompoundZipName = GUI.TextField(
+                            new Rect(0, StandardHeight * 5, StandardWidth, StandardHeight), Player.CompoundZipName, 25);
                     }
                 }
-                //Next replay
-                if (XmlDataIndex < XmlData.Files.Length - 1)
+
+                if (Player.Replaying)
                 {
-                    if (GUI.Button(new Rect(Screen.width*0.9f, Screen.height/2f, Screen.width/10f, Screen.height/5f),
-                        "Next"))
                     {
-                        XmlDataIndex++;
-                        XMLFileInfo data = XmlData.Files[XmlDataIndex];
-                        Player.Load(data.Zip, data.FileName, data.EntryName);
-                        Player.SetIndex(0, false);
-                        Player.Speed = 1;
+                        //Pause/Unpause button
+                        if (GUI.Button(new Rect(StandardWidth * 2, StandardHeight, StandardWidth, StandardHeight), (Player.Playing ? "Pause" : "Unpause") + (KeyInput != null ? KeyToText(KeyInput.PauseKey) : "")))
+                        {
+                            Player.Pause();
+                        }
+                        //Index
+                        float index = GUI.HorizontalSlider(new Rect(StandardWidth * 2, StandardHeight * 2, StandardWidth, StandardHeight), Player.Index, 0, Player.FrameCount);
+                        if (index != Player.Index)
+                        {
+                            Player.SetIndex(index, false);
+                        }
+
+                        //Speed
+                        Player.Speed = GUI.HorizontalSlider(new Rect(StandardWidth * 2, StandardHeight * 3, StandardWidth, StandardHeight), Player.Speed, 0.1f, 2);
+                        Player.Speed = Mathf.Clamp(Single.Parse(GUI.TextField(new Rect(StandardWidth * 2, StandardHeight * 4, StandardWidth, StandardHeight), Player.Speed.ToString(), 25)), 0.1f, 2);
                     }
                 }
+
+                //Multi-replay handling
+                if (XmlData != null)
+                {
+                    //Previous replay
+                    if (XmlDataIndex > 0)
+                    {
+                        if (GUI.Button(new Rect(0, Screen.height / 2f, Screen.width / 10f, Screen.height / 5f), "Previous"))
+                        {
+                            XmlDataIndex--;
+                            XMLFileInfo data = XmlData.Files[XmlDataIndex];
+                            Player.Load(data.Zip, data.FileName, data.EntryName);
+                            Player.SetIndex(0, false);
+                            Player.Speed = 1;
+                        }
+                    }
+                    //Next replay
+                    if (XmlDataIndex < XmlData.Files.Length - 1)
+                    {
+                        if (GUI.Button(new Rect(Screen.width * 0.9f, Screen.height / 2f, Screen.width / 10f, Screen.height / 5f),
+                            "Next"))
+                        {
+                            XmlDataIndex++;
+                            XMLFileInfo data = XmlData.Files[XmlDataIndex];
+                            Player.Load(data.Zip, data.FileName, data.EntryName);
+                            Player.SetIndex(0, false);
+                            Player.Speed = 1;
+                        }
+                    }
+                }
+
             }
+
         }
+
     }
 
     public void Load()
