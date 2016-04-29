@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Xml.Serialization;
 using UnityEngine;
 
 public class WekitGui_Full : WekitGui
@@ -44,24 +42,7 @@ public class WekitGui_Full : WekitGui
             //Save button
             if (GUI.Button(new Rect(StandardWidth*4, 0, StandardWidth, StandardHeight), "Save"))
             {
-                Player.Save();
-                if (UseXml)
-                {
-                    XMLData data = new XMLData(new XMLFileInfo(Player.UseZip&&Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName, Player.FileName, Player.UseZip));
-
-                    if (!Player.UseZip)
-                    {
-                        XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
-                        FileStream file = File.Open(Player.SavePath + "/" + Player.CustomDirectory + "/" + Player.FileName + ".txt", FileMode.OpenOrCreate);
-                        serializer.Serialize(file, data);
-                        file.Close();
-                    }
-                    else
-                    {
-                        string filestring = Player.SavePath + "/" + Player.CustomDirectory + "/" + (Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName) + ".zip";
-                        Compression.AddItemToCompoundArchive(filestring, Player.FileName + ".txt", ref data, new XmlSerializer(typeof(XMLData)));
-                    } 
-                }
+                Save();
             }
             Player.FileName = GUI.TextField(new Rect(StandardWidth*4, StandardHeight, StandardWidth, StandardHeight), Player.FileName, 25);
 

@@ -213,6 +213,28 @@ public class WekitGui : MonoBehaviour
         }
     }
 
+    public void Save()
+    {
+        Player.Save();
+        if (UseXml)
+        {
+            XMLData data = new XMLData(new XMLFileInfo(Player.UseZip && Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName, Player.FileName, Player.UseZip));
+
+            if (!Player.UseZip)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
+                FileStream file = File.Open(Player.SavePath + "/" + Player.CustomDirectory + "/" + Player.FileName + ".txt", FileMode.OpenOrCreate);
+                serializer.Serialize(file, data);
+                file.Close();
+            }
+            else
+            {
+                string filestring = Player.SavePath + "/" + Player.CustomDirectory + "/" + (Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName) + ".zip";
+                Compression.AddItemToCompoundArchive(filestring, Player.FileName + ".txt", ref data, new XmlSerializer(typeof(XMLData)));
+            }
+        }
+    }
+
     public static string KeyToText(KeyCode code)
     {
         return " (" + code + ")";
