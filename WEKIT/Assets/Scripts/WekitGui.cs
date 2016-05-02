@@ -3,9 +3,11 @@ using UnityEngine;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using Debug = UnityEngine.Debug;
 
 public class WekitGui : MonoBehaviour
 {
+
     [Serializable]
     public class XMLData
     {
@@ -69,6 +71,8 @@ public class WekitGui : MonoBehaviour
     [HideInInspector]
     internal float StandardWidth,StandardHeight;
 
+    private Texture2D _progressBar;
+    private Texture2D _noProgressBar;
 
     // Use this for initialization
     public virtual void Start ()
@@ -81,6 +85,14 @@ public class WekitGui : MonoBehaviour
         StandardWidth = Screen.width / 6f;
         StandardHeight = Screen.height / 20f;
         _fontSize = (int)(StandardWidth / 8.5f);
+
+        //Initialise Progress bar
+        _progressBar = new Texture2D(1, 1);
+        _noProgressBar = new Texture2D(1,1);
+        _progressBar.SetPixel(0,0,Color.green);
+        _noProgressBar.SetPixel(0, 0, Color.gray);
+        _progressBar.Apply();
+        _noProgressBar.Apply();
     }
 
     public virtual void Update()
@@ -157,12 +169,19 @@ public class WekitGui : MonoBehaviour
                 }
 
                 //Multi-replay handling
-                if (XmlData != null)
+                if (XmlData.Files.Length>0)
                 {
+                    /*
+                    GUI.DrawTexture(new Rect(Screen.width/2f, Screen.height/2f, 100, 50), _noProgressBar);
+                    GUI.DrawTexture(
+                        new Rect(Screen.width/2f, Screen.height/2f, 100*(XmlDataIndex*1.0f/XmlData.Files.Length - 1), 50),
+                        _progressBar);
+                    */
+
                     //Previous replay
                     if (XmlDataIndex > 0)
                     {
-                        if (GUI.Button(new Rect(0, Screen.height / 2f, Screen.width / 10f, Screen.height / 5f), "Previous"))
+                        if (GUI.Button(new Rect(0, Screen.height/2f, Screen.width/10f, Screen.height/5f), "Previous"))
                         {
                             XmlDataIndex--;
                             XMLFileInfo data = XmlData.Files[XmlDataIndex];
@@ -174,7 +193,8 @@ public class WekitGui : MonoBehaviour
                     //Next replay
                     if (XmlDataIndex < XmlData.Files.Length - 1)
                     {
-                        if (GUI.Button(new Rect(Screen.width * 0.9f, Screen.height / 2f, Screen.width / 10f, Screen.height / 5f),
+                        if (GUI.Button(
+                            new Rect(Screen.width*0.9f, Screen.height/2f, Screen.width/10f, Screen.height/5f),
                             "Next"))
                         {
                             XmlDataIndex++;
@@ -185,7 +205,6 @@ public class WekitGui : MonoBehaviour
                         }
                     }
                 }
-
             }
 
         }
