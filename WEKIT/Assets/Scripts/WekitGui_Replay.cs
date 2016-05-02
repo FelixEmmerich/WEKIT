@@ -9,7 +9,6 @@ public class WekitGui_Replay : WekitGui
 
         if (!ShowOptions || Player.Replaying) return;
 
-
         Player.LoadFileName =
             GUI.TextField(new Rect(StandardWidth * 3, StandardHeight, StandardWidth, StandardHeight),
                 Player.LoadFileName, 25);

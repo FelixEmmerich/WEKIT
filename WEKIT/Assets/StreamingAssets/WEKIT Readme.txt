@@ -8,6 +8,7 @@ It is framerate independent, though a higher framerate generally means more prec
 Currently supported are the Microsoft Kinect, Leap Motion and Thalmic Myo.
 An implementation including all of the aforementioned devices can be found under Assets/WEKITScene. 
 Wekit Ghost uses semitransparent models for replays while still showing realtime input. Wekit uses regular models but blocks input during replays.
+There are currently two different GUIs, WekitGui_Full and WekitGui_Replay. The replay GUI lacks recording, saving and deleting functionality and is intended for end users.
 
   ___ _   _ _  _  ___ _____ ___ ___  _  _   _   _    ___ _______   __
  | __| | | | \| |/ __|_   _|_ _/ _ \| \| | /_\ | |  |_ _|_   _\ \ / /

@@ -41,12 +41,17 @@ public class Compression
                 IFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(m, item);
                 m.Position = 0;
+                if (zipFile.ContainsEntry(entryName))
+                {
+                    zipFile.RemoveEntry(entryName);
+                }
                 zipFile.AddEntry(entryName, m);
                 zipFile.Save();
             }
         }
     }
 
+    //Despite appearing similar to the above method, they can not be combined/simplified in a sensible way since XmlSerializer does not implement IFormatter
     public static void AddItemToCompoundArchive<T>(string fullpath, string entryName, ref T item, XmlSerializer formatter)
     {
         if (!item.GetType().IsSerializable)
@@ -60,6 +65,10 @@ public class Compression
             {
                 formatter.Serialize(m, item);
                 m.Position = 0;
+                if (zipFile.ContainsEntry(entryName))
+                {
+                    zipFile.RemoveEntry(entryName);
+                }
                 zipFile.AddEntry(entryName, m);
                 zipFile.Save();
             }
