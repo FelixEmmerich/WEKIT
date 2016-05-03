@@ -123,9 +123,10 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     {
         if (!base.Load(useZip,fileName,entryName)) return false;
         int localMaxFrames = 0;
-        if (SingleSaveFile)
+
+        if (FrameList.Count>0&&FrameList[0].MyName=="SingleSave"&&(bool)FrameList[0].MyObject)
         {
-            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
+            for (int i = _wekitPlayers.Count - 1; i >= 1; i--)
             {
                 WekitPlayer_Base player = _wekitPlayers[i];
                 player.ClearFrameList();
@@ -197,6 +198,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         FrameList.Clear();
         if (SingleSaveFile)
         {
+            FrameList.Add(new ObjectWithName(true,"SingleSave"));
             foreach (WekitPlayer_Base player in ActiveWekitPlayers)
             {
                 FrameList.Add(new ObjectWithName(player.GetListAsObject(), player.PlayerName));
@@ -219,16 +221,22 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
     public override void Delete()
     {
-        base.Delete();
-        if (SingleSaveFile) return;
-        foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+        if (!base.Load(UseZip,UseZip&&UseCompoundArchive?CompoundZipName:DeleteFileName,DeleteFileName))
         {
-            player.UseZip = UseZip;
-            player.UseCompoundArchive = UseCompoundArchive;
-            player.DeleteFileName = DeleteFileName;
-            player.CompoundZipName = CompoundZipName;
-            player.Delete();
+            return;
         }
+        if (!(FrameList[0].MyName=="SingleSave"&&(bool)FrameList[0].MyObject))
+        {
+            foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+            {
+                player.UseZip = UseZip;
+                player.UseCompoundArchive = UseCompoundArchive;
+                player.DeleteFileName = DeleteFileName;
+                player.CompoundZipName = CompoundZipName;
+                player.Delete();
+            }
+        }
+        base.Delete();
     }
 
     public override void SetIndex(float index, bool relative)
@@ -245,7 +253,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     void OnGUI()
     {
         if (Recording) return;
-        SingleSaveFile = GUI.Toggle(new Rect(0,Screen.height/20*2, Screen.width/6f, Screen.height/20f), SingleSaveFile, "Save as 1 file");
         float x = Screen.width/2f - _buttonWidth*_wekitPlayers.Count/2;
         for (int i = 0; i < _wekitPlayers.Count; i++)
         {
@@ -253,6 +260,8 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
             if (RecordGUI)
             {
+                SingleSaveFile = GUI.Toggle(new Rect(0, Screen.height / 20 * 2, Screen.width / 6f, Screen.height / 20f), SingleSaveFile, "Save as 1 file");
+
                 _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*_buttonWidth, Screen.height - 40, _buttonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
 
                 if (contained)

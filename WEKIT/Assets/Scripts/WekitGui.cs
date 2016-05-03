@@ -176,7 +176,6 @@ public class WekitGui : MonoBehaviour
                     GUI.DrawTexture(new Rect(Screen.width-StandardWidth, Screen.height-StandardHeight, StandardWidth, StandardHeight), _noProgressBar);
                     GUI.DrawTexture(new Rect(Screen.width-StandardWidth, Screen.height-StandardHeight, StandardWidth * ((XmlDataIndex+1.0f)/XmlData.Files.Length), StandardHeight),_progressBar);
                     
-
                     //Previous replay
                     if (XmlDataIndex > 0)
                     {
