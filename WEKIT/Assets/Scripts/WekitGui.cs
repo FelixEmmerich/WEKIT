@@ -171,12 +171,11 @@ public class WekitGui : MonoBehaviour
                 //Multi-replay handling
                 if (XmlData.Files.Length>0)
                 {
-                    /*
-                    GUI.DrawTexture(new Rect(Screen.width/2f, Screen.height/2f, 100, 50), _noProgressBar);
-                    GUI.DrawTexture(
-                        new Rect(Screen.width/2f, Screen.height/2f, 100*(XmlDataIndex*1.0f/XmlData.Files.Length - 1), 50),
-                        _progressBar);
-                    */
+                    
+                    // Progress bar
+                    GUI.DrawTexture(new Rect(Screen.width-StandardWidth, Screen.height-StandardHeight, StandardWidth, StandardHeight), _noProgressBar);
+                    GUI.DrawTexture(new Rect(Screen.width-StandardWidth, Screen.height-StandardHeight, StandardWidth * ((XmlDataIndex+1.0f)/XmlData.Files.Length), StandardHeight),_progressBar);
+                    
 
                     //Previous replay
                     if (XmlDataIndex > 0)
