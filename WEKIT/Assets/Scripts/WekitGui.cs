@@ -169,7 +169,7 @@ public class WekitGui : MonoBehaviour
                 }
 
                 //Multi-replay handling
-                if (XmlData.Files.Length>0)
+                if (XmlData!=null&&XmlData.Files.Length>0)
                 {
                     
                     // Progress bar
@@ -213,14 +213,18 @@ public class WekitGui : MonoBehaviour
     {
         Player.Load();
 
-        if (UseXml)
+        //if (UseXml)
         {
             if (!Player.UseZip)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
-                StreamReader reader = new StreamReader(Player.SavePath + "/" + Player.CustomDirectory + "/" + Player.LoadFileName + ".txt");
-                XmlData = (XMLData)serializer.Deserialize(reader);
-                reader.Close();
+                string path = Player.SavePath + "/" + Player.CustomDirectory + "/" + Player.LoadFileName + ".txt";
+                if (File.Exists(path))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
+                    StreamReader reader = new StreamReader(path);
+                    XmlData = (XMLData)serializer.Deserialize(reader);
+                    reader.Close();
+                }
             }
             else
             {

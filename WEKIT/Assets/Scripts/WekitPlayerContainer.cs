@@ -126,12 +126,12 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
         if (FrameList.Count>0&&FrameList[0].MyName=="SingleSave"&&(bool)FrameList[0].MyObject)
         {
-            for (int i = _wekitPlayers.Count - 1; i >= 1; i--)
+            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
             {
                 WekitPlayer_Base player = _wekitPlayers[i];
                 player.ClearFrameList();
 
-                for (int j = FrameList.Count - 1; j >= 0; j--)
+                for (int j = FrameList.Count - 1; j >= 1; j--)
                 {
                     if (FrameList[j].MyName == player.PlayerName)
                     {

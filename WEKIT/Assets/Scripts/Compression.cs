@@ -100,13 +100,17 @@ public class Compression
         {
             using (ZipFile zipFile = new ZipFile(fullpath))
             {
-                ZipEntry e = zipFile[entryName];
-                e.Extract(m);
-                m.Position = 0;
-                //now serialize it back to the correct type
-                IFormatter formatter = new BinaryFormatter();
-                T item = (T)formatter.Deserialize(m);
-                return item;
+                if (zipFile.ContainsEntry(entryName))
+                {
+                    ZipEntry e = zipFile[entryName];
+                    e.Extract(m);
+                    m.Position = 0;
+                    //now serialize it back to the correct type
+                    IFormatter formatter = new BinaryFormatter();
+                    T item = (T)formatter.Deserialize(m);
+                    return item; 
+                }
+                return default(T);
             }
         }
     }
@@ -118,12 +122,16 @@ public class Compression
         {
             using (ZipFile zipFile = new ZipFile(fullpath))
             {
-                ZipEntry e = zipFile[entryName];
-                e.Extract(m);
-                m.Position = 0;
-                //now serialize it back to the correct type
-                T item = (T)formatter.Deserialize(m);
-                return item;
+                if (zipFile.ContainsEntry(entryName))
+                {
+                    ZipEntry e = zipFile[entryName];
+                    e.Extract(m);
+                    m.Position = 0;
+                    //now serialize it back to the correct type
+                    T item = (T)formatter.Deserialize(m);
+                    return item; 
+                }
+                return default(T);
             }
         }
     }

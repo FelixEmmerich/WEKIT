@@ -20,6 +20,16 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
             FrameList = frameList;
             Fps = fps;
         }
+
+        public static bool operator == (DataContainer a, DataContainer b)
+        {
+            return a.FrameList == b.FrameList;
+        }
+
+        public static bool operator != (DataContainer a, DataContainer b)
+        {
+            return !(a == b);
+        }
     }
 
     [Tooltip("GameObjects to hide if focus is lost")]
@@ -131,10 +141,13 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
             if (File.Exists(filestring))
             {
                 container = Compression.GetItemFromCompoundArchive<DataContainer>(filestring, entryName);
-                FrameList = container.FrameList;
-                ReplayFps = container.Fps;
-                Debug.Log("Loaded entry " + fileName + " from " + filestring);
-                return true;
+                if (container!=default(DataContainer))
+                {
+                    FrameList = container.FrameList;
+                    ReplayFps = container.Fps;
+                    Debug.Log("Loaded entry " + entryName + " from " + filestring);
+                    return true; 
+                }
             }
             Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
             return false;
@@ -143,7 +156,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
 
     public override void Delete()
     {
-        string filestring= @SavePath+"/"+CustomDirectory+"/";
+        string filestring= SavePath+"/"+CustomDirectory+"/";
 
         //Delete uncompressed file
         if (!UseZip)
