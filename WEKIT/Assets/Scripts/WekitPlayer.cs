@@ -316,7 +316,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
         return DefaultFrame();
     }
 
-    private IEnumerator RecordAfterTime(float time)
+    public virtual IEnumerator RecordAfterTime(float time)
     {
         if (Recording) yield break;
         Recording = true;
