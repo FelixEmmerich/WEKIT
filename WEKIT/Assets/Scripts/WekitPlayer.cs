@@ -56,20 +56,20 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
 
     public virtual void Reset()
     {
-        SavePath = Application.streamingAssetsPath+@"/Replays";
+        SavePath = Application.streamingAssetsPath+@"/Replays/"+CustomDirectory+"/";
     }
 
     public virtual void Start()
     {
         Debug.Log(PlayerName+" start");
         Speed = 1;
-        SavePath = Application.streamingAssetsPath + @"/Replays";
+        SavePath = Application.streamingAssetsPath + @"/Replays/" + CustomDirectory + "/";
         Focus = true;
     }
         
     public override void Save()
     {
-        string filestring= SavePath + "/" + CustomDirectory + "/";
+        string filestring= SavePath;
         Directory.CreateDirectory(filestring);
         DataContainer container = new DataContainer(FrameList, ReplayFps);
 
@@ -109,7 +109,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
 
     public override bool Load(bool useZip, string fileName, string entryName)
     {
-        string filestring = SavePath + "/" + CustomDirectory + "/";
+        string filestring = SavePath;
         DataContainer container;
 
         //Load uncompressed file
@@ -156,7 +156,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
 
     public override void Delete()
     {
-        string filestring= SavePath+"/"+CustomDirectory+"/";
+        string filestring= SavePath;
 
         //Delete uncompressed file
         if (!UseZip)

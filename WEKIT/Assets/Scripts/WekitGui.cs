@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
-using Debug = UnityEngine.Debug;
 
 public class WekitGui : MonoBehaviour
 {

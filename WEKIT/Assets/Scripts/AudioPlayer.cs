@@ -1,11 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
+using System.IO;
 
 public class AudioPlayer : WekitPlayer<bool,bool>
 {
-    //A boolean that flags whether there's a connected microphone
-    private bool _micConnected;
-
     //The maximum and minimum available recording frequencies
     private int _minFreq;
     private int _maxFreq;
@@ -13,11 +12,15 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     //A handle to the attached AudioSource
     public AudioSource AudioSource;
 
+    private AudioClip _clip;
+
+    private const int HeaderSize = 44;
+
     //Standard values
     public override void Reset()
     {
         base.Reset();
-        UncompressedFileExtension = "AudioData";
+        UncompressedFileExtension = "wav";
         CustomDirectory = "Audio";
         PlayerName = "Audio";
     }
@@ -34,8 +37,6 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         }
         else //At least one microphone is present
         {
-            //Set 'micConnected' to true
-            _micConnected = true;
 
             //Get the default microphone recording capabilities
             Microphone.GetDeviceCaps(null, out _minFreq, out _maxFreq);
@@ -63,10 +64,39 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     public override void Record()
     {
         base.Record();
-        if (!Recording)
+        if (!Recording&&Microphone.IsRecording(null))
         {
+            int lastSample = Microphone.GetPosition(null);
             Microphone.End(null); //Stop the audio recording
+
+            AudioSource.clip = TrimClip(_clip, lastSample);
         }
+    }
+
+    public AudioClip TrimClip(AudioClip clip, int lastSample)
+    {
+        float[] samples = new float[lastSample * clip.channels];
+        clip.GetData(samples, 0);
+        int start=0;
+        float[] samplesCut;
+        AudioClip newClip;
+        //Remove silence at the start of the recording
+        for (int i = 0; i < samples.Length; i++)
+        {
+            //3.051758E-05 is an empirically determinded threshold for noise at the start of a recording
+            if (Math.Abs(samples[i]) > 3.051758E-05)
+            {
+                start = i;
+                samplesCut=new float[samples.Length - start];
+                Array.Copy(samples, start, samplesCut, 0, samples.Length - start);
+                newClip = AudioClip.Create(clip.name, lastSample - start, clip.channels, clip.frequency, false);
+                newClip.SetData(samplesCut, 0);
+                return newClip;
+            }
+        }
+        newClip = AudioClip.Create(clip.name, lastSample-start, clip.channels, clip.frequency, false);
+        newClip.SetData(samples, start);
+        return newClip;
     }
 
     public override IEnumerator RecordAfterTime(float time)
@@ -79,7 +109,12 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         Debug.Log("Start recording " + PlayerName);
         Playing = true;
         //Currently the max audio recording time is 30 seconds
-        AudioSource.clip = Microphone.Start(null, true, 30, _maxFreq);
+        _clip = Microphone.Start(null, true, 30, _maxFreq);
+
+        //Halt EVERYTHING until the microphone is ready. Otherwise the recording may have a noticeable delay
+        while (!(Microphone.GetPosition(null) > 0))
+        {
+        }
     }
 
     public override void Replay()
@@ -87,13 +122,11 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         base.Replay();
         if (Replaying)
         {
-            Debug.Log("Play audio");
             AudioSource.Play();
         }
         else
         {
             AudioSource.Stop();
-            Debug.Log("Stop audio");
         }
     }
 
@@ -110,40 +143,121 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         }
     }
 
-    /*
-    void OnGUI()
+    #region Saving
+    public override void Save()
     {
-        //If there is a microphone
-        if (_micConnected)
+        if (!UseZip)
         {
-            //If the audio from any microphone isn't being captured
-            if (!Microphone.IsRecording(null))
-            {
-                //Case the 'Record' button gets pressed
-                if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 25, 200, 50), "Record"))
-                {
-                    //Start recording and store the audio captured from the microphone at the AudioClip in the AudioSource
-                    AudioSource.clip = Microphone.Start(null, true, 20, _maxFreq);
-                }
-            }
-            else //Recording is in progress
-            {
-                //Case the 'Stop and Play' button gets pressed
-                if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 25, 200, 50), "Stop and Play!"))
-                {
-                    Microphone.End(null); //Stop the audio recording
-                    AudioSource.Play(); //Playback the recorded audio
-                }
+            var filepath = SavePath+FileName+"."+UncompressedFileExtension;
 
-                GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 + 25, 200, 50), "Recording in progress...");
-            }
+            // Make sure directory exists if user is saving to sub dir.
+            Directory.CreateDirectory(SavePath);
+
+            using (var fileStream = CreateEmpty(filepath))
+            {
+
+                ConvertAndWrite(fileStream, AudioSource.clip);
+
+                WriteHeader(fileStream, AudioSource.clip);
+            } 
         }
-        else // No microphone
+    }
+
+    static FileStream CreateEmpty(string filepath)
+    {
+        var fileStream = new FileStream(filepath, FileMode.Create);
+        byte emptyByte = new byte();
+
+        for (int i = 0; i < HeaderSize; i++) //preparing the header
         {
-            //Print a red "Microphone not connected!" message at the center of the screen
-            GUI.contentColor = Color.red;
-            GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 25, 200, 50), "Microphone not connected!");
+            fileStream.WriteByte(emptyByte);
         }
 
-    }*/
+        return fileStream;
+    }
+
+    //Wave file header
+    static void WriteHeader(FileStream fileStream, AudioClip clip)
+    {
+
+        var hz = clip.frequency;
+        var channels = clip.channels;
+        var samples = clip.samples;
+
+        fileStream.Seek(0, SeekOrigin.Begin);
+
+        Byte[] riff = System.Text.Encoding.UTF8.GetBytes("RIFF");
+        fileStream.Write(riff, 0, 4);
+
+        Byte[] chunkSize = BitConverter.GetBytes(fileStream.Length - 8);
+        fileStream.Write(chunkSize, 0, 4);
+
+        Byte[] wave = System.Text.Encoding.UTF8.GetBytes("WAVE");
+        fileStream.Write(wave, 0, 4);
+
+        Byte[] fmt = System.Text.Encoding.UTF8.GetBytes("fmt ");
+        fileStream.Write(fmt, 0, 4);
+
+        Byte[] subChunk1 = BitConverter.GetBytes(16);
+        fileStream.Write(subChunk1, 0, 4);
+
+        UInt16 two = 2;
+        UInt16 one = 1;
+
+        Byte[] audioFormat = BitConverter.GetBytes(one);
+        fileStream.Write(audioFormat, 0, 2);
+
+        Byte[] numChannels = BitConverter.GetBytes(channels);
+        fileStream.Write(numChannels, 0, 2);
+
+        Byte[] sampleRate = BitConverter.GetBytes(hz);
+        fileStream.Write(sampleRate, 0, 4);
+
+        Byte[] byteRate = BitConverter.GetBytes(hz * channels * 2); // sampleRate * bytesPerSample*number of channels, here 44100*2*2
+        fileStream.Write(byteRate, 0, 4);
+
+        UInt16 blockAlign = (ushort)(channels * 2);
+        fileStream.Write(BitConverter.GetBytes(blockAlign), 0, 2);
+
+        UInt16 bps = 16;
+        Byte[] bitsPerSample = BitConverter.GetBytes(bps);
+        fileStream.Write(bitsPerSample, 0, 2);
+
+        Byte[] datastring = System.Text.Encoding.UTF8.GetBytes("data");
+        fileStream.Write(datastring, 0, 4);
+
+        Byte[] subChunk2 = BitConverter.GetBytes(samples * channels * 2);
+        fileStream.Write(subChunk2, 0, 4);
+
+        //		fileStream.Close();
+    }
+
+    static void ConvertAndWrite(FileStream fileStream, AudioClip clip)
+    {
+
+        var samples = new float[clip.samples*clip.channels];
+
+        clip.GetData(samples, 0);
+
+        Int16[] intData = new Int16[samples.Length];
+        //converting in 2 float[] steps to Int16[], //then Int16[] to Byte[]
+
+        Byte[] bytesData = new Byte[samples.Length * 2];
+        //bytesData array is twice the size of
+        //dataSource array because a float converted in Int16 is 2 bytes.
+
+        float rescaleFactor = 32767; //to convert float to Int16
+
+        for (int i = 0; i < samples.Length; i++)
+        {
+            intData[i] = (short)(samples[i] * rescaleFactor);
+            Byte[] byteArr = new Byte[2];
+            byteArr = BitConverter.GetBytes(intData[i]);
+            byteArr.CopyTo(bytesData, i * 2);
+        }
+
+        fileStream.Write(bytesData, 0, bytesData.Length);
+    }
+    #endregion
+
 }
