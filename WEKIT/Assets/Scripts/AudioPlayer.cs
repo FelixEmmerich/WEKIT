@@ -9,6 +9,16 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     private int _minFreq;
     private int _maxFreq;
 
+    public override float Index
+    {
+        get { return AudioSource != null? AudioSource.time : 0; }
+    }
+
+    public override int FrameCount
+    {
+        get { return AudioSource != null && AudioSource.clip != null ? (int)AudioSource.clip.length : 0; }
+    }
+
     //A handle to the attached AudioSource
     public AudioSource AudioSource;
 
@@ -260,4 +270,11 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     }
     #endregion
 
+    public override void SetIndex(float index, bool relative)
+    {
+        if (AudioSource != null && AudioSource.clip != null)
+        {
+            AudioSource.time = Mathf.Clamp(relative?AudioSource.clip.length*index:index, 0, AudioSource.clip.length);
+        }
+    }
 }
