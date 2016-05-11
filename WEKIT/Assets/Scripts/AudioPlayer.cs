@@ -5,6 +5,27 @@ using System.IO;
 
 public class AudioPlayer : WekitPlayer<bool,bool>
 {
+    [Serializable]
+    public class AudioData
+    {
+        public int Channels;
+        public float[] Data;
+        public int Frequency;
+
+        public AudioData(int channels, float[] data, int frequency)
+        {
+            Channels = channels;
+            Data = data;
+            Frequency = frequency;
+        }
+
+        public static implicit operator AudioClip(AudioData data)
+        {
+            AudioClip clip= AudioClip.Create("durr", data.Data.Length, data.Channels, data.Frequency, false);
+            clip.SetData(data.Data, 0);
+            return clip;
+        }
+    }
     //The maximum and minimum available recording frequencies
     private int _minFreq;
     private int _maxFreq;
@@ -323,20 +344,15 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         }
     }
 
-    //Todo: Save # of channels, frequency, etc (maybe just use the wave file somehow?)
     public override object GetListAsObject()
     {
         float[] container=new float[AudioSource.clip.samples*AudioSource.clip.channels];
         AudioSource.clip.GetData(container, 0);
-        return container;
+        return new AudioData(AudioSource.clip.channels,container,AudioSource.clip.frequency);
     }
 
     public override void MakeDataContainerFromObject(object source)
     {
-        //Todo: # of channels is currently always treated as one, name hasn't been thought about, etc
-        float[] data = (float[])source;
-        AudioClip clip= AudioClip.Create("", data.Length, 1, 44100,false);
-        clip.SetData(data, 0);
-        AudioSource.clip = clip;
+        AudioSource.clip = (AudioData) source;
     }
 }
