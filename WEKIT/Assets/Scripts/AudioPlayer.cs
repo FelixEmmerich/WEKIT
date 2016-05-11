@@ -88,7 +88,6 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         float[] samples = new float[lastSample * clip.channels];
         clip.GetData(samples, 0);
         int start=0;
-        float[] samplesCut;
         AudioClip newClip;
         //Remove silence at the start of the recording
         for (int i = 0; i < samples.Length; i++)
@@ -97,7 +96,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
             if (Math.Abs(samples[i]) > 3.051758E-05)
             {
                 start = i;
-                samplesCut=new float[samples.Length - start];
+                float[] samplesCut = new float[samples.Length - start];
                 Array.Copy(samples, start, samplesCut, 0, samples.Length - start);
                 newClip = AudioClip.Create(clip.name, lastSample - start, clip.channels, clip.frequency, false);
                 newClip.SetData(samplesCut, 0);
@@ -153,6 +152,53 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         }
     }
 
+    public override bool Load(bool useZip, string fileName, string entryName)
+    {
+        return true;
+        /*string filestring = SavePath;
+
+        //Load uncompressed file
+        if (!useZip)
+        {
+            filestring += fileName + "." + UncompressedFileExtension;
+            if (File.Exists(filestring))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                FileStream file = File.Open(filestring, FileMode.Open);
+                container = (DataContainer)bf.Deserialize(file);
+                FrameList = container.FrameList;
+                ReplayFps = container.Fps;
+                file.Close();
+                Debug.Log("Loaded " + filestring);
+                return true;
+            }
+            else
+            {
+                Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
+                return false;
+            }
+        }
+
+        //Load from compressed file
+        else
+        {
+            filestring += (fileName + ".zip");
+            if (File.Exists(filestring))
+            {
+                container = Compression.GetItemFromCompoundArchive<DataContainer>(filestring, entryName);
+                if (container != default(DataContainer))
+                {
+                    FrameList = container.FrameList;
+                    ReplayFps = container.Fps;
+                    Debug.Log("Loaded entry " + entryName + " from " + filestring);
+                    return true;
+                }
+            }
+            Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
+            return false;
+        }*/
+    }
+
     #region Saving
     public override void Save()
     {
@@ -165,9 +211,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
 
             using (var fileStream = CreateEmpty(filepath))
             {
-
                 ConvertAndWrite(fileStream, AudioSource.clip);
-
                 WriteHeader(fileStream, AudioSource.clip);
             } 
         }
@@ -191,6 +235,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     {
 
         var hz = clip.frequency;
+        Debug.Log("freq:"+hz);
         var channels = clip.channels;
         var samples = clip.samples;
 
@@ -276,5 +321,22 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         {
             AudioSource.time = Mathf.Clamp(relative?AudioSource.clip.length*index:index, 0, AudioSource.clip.length);
         }
+    }
+
+    //Todo: Save # of channels, frequency, etc (maybe just use the wave file somehow?)
+    public override object GetListAsObject()
+    {
+        float[] container=new float[AudioSource.clip.samples*AudioSource.clip.channels];
+        AudioSource.clip.GetData(container, 0);
+        return container;
+    }
+
+    public override void MakeDataContainerFromObject(object source)
+    {
+        //Todo: # of channels is currently always treated as one, name hasn't been thought about, etc
+        float[] data = (float[])source;
+        AudioClip clip= AudioClip.Create("", data.Length, 1, 44100,false);
+        clip.SetData(data, 0);
+        AudioSource.clip = clip;
     }
 }
