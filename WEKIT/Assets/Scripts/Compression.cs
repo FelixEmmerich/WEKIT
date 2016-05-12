@@ -7,52 +7,53 @@ using Ionic.Zip;
 
 public class Compression
 {
-    public static void AddItemToNewArchive<T>(string folder, string fileName, ref T item)
+    public static void AddItemToCompoundArchive(MemoryStream mStream, string fullpath, string entryName)
     {
-        if (!item.GetType().IsSerializable)
-            throw new ArgumentException("item must be serializable");
-
-
-        using (ZipFile zipFile = new ZipFile())
+        bool fileExists = File.Exists(fullpath);
+        using (ZipFile zipFile =fileExists?new ZipFile(fullpath):new ZipFile())
         {
             //serialize item to memorystream
-            using (MemoryStream m = new MemoryStream())
+            using (mStream)
             {
-                IFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(m, item);
-                m.Position = 0;
-                zipFile.AddEntry(fileName, m);
-                zipFile.Save(folder + "/" + fileName + ".zip");
-            }
-        }
-    }
-
-    public static void AddItemToCompoundArchive<T>(string fullpath, string entryName, ref T item)
-    {
-        if (!item.GetType().IsSerializable)
-            throw new ArgumentException("item must be serializable");
-
-
-        using (ZipFile zipFile = new ZipFile(fullpath))
-        {
-            //serialize item to memorystream
-            using (MemoryStream m = new MemoryStream())
-            {
-                IFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(m, item);
-                m.Position = 0;
                 if (zipFile.ContainsEntry(entryName))
                 {
                     zipFile.RemoveEntry(entryName);
                 }
-                zipFile.AddEntry(entryName, m);
-                zipFile.Save();
+                zipFile.AddEntry(entryName, mStream);
+                /*if (fileExists)
+                {
+                    zipFile.Save();
+                }
+                else
+                {
+                    zipFile.Save(fullpath);
+                }*/
+                zipFile.Save(fullpath);
             }
         }
+    }
+
+    public static void AddItemToCompoundArchive<T>(MemoryStream mStream,string fullpath, string entryName, T item)
+    {
+        if (!item.GetType().IsSerializable)
+            throw new ArgumentException("item must be serializable");
+        //serialize item to memorystream
+        using (mStream)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(mStream, item);
+            mStream.Position = 0;
+            AddItemToCompoundArchive(mStream, fullpath, entryName);
+        }
+    }
+
+    public static void AddItemToCompoundArchive<T>(string fullpath, string entryName, T item)
+    {
+        AddItemToCompoundArchive(new MemoryStream(), fullpath,entryName,item);
     }
 
     //Despite appearing similar to the above method, they can not be combined/simplified in a sensible way since XmlSerializer does not implement IFormatter
-    public static void AddItemToCompoundArchive<T>(string fullpath, string entryName, ref T item, XmlSerializer formatter)
+    public static void AddItemToCompoundArchive<T>(string fullpath, string entryName, T item, XmlSerializer formatter)
     {
         if (!item.GetType().IsSerializable)
             throw new ArgumentException("item must be serializable");
@@ -71,24 +72,6 @@ public class Compression
                 }
                 zipFile.AddEntry(entryName, m);
                 zipFile.Save();
-            }
-        }
-    }
-
-    public static T GetItemFromArchive<T>(string folder, string fileName)
-    {
-        //get the stream from the archive
-        using (MemoryStream m = new MemoryStream())
-        {
-            using (ZipFile zipFile = new ZipFile(folder+"/"+fileName+".zip"))
-            {
-                ZipEntry e = zipFile[fileName];
-                e.Extract(m);
-                m.Position = 0;
-                //now serialize it back to the correct type
-                IFormatter formatter = new BinaryFormatter();
-                T item = (T)formatter.Deserialize(m);
-                return item;
             }
         }
     }

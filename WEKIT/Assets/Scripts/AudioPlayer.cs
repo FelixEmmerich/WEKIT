@@ -37,7 +37,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
 
     public override int FrameCount
     {
-        get { return AudioSource != null && AudioSource.clip != null ? (int)AudioSource.clip.length : 0; }
+        get {return AudioSource != null && AudioSource.clip != null ? (int)AudioSource.clip.length : 0; }
     }
 
     //A handle to the attached AudioSource
@@ -188,8 +188,12 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         if (!useZip)
         {
             StartCoroutine(LoadWav(SavePath + fileName + "." + UncompressedFileExtension));
+            return true;
         }
-        return true;
+        else
+        {
+            return true;
+        }
         /*string filestring = SavePath;
 
         //Load uncompressed file
@@ -237,18 +241,33 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     #region Saving
     public override void Save()
     {
-        if (!UseZip)
+        if (AudioSource!=null&&AudioSource.clip!=null)
         {
-            var filepath = SavePath+FileName+"."+UncompressedFileExtension;
-
-            // Make sure directory exists if user is saving to sub dir.
-            Directory.CreateDirectory(SavePath);
-
-            using (var fileStream = CreateEmpty(filepath))
+            string filepath = SavePath;
+            if (!UseZip)
             {
-                ConvertAndWrite(fileStream, AudioSource.clip);
-                WriteHeader(fileStream, AudioSource.clip);
-            } 
+                filepath += FileName + "." + UncompressedFileExtension;
+
+                // Make sure directory exists if user is saving to sub dir.
+                Directory.CreateDirectory(SavePath);
+
+                using (var stream = CreateEmpty(filepath))
+                {
+                    ConvertAndWrite(stream, AudioSource.clip);
+                    WriteHeader(stream, AudioSource.clip);
+                }
+            }
+            else
+            {
+                filepath += UseCompoundArchive ? CompoundZipName : FileName + ".zip";
+                Directory.CreateDirectory(SavePath);
+                using (var stream = new MemoryStream())
+                {
+                    ConvertAndWrite(stream, AudioSource.clip);
+                    WriteHeader(stream, AudioSource.clip);
+                    Compression.AddItemToCompoundArchive(stream,filepath,FileName+"."+UncompressedFileExtension);
+                }
+            }
         }
     }
 
@@ -266,15 +285,15 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     }
 
     //Wave file header
-    static void WriteHeader(FileStream fileStream, AudioClip clip)
+    static void WriteHeader(Stream fileStream, AudioClip clip)
     {
 
         var hz = clip.frequency;
-        Debug.Log("freq:"+hz);
         var channels = clip.channels;
         var samples = clip.samples;
 
-        fileStream.Seek(0, SeekOrigin.Begin);
+        //fileStream.Seek(0, SeekOrigin.Begin);
+        fileStream.Position = 0;
 
         Byte[] riff = System.Text.Encoding.UTF8.GetBytes("RIFF");
         fileStream.Write(riff, 0, 4);
@@ -322,7 +341,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         //		fileStream.Close();
     }
 
-    static void ConvertAndWrite(FileStream fileStream, AudioClip clip)
+    static void ConvertAndWrite(Stream fileStream, AudioClip clip)
     {
 
         var samples = new float[clip.samples*clip.channels];

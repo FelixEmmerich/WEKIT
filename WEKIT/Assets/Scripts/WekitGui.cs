@@ -250,7 +250,7 @@ public class WekitGui : MonoBehaviour
             else
             {
                 string filestring = Player.SavePath + "/" + Player.CustomDirectory + "/" + (Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName) + ".zip";
-                Compression.AddItemToCompoundArchive(filestring, Player.FileName + ".txt", ref data, new XmlSerializer(typeof(XMLData)));
+                Compression.AddItemToCompoundArchive(filestring, Player.FileName + ".txt", data, new XmlSerializer(typeof(XMLData)));
             }
         }
     }

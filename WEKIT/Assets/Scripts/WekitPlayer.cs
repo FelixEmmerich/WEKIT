@@ -86,18 +86,8 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
         //If Zip is true, use Ionic.zip compression (smaller filesize, slower)
         else
         {
-            if (!UseCompoundArchive)
-            {
-                Compression.AddItemToNewArchive(filestring, FileName, ref container);
-                filestring += (FileName + ".zip");
-            }
-
-            //Save to existing archive or create a new one
-            else
-            {
-                filestring += (CompoundZipName + ".zip");
-                Compression.AddItemToCompoundArchive(filestring, FileName, ref container);
-            }
+            filestring += (UseCompoundArchive?CompoundZipName:FileName) + ".zip";
+            Compression.AddItemToCompoundArchive(filestring, FileName, container);
         }
         Debug.Log("Saved " + filestring);
     }
