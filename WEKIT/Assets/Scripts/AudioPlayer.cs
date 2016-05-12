@@ -21,7 +21,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
 
         public static implicit operator AudioClip(AudioData data)
         {
-            AudioClip clip= AudioClip.Create("durr", data.Data.Length, data.Channels, data.Frequency, false);
+            AudioClip clip= AudioClip.Create("", data.Data.Length, data.Channels, data.Frequency, false);
             clip.SetData(data.Data, 0);
             return clip;
         }
@@ -147,6 +147,16 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         }
     }
 
+    private IEnumerator LoadWav(string path)
+    {
+        Debug.Log("Loading wav from "+path);
+        WWW wav = new WWW("file://" + path);
+        yield return wav;
+
+        AudioClip myclip = wav.audioClip;
+        AudioSource.clip = myclip;
+    }
+
     public override void Replay()
     {
         base.Replay();
@@ -175,6 +185,10 @@ public class AudioPlayer : WekitPlayer<bool,bool>
 
     public override bool Load(bool useZip, string fileName, string entryName)
     {
+        if (!useZip)
+        {
+            StartCoroutine(LoadWav(SavePath + fileName + "." + UncompressedFileExtension));
+        }
         return true;
         /*string filestring = SavePath;
 
