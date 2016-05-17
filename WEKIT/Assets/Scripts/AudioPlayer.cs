@@ -263,6 +263,13 @@ public class AudioPlayer : WekitPlayer<bool,bool>
                 Directory.CreateDirectory(SavePath);
                 using (var stream = new MemoryStream())
                 {
+                    byte emptyByte = new byte();
+
+                    for (int i = 0; i < HeaderSize; i++) //preparing the header
+                    {
+                        stream.WriteByte(emptyByte);
+                    }
+
                     ConvertAndWrite(stream, AudioSource.clip);
                     WriteHeader(stream, AudioSource.clip);
                     Compression.AddItemToCompoundArchive(stream,filepath,FileName+"."+UncompressedFileExtension);

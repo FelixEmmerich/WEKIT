@@ -75,10 +75,16 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     public override void Update()
     {
         base.Update();
-        if (Replaying)
+        if (Replaying&&Playing)
         {
             //This ensures the index is updated properly
             GetCurrentFrame();
+
+            //If the replay completes a loop, sync all the players to mitigate desynchronization
+            if (PreviousIndex > Index)
+            {
+                SetIndex(0,false);
+            }
         }
     }
 
@@ -241,7 +247,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
     public override void SetIndex(float index, bool relative)
     {
-        if ((int) index == (int) Index) return;
+        if (index == Index) return;
         base.SetIndex(index, relative);
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
