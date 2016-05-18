@@ -1,7 +1,9 @@
-﻿using Leap;
+﻿using System.Collections.Generic;
+using Leap;
+using Leap.Unity;
 using UnityEngine;
 
-public class LeapPlayer : WekitPlayer<HandList,LeapProvider>
+public class LeapPlayer : WekitPlayer<List<Hand>,LeapProvider>
 {
     //Standard values
     public override void Reset()
@@ -12,7 +14,7 @@ public class LeapPlayer : WekitPlayer<HandList,LeapProvider>
         PlayerName = "Leap";
     }
 
-    public override HandList AddFrame()
+    public override List<Hand> AddFrame()
     {
         return Provider.CurrentFrame.Hands;
     }

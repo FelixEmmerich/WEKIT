@@ -1,29 +1,19 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 
-[CustomEditor(typeof(LeapVRTemporalWarping))]
-public class LeapTemporalWarpingEditor : Editor {
+namespace Leap.Unity {
 
-  private List<string> BasicModePropertyNames = new List<string>() {
-    "m_Script",
-    "recenter",
-  };
+  [CustomEditor(typeof(LeapVRTemporalWarping))]
+  public class LeapTemporalWarpingEditor : CustomEditorBase {
 
-  public override void OnInspectorGUI() {
-    serializedObject.Update();
-    SerializedProperty properties = serializedObject.GetIterator();
+    protected override void OnEnable() {
+      base.OnEnable();
 
-    bool useEnterChildren = true;
-    while (properties.NextVisible(useEnterChildren) == true) {
-      useEnterChildren = false;
-      if (AdvancedMode._advancedModeEnabled || BasicModePropertyNames.Contains(properties.name)) {
-        EditorGUILayout.PropertyField(properties, true);
-      }
+      specifyConditionalDrawing("allowManualTimeAlignment",
+                                "warpingAdjustment",
+                                "unlockHold",
+                                "moreRewind",
+                                "lessRewind");
     }
-    serializedObject.ApplyModifiedProperties();
   }
 }
-
   

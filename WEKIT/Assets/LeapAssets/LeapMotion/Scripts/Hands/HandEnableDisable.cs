@@ -2,15 +2,20 @@
 using System.Collections;
 using Leap;
 
-public class HandEnableDisable : HandTransitionBehavior {
+namespace Leap.Unity{
+  public class HandEnableDisable : HandTransitionBehavior {
+    protected override void Awake() {
+      base.Awake();
+      gameObject.SetActive(false);
+    }
 
-  public override void Reset() {
-    gameObject.SetActive(true);
+  	protected override void HandReset() {
+      gameObject.SetActive(true);
+  	}
+  
+  	protected override void HandFinish () {
+  		gameObject.SetActive(false);
+  	}
+  	
   }
-
-	// Use this for initialization
-	public override void HandFinish () {
-    gameObject.SetActive(false);
-	}
-	
 }
