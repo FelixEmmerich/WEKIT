@@ -20,14 +20,6 @@ public class Compression
                     zipFile.RemoveEntry(entryName);
                 }
                 zipFile.AddEntry(entryName, mStream);
-                /*if (fileExists)
-                {
-                    zipFile.Save();
-                }
-                else
-                {
-                    zipFile.Save(fullpath);
-                }*/
                 zipFile.Save(fullpath);
             }
         }

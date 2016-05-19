@@ -259,7 +259,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
             }
             else
             {
-                filepath += UseCompoundArchive ? CompoundZipName : FileName + ".zip";
+                filepath += (UseCompoundArchive ? CompoundZipName : FileName) + ".zip";
                 Directory.CreateDirectory(SavePath);
                 using (var stream = new MemoryStream())
                 {
@@ -272,6 +272,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
 
                     ConvertAndWrite(stream, AudioSource.clip);
                     WriteHeader(stream, AudioSource.clip);
+                    stream.Position = 0;
                     Compression.AddItemToCompoundArchive(stream,filepath,FileName+"."+UncompressedFileExtension);
                 }
             }
@@ -294,7 +295,6 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     //Wave file header
     static void WriteHeader(Stream fileStream, AudioClip clip)
     {
-
         var hz = clip.frequency;
         var channels = clip.channels;
         var samples = clip.samples;
