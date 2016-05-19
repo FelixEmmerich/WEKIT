@@ -15,6 +15,7 @@ namespace Leap
   /**
    * The LeapQuaternion struct represents a rotation in three-dimensional space.
    */
+   [Serializable]
   public struct LeapQuaternion :
     IEquatable<LeapQuaternion>
   {
