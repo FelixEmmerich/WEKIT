@@ -1,7 +1,10 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class AudioPlayer : WekitPlayer<bool,bool>
 {
@@ -192,7 +195,8 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         }
         else
         {
-            return true;
+            object muhthingy = Compression.GetItemFromCompoundArchive<object>(SavePath + fileName + ".zip", LoadFileName);
+            return false;
         }
         /*string filestring = SavePath;
 
@@ -279,6 +283,20 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         }
     }
 
+    public AudioClip GetAudioClipFromWav(byte[] wav)
+    {
+        int channels = BitConverter.ToInt16(wav, 22);
+        int frequency = BitConverter.ToInt32(wav, 24);
+        float[]samples=new float[(wav.Length-44)/2];
+        float rescaleFactor = 32767;
+        for (int i = 0; i < (wav.Length-44)/2; i++)
+        {
+            //To be tested
+            samples[i] = BitConverter.ToInt16(wav, 44 + (i*2))/rescaleFactor;
+        }
+        return new AudioData(channels,samples,frequency);
+    }
+
     static FileStream CreateEmpty(string filepath)
     {
         var fileStream = new FileStream(filepath, FileMode.Create);
@@ -323,11 +341,14 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         Byte[] audioFormat = BitConverter.GetBytes(one);
         fileStream.Write(audioFormat, 0, 2);
 
+        Debug.Log("Channels start at " + fileStream.Position);
         Byte[] numChannels = BitConverter.GetBytes(channels);
         fileStream.Write(numChannels, 0, 2);
 
+        Debug.Log("Frequency starts at "+fileStream.Position);
         Byte[] sampleRate = BitConverter.GetBytes(hz);
         fileStream.Write(sampleRate, 0, 4);
+        Debug.Log("Frequency ends at " + fileStream.Position);
 
         Byte[] byteRate = BitConverter.GetBytes(hz * channels * 2); // sampleRate * bytesPerSample*number of channels, here 44100*2*2
         fileStream.Write(byteRate, 0, 4);
