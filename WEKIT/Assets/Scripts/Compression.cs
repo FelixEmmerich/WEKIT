@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -86,6 +87,26 @@ public class Compression
                     return item; 
                 }
                 return default(T);
+            }
+        }
+
+    }
+
+    public static byte[] GetByteArrayFromCompoundArchive(string fullpath, string entryName)
+    {
+        //get the stream from the archive
+        using (MemoryStream m = new MemoryStream())
+        {
+            using (ZipFile zipFile = new ZipFile(fullpath))
+            {
+                if (zipFile.ContainsEntry(entryName))
+                {
+                    ZipEntry e = zipFile[entryName];
+                    e.Extract(m);
+                    m.Position = 0;
+                    return m.ToArray();
+                }
+                return new byte[0];
             }
         }
     }

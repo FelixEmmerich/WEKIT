@@ -79,6 +79,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         {
             //This ensures the index is updated properly
             GetCurrentFrame();
+            Debug.Log(Index);
 
             //If the replay completes a loop, sync all the players to mitigate desynchronization
             if (PreviousIndex > Index)
@@ -268,11 +269,11 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             {
                 SingleSaveFile = GUI.Toggle(new Rect(0, Screen.height / 20 * 2, Screen.width / 6f, Screen.height / 20f), SingleSaveFile, "Save as 1 file");
 
-                _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*_buttonWidth, Screen.height - 40, _buttonWidth, 20), _wekitPlayers[i].Stepsize, 1, 3);
+                _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*_buttonWidth, Screen.height - (Screen.height / 20f*2), _buttonWidth, Screen.height / 20f), _wekitPlayers[i].Stepsize, 1, 3);
 
                 if (contained)
                 {
-                    bool focus = GUI.Toggle(new Rect(x + i * _buttonWidth, Screen.height - 60, _buttonWidth, 20), _wekitPlayers[i].ForceFocus, "Force focus");
+                    bool focus = GUI.Toggle(new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f*3), _buttonWidth, Screen.height / 20f), _wekitPlayers[i].ForceFocus, "Force focus");
                     if (focus != _wekitPlayers[i].ForceFocus)
                     {
                         _wekitPlayers[i].ForceFocus = focus;
@@ -282,7 +283,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
             }
 
-            if (!GUI.Button(new Rect(x + i*_buttonWidth, Screen.height - 20, _buttonWidth, 20),
+            if (!GUI.Button(new Rect(x + i*_buttonWidth, Screen.height - (Screen.height / 20f), _buttonWidth, Screen.height / 20f),
                 _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
 
             //(De)activate button pressed

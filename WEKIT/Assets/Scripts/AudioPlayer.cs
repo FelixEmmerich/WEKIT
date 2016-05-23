@@ -40,7 +40,10 @@ public class AudioPlayer : WekitPlayer<bool,bool>
 
     public override int FrameCount
     {
-        get {return AudioSource != null && AudioSource.clip != null ? (int)AudioSource.clip.length : 0; }
+        get
+        {
+            return AudioSource != null && AudioSource.clip != null ? (int)(AudioSource.clip.length*10) : 0;
+        }
     }
 
     //A handle to the attached AudioSource
@@ -152,12 +155,20 @@ public class AudioPlayer : WekitPlayer<bool,bool>
 
     private IEnumerator LoadWav(string path)
     {
-        Debug.Log("Loading wav from "+path);
         WWW wav = new WWW("file://" + path);
-        yield return wav;
-
-        AudioClip myclip = wav.audioClip;
-        AudioSource.clip = myclip;
+        while (!wav.isDone) { }
+        if (wav.error == null)
+        {
+            Debug.Log("Loaded " + path);
+            AudioSource.clip = wav.audioClip;
+            ReplayFps = 0.1f;
+            yield return true;
+        }
+        else
+        {
+            Debug.Log(wav.error);
+            yield return false;
+        }
     }
 
     public override void Replay()
@@ -190,12 +201,20 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     {
         if (!useZip)
         {
-            StartCoroutine(LoadWav(SavePath + fileName + "." + UncompressedFileExtension));
-            return true;
+            Enabled(true);
+            IEnumerator routine = LoadWav(SavePath + fileName + "." + UncompressedFileExtension);
+            StartCoroutine(routine);
+            return (bool)routine.Current;
         }
         else
         {
-            object muhthingy = Compression.GetItemFromCompoundArchive<object>(SavePath + fileName + ".zip", LoadFileName);
+            byte[] wavBytes = Compression.GetByteArrayFromCompoundArchive(SavePath + fileName + ".zip", fileName+"."+UncompressedFileExtension);
+            if (wavBytes!=null)
+            {
+                AudioSource.clip = GetAudioClipFromWav(wavBytes);
+                ReplayFps = 0.1f;
+                return true;
+            }
             return false;
         }
         /*string filestring = SavePath;
@@ -286,7 +305,9 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     public AudioClip GetAudioClipFromWav(byte[] wav)
     {
         int channels = BitConverter.ToInt16(wav, 22);
+        Debug.Log("Channels: "+channels);
         int frequency = BitConverter.ToInt32(wav, 24);
+        Debug.Log("Frequency" + frequency);
         float[]samples=new float[(wav.Length-44)/2];
         float rescaleFactor = 32767;
         for (int i = 0; i < (wav.Length-44)/2; i++)
@@ -341,14 +362,11 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         Byte[] audioFormat = BitConverter.GetBytes(one);
         fileStream.Write(audioFormat, 0, 2);
 
-        Debug.Log("Channels start at " + fileStream.Position);
         Byte[] numChannels = BitConverter.GetBytes(channels);
         fileStream.Write(numChannels, 0, 2);
 
-        Debug.Log("Frequency starts at "+fileStream.Position);
         Byte[] sampleRate = BitConverter.GetBytes(hz);
         fileStream.Write(sampleRate, 0, 4);
-        Debug.Log("Frequency ends at " + fileStream.Position);
 
         Byte[] byteRate = BitConverter.GetBytes(hz * channels * 2); // sampleRate * bytesPerSample*number of channels, here 44100*2*2
         fileStream.Write(byteRate, 0, 4);
