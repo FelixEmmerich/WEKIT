@@ -217,48 +217,6 @@ public class AudioPlayer : WekitPlayer<bool,bool>
             }
             return false;
         }
-        /*string filestring = SavePath;
-
-        //Load uncompressed file
-        if (!useZip)
-        {
-            filestring += fileName + "." + UncompressedFileExtension;
-            if (File.Exists(filestring))
-            {
-                BinaryFormatter bf = new BinaryFormatter();
-                FileStream file = File.Open(filestring, FileMode.Open);
-                container = (DataContainer)bf.Deserialize(file);
-                FrameList = container.FrameList;
-                ReplayFps = container.Fps;
-                file.Close();
-                Debug.Log("Loaded " + filestring);
-                return true;
-            }
-            else
-            {
-                Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
-                return false;
-            }
-        }
-
-        //Load from compressed file
-        else
-        {
-            filestring += (fileName + ".zip");
-            if (File.Exists(filestring))
-            {
-                container = Compression.GetItemFromCompoundArchive<DataContainer>(filestring, entryName);
-                if (container != default(DataContainer))
-                {
-                    FrameList = container.FrameList;
-                    ReplayFps = container.Fps;
-                    Debug.Log("Loaded entry " + entryName + " from " + filestring);
-                    return true;
-                }
-            }
-            Debug.Log("File can't be loaded: " + filestring + " doesn't exist");
-            return false;
-        }*/
     }
 
     #region Saving
