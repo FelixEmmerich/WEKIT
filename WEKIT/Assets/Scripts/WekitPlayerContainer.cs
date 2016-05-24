@@ -79,7 +79,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         {
             //This ensures the index is updated properly
             GetCurrentFrame();
-            Debug.Log(Index);
 
             //If the replay completes a loop, sync all the players to mitigate desynchronization
             if (PreviousIndex > Index)

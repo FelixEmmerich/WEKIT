@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-
+﻿
 public class MyoPlayer : WekitPlayer<MyoData,JointOrientation>
 {
     //Standard values

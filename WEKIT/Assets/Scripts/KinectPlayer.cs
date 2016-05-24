@@ -1,8 +1,13 @@
 ﻿using Kinect;
-using UnityEngine;
 
 public class KinectPlayer : WekitPlayer<SerialSkeletonFrame,KinectInterface>
 {
+    /*[Serializable]
+    public class MinSkeletonData
+    {
+        
+    }*/
+
     public DeviceOrEmulator DevOrEmu;
     public override SerialSkeletonFrame AddFrame()
     {

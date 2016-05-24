@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Leap;
 using Leap.Unity;
-using UnityEngine;
 
 public class LeapPlayer : WekitPlayer<LeapPlayer.HandList,LeapProvider>
 {
