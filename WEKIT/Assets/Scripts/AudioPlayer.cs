@@ -62,6 +62,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     //Use this for initialization
     public override void Start()
     {
+        ReplayFps = 0.1f;
         base.Start();
         //Check if there is at least one microphone connected
         if (Microphone.devices.Length <= 0)
@@ -158,7 +159,6 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         {
             Debug.Log("Loaded " + path);
             AudioSource.clip = wav.audioClip;
-            ReplayFps = 0.1f;
             yield return true;
         }
         else
@@ -209,7 +209,6 @@ public class AudioPlayer : WekitPlayer<bool,bool>
             if (wavBytes!=null)
             {
                 AudioSource.clip = GetAudioClipFromWav(wavBytes);
-                ReplayFps = 0.1f;
                 return true;
             }
             return false;
@@ -260,9 +259,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     public AudioClip GetAudioClipFromWav(byte[] wav)
     {
         int channels = BitConverter.ToInt16(wav, 22);
-        Debug.Log("Channels: "+channels);
         int frequency = BitConverter.ToInt32(wav, 24);
-        Debug.Log("Frequency" + frequency);
         float[]samples=new float[(wav.Length-44)/2];
         float rescaleFactor = 32767;
         for (int i = 0; i < (wav.Length-44)/2; i++)

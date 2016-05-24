@@ -142,6 +142,8 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                     if (FrameList[j].MyName == player.PlayerName)
                     {
                         player.MakeDataContainerFromObject(FrameList[j].MyObject);
+                        //Debug.Log(String.Format("Player: {0} | FrameCount: {1} | ReplayFps: {2}", player.PlayerName, player.FrameCount, player.ReplayFps));
+
                         if (player.FrameCount > localMaxFrames)
                         {
                             localMaxFrames = player.FrameCount;
