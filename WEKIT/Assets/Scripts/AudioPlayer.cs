@@ -205,11 +205,15 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         }
         else
         {
-            byte[] wavBytes = Compression.GetByteArrayFromCompoundArchive(SavePath + fileName + ".zip", fileName+"."+UncompressedFileExtension);
-            if (wavBytes!=null)
+            string filestring = SavePath + fileName + ".zip";
+            if (File.Exists(filestring))
             {
-                AudioSource.clip = GetAudioClipFromWav(wavBytes);
-                return true;
+                byte[] wavBytes = Compression.GetByteArrayFromCompoundArchive(filestring, fileName + "." + UncompressedFileExtension);
+                if (wavBytes != null)
+                {
+                    AudioSource.clip = GetAudioClipFromWav(wavBytes);
+                    return true;
+                } 
             }
             return false;
         }
@@ -385,5 +389,9 @@ public class AudioPlayer : WekitPlayer<bool,bool>
     public override void MakeDataContainerFromObject(object source)
     {
         AudioSource.clip = (AudioData) source;
+    }
+
+    public override void ClearFrameList()
+    {
     }
 }
