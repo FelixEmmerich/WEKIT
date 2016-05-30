@@ -371,11 +371,6 @@ MonoBehaviour:
   FrameList: []
   Provider: 1
   UncompressedFileExtension: WEKITData
-  _wekitPlayers:
-  - {fileID: 2119502951}
-  - {fileID: 373142367}
-  - {fileID: 970503736}
-  - {fileID: 1521848345}
   ActiveWekitPlayers: []
   SingleSaveFile: 1
   RecordGUI: 1
@@ -661,6 +656,10 @@ Prefab:
       propertyPath: Player
       value: 
       objectReference: {fileID: 2119502951}
+    - target: {fileID: 11498948, guid: ac4e4a48f80f2cb4dbdb5aea99b1e649, type: 2}
+      propertyPath: ModelPool.Array.data[0].CanDuplicate
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac4e4a48f80f2cb4dbdb5aea99b1e649, type: 2}
   m_IsPrefabParent: 0

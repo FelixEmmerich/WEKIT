@@ -26,7 +26,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     }
 
     [SerializeField]
-    private List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
+    private readonly List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
 
     [HideInInspector]
     public List<WekitPlayer_Base> ActiveWekitPlayers;
