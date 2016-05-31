@@ -576,6 +576,7 @@ MonoBehaviour:
   - {fileID: 2119502951}
   - {fileID: 373142367}
   - {fileID: 970503736}
+  - {fileID: 1299550636}
   ActiveWekitPlayers: []
   SingleSaveFile: 1
   RecordGUI: 1
@@ -871,6 +872,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1975962738}
   m_RootOrder: 0
+--- !u!1001 &1299550635
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 434088, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434088, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434088, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434088, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434088, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434088, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434088, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 434088, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: b43c519a021870149b3a88b95b167731, type: 2}
+  m_IsPrefabParent: 0
+--- !u!114 &1299550636 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11475058, guid: b43c519a021870149b3a88b95b167731,
+    type: 2}
+  m_PrefabInternal: {fileID: 1299550635}
+  m_Script: {fileID: 11500000, guid: 460745ebe165e3246a0828a8899fd964, type: 3}
 --- !u!1 &1551368674
 GameObject:
   m_ObjectHideFlags: 0
