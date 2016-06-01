@@ -196,6 +196,10 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 463922, guid: 6dea6891e5058b34fa428f5d96f4fe0f, type: 2}
   m_PrefabInternal: {fileID: 151334132}
+--- !u!1 &151334134 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 179244, guid: 6dea6891e5058b34fa428f5d96f4fe0f, type: 2}
+  m_PrefabInternal: {fileID: 151334132}
 --- !u!1001 &284026733
 Prefab:
   m_ObjectHideFlags: 0
@@ -307,7 +311,9 @@ MonoBehaviour:
   PreviousIndex: -1
   CurrentStep: 0
   Stepsize: 1
-  Visualisation: []
+  Visualisation:
+  - {fileID: 151334134}
+  - {fileID: 808394514}
   FrameList: []
   UncompressedFileExtension: KinectData
   DevOrEmu: {fileID: 1802622954}
@@ -703,6 +709,10 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 448578, guid: f8a0281f5ca2bdf428faadde5c0f8a4a, type: 2}
   m_PrefabInternal: {fileID: 808394512}
+--- !u!1 &808394514 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 189336, guid: f8a0281f5ca2bdf428faadde5c0f8a4a, type: 2}
+  m_PrefabInternal: {fileID: 808394512}
 --- !u!1001 &830305377
 Prefab:
   m_ObjectHideFlags: 0
@@ -811,6 +821,10 @@ MonoBehaviour:
 Transform:
   m_PrefabParentObject: {fileID: 448580, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
   m_PrefabInternal: {fileID: 830305377}
+--- !u!1 &830305380 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 119060, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
+  m_PrefabInternal: {fileID: 830305377}
 --- !u!1 &970503735
 GameObject:
   m_ObjectHideFlags: 0
@@ -856,7 +870,9 @@ MonoBehaviour:
   PreviousIndex: -1
   CurrentStep: 0
   Stepsize: 1
-  Visualisation: []
+  Visualisation:
+  - {fileID: 830305380}
+  - {fileID: 2017607277}
   FrameList: []
   Provider: {fileID: 830305378}
   UncompressedFileExtension: MyoData
@@ -1312,6 +1328,10 @@ Prefab:
 --- !u!4 &2017607276 stripped
 Transform:
   m_PrefabParentObject: {fileID: 448580, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
+  m_PrefabInternal: {fileID: 2017607275}
+--- !u!1 &2017607277 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 119060, guid: a18c06cb1aebd894db7e60730c18edb3, type: 2}
   m_PrefabInternal: {fileID: 2017607275}
 --- !u!1001 &2092303485
 Prefab:
