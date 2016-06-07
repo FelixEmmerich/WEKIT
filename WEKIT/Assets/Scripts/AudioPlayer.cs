@@ -201,6 +201,7 @@ public class AudioPlayer : WekitPlayer<bool,bool>
             Enabled(true);
             IEnumerator routine = LoadWav(SavePath + fileName + "." + UncompressedFileExtension);
             StartCoroutine(routine);
+            //Since coroutines are enumerators, we need to get the current value to check for success
             return (bool)routine.Current;
         }
         else
@@ -262,14 +263,15 @@ public class AudioPlayer : WekitPlayer<bool,bool>
 
     public AudioClip GetAudioClipFromWav(byte[] wav)
     {
+        //Get data from wav header
         int channels = BitConverter.ToInt16(wav, 22);
         int frequency = BitConverter.ToInt32(wav, 24);
         float[]samples=new float[(wav.Length-44)/2];
+
         float rescaleFactor = 32767;
-        for (int i = 0; i < (wav.Length-44)/2; i++)
+        for (int i = 0; i < (wav.Length-HeaderSize)/2; i++)
         {
-            //To be tested
-            samples[i] = BitConverter.ToInt16(wav, 44 + (i*2))/rescaleFactor;
+            samples[i] = BitConverter.ToInt16(wav, HeaderSize + (i*2))/rescaleFactor;
         }
         return new AudioData(channels,samples,frequency);
     }
