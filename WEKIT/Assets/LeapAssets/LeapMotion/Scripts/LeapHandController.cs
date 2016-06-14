@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using Leap;
+using UnityEngine.Networking;
 
 namespace Leap.Unity {
   /**
    * LeapHandController uses a Factory to create and update HandRepresentations based on Frame's received from a Provider  */
-  public class LeapHandController : MonoBehaviour {
+  public class LeapHandController : NetworkBehaviour {
     public LeapProvider provider;
     protected HandFactory factory;
 
@@ -65,19 +66,27 @@ namespace Leap.Unity {
 
     /** Updates the graphics HandRepresentations. */
     protected virtual void Update() {
-      /*Frame frame = provider.CurrentFrame;
+            /*Frame frame = provider.CurrentFrame;
 
-      if (frame != null && graphicsEnabled) {
-        UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
-      }*/
+            if (frame != null && graphicsEnabled) {
+              UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
+            }*/
 
+            if (!isLocalPlayer)
+                return;
+
+        byte[] bytes = Compression.ConvertToBytes<List<Hand>>(provider.CurrentFrame.Hands);
+            CmdHandRep(bytes);
+
+            /*
             //Felix
             if (Player == null || !Player.Replaying)
             {
                 Frame frame = provider.CurrentFrame;
                 if (frame != null && graphicsEnabled)
                 {
-                    UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
+                    //UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
+                    UpdateHandRepresentations(frame.Hands, graphicsReps, ModelType.Graphics);
                 }
             }
             else if (Player != null)
@@ -94,6 +103,26 @@ namespace Leap.Unity {
               prev_graphics_id_ = frame.Id;
 
             }*/
+        }
+
+        [Command]
+        void CmdHandRep(byte[] list)
+        {
+            RpcHandRep(list);
+        }
+
+        [ClientRpc]
+        void RpcHandRep(byte[] list)
+        {
+            if (!this.hasAuthority)
+            {
+                List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+                UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
+            }
+            else
+            {
+                UpdateHandRepresentations(provider.CurrentFrame.Hands, graphicsReps, ModelType.Graphics);
+            }
         }
 
         /** Updates the physics HandRepresentations. */

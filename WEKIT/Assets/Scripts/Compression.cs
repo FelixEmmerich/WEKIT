@@ -160,4 +160,20 @@ public class Compression
         }
     }
 
+    public static byte[] ConvertToBytes<T>(T source)
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        MemoryStream m = new MemoryStream();
+        bf.Serialize(m, source);
+        return m.ToArray();
+    }
+
+    public static T GetFromBytes<T>(byte[] source)
+    {
+        MemoryStream m = new MemoryStream(source);
+        IFormatter formatter = new BinaryFormatter();
+        T item = (T)formatter.Deserialize(m);
+        return item;
+    }
+
 }
