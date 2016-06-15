@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Leap;
 using UnityEngine.Networking;
 
 namespace Leap.Unity
@@ -13,8 +12,6 @@ namespace Leap.Unity
         protected HandFactory factory;
 
         //Felix
-        public LeapPlayer Player;
-        private List<Hand> _hl;
         public bool Server;
 
         protected Dictionary<int, HandRepresentation> graphicsReps = new Dictionary<int, HandRepresentation>();
@@ -91,23 +88,13 @@ namespace Leap.Unity
 
 
             //Felix
-            if (Player == null || !Player.Replaying)
+
+            Debug.Log("Count: " + provider.CurrentFrame.Hands.Count);
+            Frame frame = provider.CurrentFrame;
+            if (frame != null && graphicsEnabled)
             {
-                Debug.Log("Count: " + provider.CurrentFrame.Hands.Count);
-                Frame frame = provider.CurrentFrame;
-                if (frame != null && graphicsEnabled)
-                {
-                    UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
-                    //UpdateHandRepresentations(frame.Hands, graphicsReps, ModelType.Graphics);
-                }
-            }
-            else if (Player != null)
-            {
-                _hl = Player.GetCurrentFrame();
-                if ((int)Player.Index != Player.PreviousIndex)
-                {
-                    UpdateHandRepresentations(_hl, graphicsReps, ModelType.Graphics);
-                }
+                //UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
+                UpdateHandRepresentations(frame.Hands, graphicsReps, ModelType.Graphics);
             }
             //Frame frame = Provider.CurrentFrame;
             /*if (frame.Id != prev_graphics_id_ && graphicsEnabled) {
@@ -168,7 +155,7 @@ namespace Leap.Unity
             //Felix
 
             return;
-            if (Player == null || !Player.Replaying)
+            /*if (Player == null || !Player.Replaying)
             {
                 Frame fixedFrame = provider.CurrentFixedFrame;
 
@@ -184,7 +171,7 @@ namespace Leap.Unity
                 {
                     UpdateHandRepresentations(_hl, physicsReps, ModelType.Physics);
                 }
-            }
+            }*/
         }
 
 

@@ -1,13 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Leap;
-using UnityEngine.Networking;
 
 namespace Leap.Unity {
   /**
    * LeapHandController uses a Factory to create and update HandRepresentations based on Frame's received from a Provider  */
-  public class LeapHandController : NetworkBehaviour {
+  public class LeapHandController : MonoBehaviour {
     public LeapProvider provider;
     protected HandFactory factory;
 
@@ -73,12 +70,6 @@ namespace Leap.Unity {
               UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
             }*/
             
-            if ((isServer||isClient)&&(Server!=isServer))
-                return;
-
-        /*byte[] bytes = Compression.ConvertToBytes<List<Hand>>(provider.CurrentFrame.Hands);
-            CmdHandRep(bytes);*/
-            
             
             //Felix
             if (Player == null || !Player.Replaying)
@@ -107,30 +98,6 @@ namespace Leap.Unity {
             }*/
         }
 
-        [Command]
-        void CmdHandRep(byte[] list)
-        {
-            Debug.Log("Command");
-            RpcHandRep(list);
-        }
-
-        [ClientRpc]
-        void RpcHandRep(byte[] list)
-        {
-            Debug.Log("Rpc");
-            if (!this.hasAuthority)
-            {
-                Debug.Log("No authority");
-                List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
-                UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
-            }
-            else
-            {
-                Debug.Log("Authority");
-                UpdateHandRepresentations(provider.CurrentFrame.Hands, graphicsReps, ModelType.Graphics);
-            }
-        }
-
         /** Updates the physics HandRepresentations. */
         protected virtual void FixedUpdate() {
             /*Frame fixedFrame = provider.CurrentFixedFrame;
@@ -155,8 +122,6 @@ namespace Leap.Unity {
             }*/
 
             //Felix
-
-            return;
             if (Player == null || !Player.Replaying)
             {
                 Frame fixedFrame = provider.CurrentFixedFrame;
