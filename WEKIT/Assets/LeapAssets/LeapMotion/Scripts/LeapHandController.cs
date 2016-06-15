@@ -14,6 +14,7 @@ namespace Leap.Unity {
         //Felix
         public LeapPlayer Player;
         private List<Hand> _hl;
+      public bool Server;
 
         protected Dictionary<int, HandRepresentation> graphicsReps = new Dictionary<int, HandRepresentation>();
     protected Dictionary<int, HandRepresentation> physicsReps = new Dictionary<int, HandRepresentation>();
@@ -58,10 +59,10 @@ namespace Leap.Unity {
                 provider = GetComponent<LeapProvider>();
             }
             //Felix
-            if (Player == null)
+            /*if (Player == null)
             {
                 Player = GetComponent<LeapPlayer>();
-            }
+            }*/
     }
 
     /** Updates the graphics HandRepresentations. */
@@ -71,22 +72,23 @@ namespace Leap.Unity {
             if (frame != null && graphicsEnabled) {
               UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
             }*/
-
-            if (!isLocalPlayer)
+            
+            if (!(Server==isServer))
                 return;
 
-        byte[] bytes = Compression.ConvertToBytes<List<Hand>>(provider.CurrentFrame.Hands);
-            CmdHandRep(bytes);
-
-            /*
+        /*byte[] bytes = Compression.ConvertToBytes<List<Hand>>(provider.CurrentFrame.Hands);
+            CmdHandRep(bytes);*/
+            
+            
             //Felix
             if (Player == null || !Player.Replaying)
             {
+                Debug.Log("Count: "+provider.CurrentFrame.Hands.Count);
                 Frame frame = provider.CurrentFrame;
                 if (frame != null && graphicsEnabled)
                 {
-                    //UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
-                    UpdateHandRepresentations(frame.Hands, graphicsReps, ModelType.Graphics);
+                    UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
+                    //UpdateHandRepresentations(frame.Hands, graphicsReps, ModelType.Graphics);
                 }
             }
             else if (Player != null)
@@ -108,19 +110,23 @@ namespace Leap.Unity {
         [Command]
         void CmdHandRep(byte[] list)
         {
+            Debug.Log("Command");
             RpcHandRep(list);
         }
 
         [ClientRpc]
         void RpcHandRep(byte[] list)
         {
+            Debug.Log("Rpc");
             if (!this.hasAuthority)
             {
+                Debug.Log("No authority");
                 List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
                 UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
             }
             else
             {
+                Debug.Log("Authority");
                 UpdateHandRepresentations(provider.CurrentFrame.Hands, graphicsReps, ModelType.Graphics);
             }
         }
@@ -149,6 +155,8 @@ namespace Leap.Unity {
             }*/
 
             //Felix
+
+            return;
             if (Player == null || !Player.Replaying)
             {
                 Frame fixedFrame = provider.CurrentFixedFrame;
