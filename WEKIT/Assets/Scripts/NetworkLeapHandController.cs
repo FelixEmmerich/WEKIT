@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Channels;
 using UnityEngine.Networking;
 
 namespace Leap.Unity
@@ -89,7 +90,6 @@ namespace Leap.Unity
 
             //Felix
 
-            Debug.Log("Count: " + provider.CurrentFrame.Hands.Count);
             Frame frame = provider.CurrentFrame;
             if (frame != null && graphicsEnabled)
             {
@@ -104,14 +104,14 @@ namespace Leap.Unity
             }*/
         }
 
-        [Command]
+        [Command(channel=1)]
         void CmdHandRep(byte[] list)
         {
             Debug.Log("Command");
             RpcHandRep(list);
         }
 
-        [ClientRpc]
+        [ClientRpc(channel=1)]
         void RpcHandRep(byte[] list)
         {
             Debug.Log("Rpc");

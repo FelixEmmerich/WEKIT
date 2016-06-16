@@ -11,7 +11,6 @@ namespace Leap.Unity {
         //Felix
         public LeapPlayer Player;
         private List<Hand> _hl;
-      public bool Server;
 
         protected Dictionary<int, HandRepresentation> graphicsReps = new Dictionary<int, HandRepresentation>();
     protected Dictionary<int, HandRepresentation> physicsReps = new Dictionary<int, HandRepresentation>();

@@ -2386,7 +2386,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 407494}
-  - 114: {fileID: 11462428}
+  - 114: {fileID: 11427398}
   - 114: {fileID: 11495210}
   - 114: {fileID: 11494544}
   - 114: {fileID: 11478790}
@@ -28826,6 +28826,19 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   filtering: 0.5
+--- !u!114 &11427398
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 131166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c68ef03ea41a3194a9b4b29c7865ecc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  provider: {fileID: 11495210}
+  Server: 0
 --- !u!114 &11436800
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -28942,19 +28955,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   filtering: 0.5
---- !u!114 &11462428
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 131166}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 215a4d49fc705b74a9d3c5cbfa2c9601, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  provider: {fileID: 11495210}
-  Player: {fileID: 0}
 --- !u!114 &11465800
 MonoBehaviour:
   m_ObjectHideFlags: 1
