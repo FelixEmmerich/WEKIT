@@ -81,16 +81,16 @@ namespace Leap.Unity
               UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
             }*/
 
-            if ((isServer || isClient) && (Server != isServer))
+            if (((isServer || isClient) && (Server != isServer))||provider.CurrentFrame.Hands.Count==0)
                 return;
 
-            /*byte[] bytes = Compression.ConvertToBytes<List<Hand>>(provider.CurrentFrame.Hands);
-                CmdHandRep(bytes);*/
+            byte[] bytes = Compression.ConvertToBytes<List<Hand>>(provider.CurrentFrame.Hands);
+                CmdHandRep(bytes);
 
 
             //Felix
 
-            Frame frame = provider.CurrentFrame;
+            /*Frame frame = provider.CurrentFrame;
             if (frame != null && graphicsEnabled)
             {
                 //UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);

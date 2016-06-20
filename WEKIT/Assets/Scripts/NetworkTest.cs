@@ -1,17 +1,21 @@
-﻿using UnityEngine;
+﻿using Leap.Unity;
+using UnityEngine;
 using UnityEngine.Networking;
 
 public class NetworkTest : NetworkBehaviour
 {
+
+    public NetworkLeapHandController a;
+
     void Update()
     {
         if (!isLocalPlayer)
             return;
 
-        if (Input.GetKeyDown(KeyCode.A))
+        /*if (Input.GetKeyDown(KeyCode.A))
         {
             CmdTest("Original");
-        }
+        }*/
 
         /*var x = Input.GetAxis("Horizontal") * 0.1f;
         var y = Input.GetAxis("Vertical") * 0.1f;
@@ -21,7 +25,18 @@ public class NetworkTest : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
-        GetComponent<MeshRenderer>().material.color = Color.red;
+        //GetComponent<MeshRenderer>().material.color = Color.red;
+        GameObject[] leapHands = GameObject.FindGameObjectsWithTag("Leap");
+        foreach (GameObject leapHand in leapHands)
+        {
+            NetworkLeapHandController nlhc = leapHand.GetComponent<NetworkLeapHandController>();
+            if (nlhc != null&&nlhc.Server==isServer)
+            {
+                a = nlhc;
+                CmdAssignAuthority(leapHand.GetComponent<NetworkIdentity>(), GetComponent<NetworkIdentity>());
+                break;
+            }
+        }
     }
 
     [Command]
@@ -42,5 +57,11 @@ public class NetworkTest : NetworkBehaviour
         {
             Debug.Log("Authority");
         }
+    }
+
+    [Command]
+    void CmdAssignAuthority(NetworkIdentity grabID, NetworkIdentity playerID)
+    {
+        grabID.AssignClientAuthority(connectionToClient);
     }
 }

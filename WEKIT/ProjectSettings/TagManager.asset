@@ -8,6 +8,7 @@ TagManager:
   - Character
   - Glove
   - Target
+  - Leap
   layers:
   - Default
   - TransparentFX
