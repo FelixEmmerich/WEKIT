@@ -4,13 +4,14 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using Ionic.Zip;
+using UnityEngine;
 
 public class Compression
 {
     public static void AddItemToCompoundArchive(MemoryStream mStream, string fullpath, string entryName)
     {
         bool fileExists = File.Exists(fullpath);
-        using (ZipFile zipFile =fileExists?new ZipFile(fullpath):new ZipFile())
+        using (ZipFile zipFile = fileExists?new ZipFile(fullpath):new ZipFile())
         {
             //serialize item to memorystream
             using (mStream)
@@ -165,6 +166,7 @@ public class Compression
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream m = new MemoryStream();
         bf.Serialize(m, source);
+        Debug.Log(m.Length);
         return m.ToArray();
     }
 

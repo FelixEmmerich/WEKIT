@@ -11,6 +11,7 @@ namespace Leap.Unity
     {
         public LeapProvider provider;
         protected HandFactory factory;
+        public const int chunnel=1;
 
         //Felix
         public bool Server;
@@ -84,7 +85,7 @@ namespace Leap.Unity
             if (((isServer || isClient) && (Server != isServer))||provider.CurrentFrame.Hands.Count==0)
                 return;
 
-            byte[] bytes = Compression.ConvertToBytes<List<Hand>>(provider.CurrentFrame.Hands);
+            byte[] bytes = Compression.ConvertToBytes(provider.CurrentFrame.Hands);
                 CmdHandRep(bytes);
 
 
@@ -104,14 +105,14 @@ namespace Leap.Unity
             }*/
         }
 
-        [Command(channel=1)]
+        [Command(channel=chunnel)]
         void CmdHandRep(byte[] list)
         {
             Debug.Log("Command");
             RpcHandRep(list);
         }
 
-        [ClientRpc(channel=1)]
+        [ClientRpc(channel=chunnel)]
         void RpcHandRep(byte[] list)
         {
             Debug.Log("Rpc");

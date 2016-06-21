@@ -73,7 +73,6 @@ namespace Leap.Unity {
             //Felix
             if (Player == null || !Player.Replaying)
             {
-                Debug.Log("Count: "+provider.CurrentFrame.Hands.Count);
                 Frame frame = provider.CurrentFrame;
                 if (frame != null && graphicsEnabled)
                 {

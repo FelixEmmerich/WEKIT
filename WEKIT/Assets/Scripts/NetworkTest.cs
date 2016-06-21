@@ -4,9 +4,6 @@ using UnityEngine.Networking;
 
 public class NetworkTest : NetworkBehaviour
 {
-
-    public NetworkLeapHandController a;
-
     void Update()
     {
         if (!isLocalPlayer)
@@ -32,7 +29,6 @@ public class NetworkTest : NetworkBehaviour
             NetworkLeapHandController nlhc = leapHand.GetComponent<NetworkLeapHandController>();
             if (nlhc != null&&nlhc.Server==isServer)
             {
-                a = nlhc;
                 CmdAssignAuthority(leapHand.GetComponent<NetworkIdentity>(), GetComponent<NetworkIdentity>());
                 break;
             }
