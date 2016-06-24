@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Channels;
+using System.IO;
 using UnityEngine.Networking;
 
 namespace Leap.Unity
@@ -9,9 +9,14 @@ namespace Leap.Unity
      * LeapHandController uses a Factory to create and update HandRepresentations based on Frame's received from a Provider  */
     public class NetworkLeapHandController : NetworkBehaviour
     {
-        public LeapProvider provider;
-        protected HandFactory factory;
-        public const int chunnel=1;
+        public LeapProvider Provider;
+        protected HandFactory Factory;
+        public const int Chunnel=1;
+
+        private int _counter = 0;
+
+        private byte[] _bytes;
+
 
         //Felix
         public bool Server;
@@ -58,123 +63,95 @@ namespace Leap.Unity
 
         protected virtual void Start()
         {
-            //provider = requireComponent<LeapProvider>();
-            factory = requireComponent<HandFactory>();
+            Factory = requireComponent<HandFactory>();
 
             //Felix
-            if (provider == null)
+            if (Provider == null)
             {
-                provider = GetComponent<LeapProvider>();
+                Provider = GetComponent<LeapProvider>();
             }
-            //Felix
-            /*if (Player == null)
-            {
-                Player = GetComponent<LeapPlayer>();
-            }*/
         }
 
         /** Updates the graphics HandRepresentations. */
         protected virtual void Update()
         {
-            /*Frame frame = provider.CurrentFrame;
 
-            if (frame != null && graphicsEnabled) {
-              UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
-            }*/
-
-            if (((isServer || isClient) && (Server != isServer))||provider.CurrentFrame.Hands.Count==0)
+            if (((isServer || isClient) && (Server != isServer))||Provider.CurrentFrame.Hands.Count==0)
                 return;
 
-            byte[] bytes = Compression.ConvertToBytes(provider.CurrentFrame.Hands);
-                CmdHandRep(bytes);
+            byte[] bytes = Compression.ConvertToBytes(Provider.CurrentFrame.Hands);
 
-
-            //Felix
-
-            /*Frame frame = provider.CurrentFrame;
-            if (frame != null && graphicsEnabled)
+            if (!isServer)
             {
-                //UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
-                UpdateHandRepresentations(frame.Hands, graphicsReps, ModelType.Graphics);
+                if (_counter == 0)
+                {
+                    CmdHandRep(bytes);
+                }
+                else
+                {
+                    CmdHandRep2(bytes);
+                }
             }
-            //Frame frame = Provider.CurrentFrame;
-            /*if (frame.Id != prev_graphics_id_ && graphicsEnabled) {
-              UpdateHandRepresentations(graphicsReps, ModelType.Graphics);
-              prev_graphics_id_ = frame.Id;
-
-            }*/
+            else
+            {
+                if (_counter == 0)
+                {
+                    RpcHandRep(bytes);
+                }
+                else
+                {
+                    RpcHandRep2(bytes);
+                }
+            }
         }
 
-        [Command(channel=chunnel)]
+        [Command(channel=Chunnel)]
         void CmdHandRep(byte[] list)
         {
-            Debug.Log("Command");
-            RpcHandRep(list);
+            _counter = 1;
+            _bytes = list;
+            List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+            UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
         }
 
-        [ClientRpc(channel=chunnel)]
+        [Command(channel = Chunnel)]
+        void CmdHandRep2(byte[] list)
+        {
+            _counter = 0;
+            List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+            UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
+        }
+
+        [ClientRpc(channel=Chunnel)]
         void RpcHandRep(byte[] list)
         {
-            Debug.Log("Rpc");
+            _counter = 1;
+            _bytes = list;
             if (!this.hasAuthority)
             {
-                Debug.Log("No authority");
                 List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
                 UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
             }
             else
             {
-                Debug.Log("Authority");
-                UpdateHandRepresentations(provider.CurrentFrame.Hands, graphicsReps, ModelType.Graphics);
+                UpdateHandRepresentations(Provider.CurrentFrame.Hands, graphicsReps, ModelType.Graphics);
             }
         }
 
-        /** Updates the physics HandRepresentations. */
-        protected virtual void FixedUpdate()
+        [ClientRpc(channel = Chunnel)]
+        void RpcHandRep2(byte[] list)
         {
-            /*Frame fixedFrame = provider.CurrentFixedFrame;
-
-            if (fixedFrame != null && physicsEnabled) {
-              UpdateHandRepresentations(physicsReps, ModelType.Physics, fixedFrame);
-            }*/
-
-            ///////////////////////////////////////////////////////////////
-
-            //All FixedUpdates of a frame happen before Update, so only the last of these calculations is passed
-            //into Update for smoothing.
-            /*var latestFrame = Provider.CurrentFrame;
-            Provider.PerFrameFixedUpdateOffset = latestFrame.Timestamp * NS_TO_S - Time.fixedTime;
-
-            Frame frame = Provider.GetFixedFrame();
-
-            if (frame.Id != prev_physics_id_ && physicsEnabled) {
-              UpdateHandRepresentations(physicsReps, ModelType.Physics);
-              //UpdateHandModels(hand_physics_, frame.Hands, leftPhysicsModel, rightPhysicsModel); //Originally commented out
-              prev_physics_id_ = frame.Id;
-            }*/
-
-            //Felix
-
-            return;
-            /*if (Player == null || !Player.Replaying)
+            _counter = 0;
+            if (!this.hasAuthority)
             {
-                Frame fixedFrame = provider.CurrentFixedFrame;
-
-                if (fixedFrame != null && physicsEnabled)
-                {
-                    UpdateHandRepresentations(physicsReps, ModelType.Physics, fixedFrame);
-                }
+                List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+                UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
             }
-            else if (Player != null)
+            else
             {
-                //HandList hl = Player.GetCurrentFrame();
-                if ((int)Player.Index != Player.PreviousIndex && _hl != null)
-                {
-                    UpdateHandRepresentations(_hl, physicsReps, ModelType.Physics);
-                }
-            }*/
+                UpdateHandRepresentations(Provider.CurrentFrame.Hands, graphicsReps, ModelType.Graphics);
+            }
         }
-
 
         //Felix
         void UpdateHandRepresentations(List<Hand> list, Dictionary<int, HandRepresentation> all_hand_reps, ModelType modelType)
@@ -184,21 +161,17 @@ namespace Leap.Unity
                 HandRepresentation rep;
                 if (!all_hand_reps.TryGetValue(curHand.Id, out rep))
                 {
-                    rep = factory.MakeHandRepresentation(curHand, modelType);
+                    rep = Factory.MakeHandRepresentation(curHand, modelType);
                     if (rep != null)
                     {
                         all_hand_reps.Add(curHand.Id, rep);
-                        //float hand_scale = curHand.PalmWidth / rep.handModel.handModelPalmWidth;
-                        //rep.handModel.transform.localScale = hand_scale * Vector3.one;
                     }
                 }
                 if (rep != null)
                 {
                     rep.IsMarked = true;
-                    //float hand_scale = curHand.PalmWidth / rep.handModel.handModelPalmWidth;
-                    //rep.handModel.transform.localScale = hand_scale * Vector3.one;
                     rep.UpdateRepresentation(curHand);
-                    rep.LastUpdatedTime = (int)provider.CurrentFrame.Timestamp;
+                    rep.LastUpdatedTime = (int)Provider.CurrentFrame.Timestamp;
                 }
             }
 
@@ -210,77 +183,16 @@ namespace Leap.Unity
                 {
                     if (r.Value.IsMarked)
                     {
-                        //Debug.Log("LeapHandController Marking False");
                         r.Value.IsMarked = false;
                     }
                     else
                     {
-                        //Initialize toBeDeleted with a value to be deleted
-                        //Debug.Log("Finishing");
                         toBeDeleted = r.Value;
                     }
                 }
             }
             //Inform the representation that we will no longer be giving it any hand updates
             //because the corresponding hand has gone away
-            if (toBeDeleted != null)
-            {
-                all_hand_reps.Remove(toBeDeleted.HandID);
-                toBeDeleted.Finish();
-            }
-        }
-
-        /** 
-              * Updates HandRepresentations based in the specified HandRepresentation Dictionary.
-              * Active HandRepresentation instances are updated if the hand they represent is still
-              * present in the Provider's CurrentFrame; otherwise, the HandRepresentation is removed. If new
-              * Leap Hand objects are present in the Leap HandRepresentation Dictionary, new HandRepresentations are 
-              * created and added to the dictionary. 
-              * @param all_hand_reps = A dictionary of Leap Hand ID's with a paired HandRepresentation
-              * @param modelType Filters for a type of hand model, for example, physics or graphics hands.
-              * @param frame The Leap Frame containing Leap Hand data for each currently tracked hand
-              */
-        void UpdateHandRepresentations(Dictionary<int, HandRepresentation> all_hand_reps, ModelType modelType, Frame frame)
-        {
-            foreach (Leap.Hand curHand in frame.Hands)
-            {
-                HandRepresentation rep;
-                if (!all_hand_reps.TryGetValue(curHand.Id, out rep))
-                {
-                    rep = factory.MakeHandRepresentation(curHand, modelType);
-                    if (rep != null)
-                    {
-                        all_hand_reps.Add(curHand.Id, rep);
-                    }
-                }
-                if (rep != null)
-                {
-                    rep.IsMarked = true;
-                    rep.UpdateRepresentation(curHand);
-                    rep.LastUpdatedTime = (int)frame.Timestamp;
-                }
-            }
-
-            /** Mark-and-sweep to finish unused HandRepresentations */
-            HandRepresentation toBeDeleted = null;
-            foreach (KeyValuePair<int, HandRepresentation> r in all_hand_reps)
-            {
-                if (r.Value != null)
-                {
-                    if (r.Value.IsMarked)
-                    {
-                        r.Value.IsMarked = false;
-                    }
-                    else
-                    {
-                        /** Initialize toBeDeleted with a value to be deleted */
-                        //Debug.Log("Finishing");
-                        toBeDeleted = r.Value;
-                    }
-                }
-            }
-            /**Inform the representation that we will no longer be giving it any hand updates 
-             * because the corresponding hand has gone away */
             if (toBeDeleted != null)
             {
                 all_hand_reps.Remove(toBeDeleted.HandID);
