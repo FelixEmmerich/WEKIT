@@ -20,7 +20,7 @@ namespace Leap.Unity
 
         private byte[] _bytes;
         private byte[] _lastFrame;
-
+        
 
         //Felix
         public bool Server;
@@ -80,16 +80,43 @@ namespace Leap.Unity
         protected virtual void Update()
         {
 
-            if (((isServer || isClient) && (Server != isServer))||Provider.CurrentFrame.Hands.Count==0)
+            if (((isServer || isClient) && (Server != isServer))/*||Provider.CurrentFrame.Hands.Count==0*/)
                 return;
 
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                char[] rv = {'a','b','c','d','e'};
+                Debug.Log("Original");
+                foreach (char c in rv)
+                {
+                    Debug.Log(c);
+                }
+                char[] rv2=new char[rv.Length/2];
+                System.Buffer.BlockCopy(rv, 0, rv2, 0, rv.Length/2*sizeof(char));
+                Debug.Log("Copy");
+                foreach (char c in rv2)
+                {
+                    Debug.Log(c);
+                }
+                char[] rv3=new char[rv.Length-rv.Length/2];
+                System.Buffer.BlockCopy(rv, rv.Length / 2*sizeof(char), rv3, 0, (rv.Length - (rv.Length / 2))*sizeof(char));
+                Debug.Log("Other half");
+                foreach (char c in rv3)
+                {
+                    Debug.Log(c);
+                }
+            }
+            return;
             if (_counter == 0)
             {
                 _lastFrame = Compression.ConvertToBytes(Provider.CurrentFrame.Hands);
             }
 
+            Debug.Log("Counter is " + _counter);
+
             if (!isServer)
             {
+                Debug.Log("Not server");
                 if (_counter == 0)
                 {
                     byte[] rv = new byte[_lastFrame.Length/2];
@@ -100,25 +127,28 @@ namespace Leap.Unity
                 else
                 {
                     byte[] rv = new byte[_lastFrame.Length-(_lastFrame.Length / 2)];
-                    System.Buffer.BlockCopy(_lastFrame, 0, rv, _lastFrame.Length/2, _lastFrame.Length - (_lastFrame.Length / 2));
+                    System.Buffer.BlockCopy(_lastFrame, _lastFrame.Length / 2, rv, 0, _lastFrame.Length - (_lastFrame.Length / 2));
 
                     CmdHandRep2(_lastFrame);
                 }
             }
             else
             {
+                Debug.Log("Server");
                 if (_counter == 0)
                 {
                     byte[] rv = new byte[_lastFrame.Length / 2];
+                    Debug.Log("Before blockcopy");
                     System.Buffer.BlockCopy(_lastFrame, 0, rv, 0, _lastFrame.Length / 2);
-
+                    Debug.Log("After Blockccopy");
                     RpcHandRep(rv);
                 }
                 else
                 {
                     byte[] rv = new byte[_lastFrame.Length - (_lastFrame.Length / 2)];
+                    Debug.Log("Before blockcopy");
                     System.Buffer.BlockCopy(_lastFrame, 0, rv, _lastFrame.Length / 2, _lastFrame.Length - (_lastFrame.Length / 2));
-
+                    Debug.Log("After Blockccopy");
                     RpcHandRep2(rv);
                 }
             }
