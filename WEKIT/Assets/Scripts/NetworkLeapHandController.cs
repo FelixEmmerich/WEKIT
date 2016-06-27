@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using UnityEngine.Networking;
 
 namespace Leap.Unity
@@ -11,11 +12,14 @@ namespace Leap.Unity
     {
         public LeapProvider Provider;
         protected HandFactory Factory;
+
+        //Channel should be Reliable Fragmented, Network Manager does not save this
         public const int Chunnel=1;
 
         private int _counter = 0;
 
         private byte[] _bytes;
+        private byte[] _lastFrame;
 
 
         //Felix
@@ -79,28 +83,43 @@ namespace Leap.Unity
             if (((isServer || isClient) && (Server != isServer))||Provider.CurrentFrame.Hands.Count==0)
                 return;
 
-            byte[] bytes = Compression.ConvertToBytes(Provider.CurrentFrame.Hands);
+            if (_counter == 0)
+            {
+                _lastFrame = Compression.ConvertToBytes(Provider.CurrentFrame.Hands);
+            }
 
             if (!isServer)
             {
                 if (_counter == 0)
                 {
-                    CmdHandRep(bytes);
+                    byte[] rv = new byte[_lastFrame.Length/2];
+                    System.Buffer.BlockCopy(_lastFrame, 0, rv, 0, _lastFrame.Length/2);
+
+                    CmdHandRep(rv);
                 }
                 else
                 {
-                    CmdHandRep2(bytes);
+                    byte[] rv = new byte[_lastFrame.Length-(_lastFrame.Length / 2)];
+                    System.Buffer.BlockCopy(_lastFrame, 0, rv, _lastFrame.Length/2, _lastFrame.Length - (_lastFrame.Length / 2));
+
+                    CmdHandRep2(_lastFrame);
                 }
             }
             else
             {
                 if (_counter == 0)
                 {
-                    RpcHandRep(bytes);
+                    byte[] rv = new byte[_lastFrame.Length / 2];
+                    System.Buffer.BlockCopy(_lastFrame, 0, rv, 0, _lastFrame.Length / 2);
+
+                    RpcHandRep(rv);
                 }
                 else
                 {
-                    RpcHandRep2(bytes);
+                    byte[] rv = new byte[_lastFrame.Length - (_lastFrame.Length / 2)];
+                    System.Buffer.BlockCopy(_lastFrame, 0, rv, _lastFrame.Length / 2, _lastFrame.Length - (_lastFrame.Length / 2));
+
+                    RpcHandRep2(rv);
                 }
             }
         }
@@ -110,15 +129,20 @@ namespace Leap.Unity
         {
             _counter = 1;
             _bytes = list;
-            List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
-            UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
+            //List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+            //UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
         }
 
         [Command(channel = Chunnel)]
         void CmdHandRep2(byte[] list)
         {
             _counter = 0;
-            List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+
+            byte[] rv = new byte[_bytes.Length + list.Length];
+            System.Buffer.BlockCopy(_bytes, 0, rv, 0, _bytes.Length);
+            System.Buffer.BlockCopy(list, 0, rv, _bytes.Length, list.Length);
+
+            List<Hand> hands = Compression.GetFromBytes<List<Hand>>(rv);
             UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
         }
 
@@ -129,8 +153,8 @@ namespace Leap.Unity
             _bytes = list;
             if (!this.hasAuthority)
             {
-                List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
-                UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
+                //List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+                //UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
             }
             else
             {
@@ -144,7 +168,11 @@ namespace Leap.Unity
             _counter = 0;
             if (!this.hasAuthority)
             {
-                List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+                byte[] rv = new byte[_bytes.Length + list.Length];
+                System.Buffer.BlockCopy(_bytes, 0, rv, 0, _bytes.Length);
+                System.Buffer.BlockCopy(list, 0, rv, _bytes.Length, list.Length);
+
+                List<Hand> hands = Compression.GetFromBytes<List<Hand>>(rv);
                 UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
             }
             else
