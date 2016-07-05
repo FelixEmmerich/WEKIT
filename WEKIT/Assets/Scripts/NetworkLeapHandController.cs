@@ -103,7 +103,7 @@ namespace Leap.Unity
                     CmdHandRep2(rv);
                 }
             }
-            else
+            /*else
             {
                 if (_counter == 0)
                 {
@@ -117,7 +117,7 @@ namespace Leap.Unity
                     System.Buffer.BlockCopy(_lastFrame, _lastFrame.Length / 2 * sizeof(byte), rv, 0, (_lastFrame.Length - (_lastFrame.Length / 2))*sizeof(byte));
                     RpcHandRep2(rv);
                 }
-            }
+            }*/
         }
 
         [Command(channel=Chunnel)]
@@ -125,21 +125,34 @@ namespace Leap.Unity
         {
             _counter = 1;
             _bytes = list;
-            //List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
-            //UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
+            if (!this.hasAuthority)
+            {
+                //List<Hand> hands = Compression.GetFromBytes<List<Hand>>(list);
+                //UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
+            }
+            else
+            {
+                UpdateHandRepresentations(Provider.CurrentFrame.Hands, graphicsReps, ModelType.Graphics);
+            }
         }
 
         [Command(channel = Chunnel)]
         void CmdHandRep2(byte[] list)
         {
             _counter = 0;
+            if (!this.hasAuthority)
+            {
+                byte[] rv = new byte[_bytes.Length + list.Length];
+                System.Buffer.BlockCopy(_bytes, 0, rv, 0, _bytes.Length);
+                System.Buffer.BlockCopy(list, 0, rv, _bytes.Length, list.Length);
 
-            byte[] rv = new byte[_bytes.Length + list.Length];
-            System.Buffer.BlockCopy(_bytes, 0, rv, 0, _bytes.Length);
-            System.Buffer.BlockCopy(list, 0, rv, _bytes.Length, list.Length);
-
-            List<Hand> hands = Compression.GetFromBytes<List<Hand>>(rv);
-            UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
+                List<Hand> hands = Compression.GetFromBytes<List<Hand>>(rv);
+                UpdateHandRepresentations(hands, graphicsReps, ModelType.Graphics);
+            }
+            else
+            {
+                UpdateHandRepresentations(Provider.CurrentFrame.Hands, graphicsReps, ModelType.Graphics);
+            }
         }
 
         [ClientRpc(channel=Chunnel)]
