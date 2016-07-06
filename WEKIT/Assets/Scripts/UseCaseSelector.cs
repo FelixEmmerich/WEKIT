@@ -9,6 +9,7 @@ public class UseCaseSelector : MonoBehaviour
 	public class UseCase
 	{
 		public List<UseCaseElement> Elements;
+		public string Name;
 	}
 
 	[Serializable]
@@ -19,7 +20,10 @@ public class UseCaseSelector : MonoBehaviour
 	}
 
 	public List<UseCase> UseCases;
-	public int CurrentIndex=-1;
+	public int UseCaseIndex=-1;
+	public int UseCaseElementIndex = -1;
+	public WekitPlayerContainer Container;
+	public bool Active = true;
 
 	// Use this for initialization
 	void Start ()
@@ -31,6 +35,19 @@ public class UseCaseSelector : MonoBehaviour
 	void Update ()
 	{
 	
+	}
+
+	public virtual void OnGUI()
+	{
+		foreach (UseCase useCase in UseCases)
+		{
+			
+		}
+	}
+
+	public void ActivateUseCaseElement(UseCaseElement element)
+	{
+		
 	}
 
 }

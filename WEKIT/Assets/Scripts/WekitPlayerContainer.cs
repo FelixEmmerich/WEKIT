@@ -25,8 +25,8 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
 
-    [SerializeField]
-    private List<WekitPlayer_Base> _wekitPlayers = new List<WekitPlayer_Base>();
+    //[SerializeField]
+    public List<WekitPlayer_Base> WekitPlayers = new List<WekitPlayer_Base>();
 
     [HideInInspector]
     public List<WekitPlayer_Base> ActiveWekitPlayers;
@@ -63,10 +63,13 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     public override void Start()
     {
         base.Start();
-        ActiveWekitPlayers = new List<WekitPlayer_Base>(_wekitPlayers);
-        foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+        ActiveWekitPlayers = new List<WekitPlayer_Base>(/*WekitPlayers*/);
+        foreach (WekitPlayer_Base player in WekitPlayers)
         {
-
+            if (player.gameObject.activeInHierarchy)
+            {
+                ActiveWekitPlayers.Add(player);
+            }
             player.CountDown = CountDown;
         }
         _buttonWidth=Screen.width / 6f;
@@ -132,9 +135,9 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
         if (FrameList.Count>0&&FrameList[0].MyName=="SingleSave"&&(bool)FrameList[0].MyObject)
         {
-            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
+            for (int i = WekitPlayers.Count - 1; i >= 0; i--)
             {
-                WekitPlayer_Base player = _wekitPlayers[i];
+                WekitPlayer_Base player = WekitPlayers[i];
                 player.ClearFrameList();
 
                 for (int j = FrameList.Count - 1; j >= 1; j--)
@@ -169,9 +172,9 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
         else
         {
-            for (int i = _wekitPlayers.Count - 1; i >= 0; i--)
+            for (int i = WekitPlayers.Count - 1; i >= 0; i--)
             {
-                WekitPlayer_Base player = _wekitPlayers[i];
+                WekitPlayer_Base player = WekitPlayers[i];
                 player.ClearFrameList();
                 if (!player.Load(useZip,fileName,entryName))
                 {
@@ -257,53 +260,53 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         }
     }
     
-    //Buttons to activate/deactivate players
+    //Buttons to activate/deactivate players, etc
     void OnGUI()
     {
         if (Recording) return;
-        float x = Screen.width/2f - _buttonWidth*_wekitPlayers.Count/2;
-        for (int i = 0; i < _wekitPlayers.Count; i++)
+        float x = Screen.width/2f - _buttonWidth*WekitPlayers.Count/2;
+        for (int i = 0; i < WekitPlayers.Count; i++)
         {
-            bool contained = ActiveWekitPlayers.Contains(_wekitPlayers[i]);
+            bool contained = ActiveWekitPlayers.Contains(WekitPlayers[i]);
 
             if (RecordGUI)
             {
                 SingleSaveFile = GUI.Toggle(new Rect(0, Screen.height / 20 * 2, Screen.width / 6f, Screen.height / 20f), SingleSaveFile, "Save as 1 file");
 
-                _wekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*_buttonWidth, Screen.height - (Screen.height / 20f*2), _buttonWidth, Screen.height / 20f), _wekitPlayers[i].Stepsize, 1, 3);
+                WekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*_buttonWidth, Screen.height - (Screen.height / 20f*2), _buttonWidth, Screen.height / 20f), WekitPlayers[i].Stepsize, 1, 3);
 
                 if (contained)
                 {
-                    bool focus = GUI.Toggle(new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f*3), _buttonWidth, Screen.height / 20f), _wekitPlayers[i].ForceFocus, "Force focus");
-                    if (focus != _wekitPlayers[i].ForceFocus)
+                    bool focus = GUI.Toggle(new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f*3), _buttonWidth, Screen.height / 20f), WekitPlayers[i].ForceFocus, "Force focus");
+                    if (focus != WekitPlayers[i].ForceFocus)
                     {
-                        _wekitPlayers[i].ForceFocus = focus;
-                        _wekitPlayers[i].SetFocus(true);
+                        WekitPlayers[i].ForceFocus = focus;
+                        WekitPlayers[i].SetFocus(true);
                     }
                 }
 
             }
 
             if (!GUI.Button(new Rect(x + i*_buttonWidth, Screen.height - (Screen.height / 20f), _buttonWidth, Screen.height / 20f),
-                _wekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
+                WekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
 
             //(De)activate button pressed
             if (contained)
             {
-                _wekitPlayers[i].Enabled(false);
-                ActiveWekitPlayers.Remove(_wekitPlayers[i]);
-                Debug.Log("Removed " + _wekitPlayers[i].PlayerName + " from List");
+                WekitPlayers[i].Enabled(false);
+                ActiveWekitPlayers.Remove(WekitPlayers[i]);
+                Debug.Log("Removed " + WekitPlayers[i].PlayerName + " from List");
             }
             else
             {
-                _wekitPlayers[i].Playing = Playing;
-                _wekitPlayers[i].Recording = Recording;
-                _wekitPlayers[i].Replaying = Replaying;
-                _wekitPlayers[i].Speed = Speed;
-                _wekitPlayers[i].Index = Index;
-                _wekitPlayers[i].Enabled(true);
-                ActiveWekitPlayers.Add(_wekitPlayers[i]);
-                Debug.Log("Added " + _wekitPlayers[i] + " to List");
+                WekitPlayers[i].Playing = Playing;
+                WekitPlayers[i].Recording = Recording;
+                WekitPlayers[i].Replaying = Replaying;
+                WekitPlayers[i].Speed = Speed;
+                WekitPlayers[i].Index = Index;
+                WekitPlayers[i].Enabled(true);
+                ActiveWekitPlayers.Add(WekitPlayers[i]);
+                Debug.Log("Added " + WekitPlayers[i] + " to List");
             }
         }
     }
