@@ -21,33 +21,27 @@ public class UseCaseSelector : MonoBehaviour
 
 	public List<UseCase> UseCases;
 	public int UseCaseIndex=-1;
-	public int UseCaseElementIndex = -1;
+	public int UseCaseElementIndex = 0;
 	public WekitPlayerContainer Container;
-	public bool Active = true;
-
-	// Use this for initialization
-	void Start ()
-	{
-	
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	
-	}
+	public float ButtonSize = 20f;
 
 	public virtual void OnGUI()
 	{
-		foreach (UseCase useCase in UseCases)
+		if (UseCaseIndex < 0)
 		{
-			
+			for (int i = 0; i < UseCases.Count; i++)
+			{
+				UseCase useCase = UseCases[i];
+				if (!GUI.Button(new Rect(0, i*ButtonSize, ButtonSize, ButtonSize), UseCases[i].Name))
+				{
+					UseCaseIndex = i;
+				}
+			}
 		}
-	}
+		else
+		{
 
-	public void ActivateUseCaseElement(UseCaseElement element)
-	{
-		
+		}
 	}
 
 }

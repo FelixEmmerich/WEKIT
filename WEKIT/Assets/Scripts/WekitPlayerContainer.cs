@@ -291,23 +291,28 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                 WekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
 
             //(De)activate button pressed
-            if (contained)
-            {
-                WekitPlayers[i].Enabled(false);
-                ActiveWekitPlayers.Remove(WekitPlayers[i]);
-                Debug.Log("Removed " + WekitPlayers[i].PlayerName + " from List");
-            }
-            else
-            {
-                WekitPlayers[i].Playing = Playing;
-                WekitPlayers[i].Recording = Recording;
-                WekitPlayers[i].Replaying = Replaying;
-                WekitPlayers[i].Speed = Speed;
-                WekitPlayers[i].Index = Index;
-                WekitPlayers[i].Enabled(true);
-                ActiveWekitPlayers.Add(WekitPlayers[i]);
-                Debug.Log("Added " + WekitPlayers[i] + " to List");
-            }
+            EnablePlayer(WekitPlayers[i],!contained);
+        }
+    }
+
+    public void EnablePlayer(WekitPlayer_Base player, bool enable)
+    {
+        if (!enable)
+        {
+            player.Enabled(false);
+            ActiveWekitPlayers.Remove(player);
+            Debug.Log("Removed " + player.PlayerName + " from List");
+        }
+        else
+        {
+            player.Playing = Playing;
+            player.Recording = Recording;
+            player.Replaying = Replaying;
+            player.Speed = Speed;
+            player.Index = Index;
+            player.Enabled(true);
+            ActiveWekitPlayers.Add(player);
+            Debug.Log("Added " + player.PlayerName + " to List");
         }
     }
 }
