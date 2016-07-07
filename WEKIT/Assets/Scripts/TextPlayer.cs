@@ -14,6 +14,7 @@ public class TextPlayer : WekitPlayer_Base
         public string Text;
     }
 
+    [Serializable]
     public class TextData
     {
         public float TotalLength;
@@ -24,9 +25,14 @@ public class TextPlayer : WekitPlayer_Base
     {
         get
         {
-            return Data != null? (int)(Data.TotalLength * 10) : 0;
+            return Data != null? (int)(Data.TotalLength) : 0;
         }
     }
+
+    public TextData Data;
+    public int CurrentTextIndex;
+    private IEnumerator _coroutine;
+    private float _starttime;
 
     public void Reset()
     {
@@ -35,8 +41,10 @@ public class TextPlayer : WekitPlayer_Base
         PlayerName = "Text";
     }
 
-    public TextData Data;
-    public int CurrentTextIndex;
+    void Start()
+    {
+        ReplayFps = 0.1f;
+    }
 
     public override bool Load(bool zip, string fileName, string entryName)
     {
@@ -79,7 +87,6 @@ public class TextPlayer : WekitPlayer_Base
     public override void SetIndex(float index, bool relative)
     {
         Index = relative ? FrameCount * index : index;
-        bool matchingText;
         if (Data != null && Data.TextElements.Length>0)
         {
             for (int i = 0; i < Data.TextElements.Length; i++)
@@ -92,5 +99,44 @@ public class TextPlayer : WekitPlayer_Base
             }
         }
         CurrentTextIndex = -1;
+    }
+
+    public override void Record()
+    {
+        if (Replaying) return;
+        //If not recording, begin recording, otherwise stop
+        if (!Recording)
+        {
+            //Start countdown
+            _coroutine = RecordAfterTime(CountDown);
+            StartCoroutine(_coroutine);
+        }
+        else
+        {
+            if (Playing)
+            {
+                ReplayFps = (ReplayFps + Time.deltaTime) / 2 * Stepsize;
+            }
+            else
+            {
+                StopCoroutine(_coroutine);
+            }
+            Recording = false;
+            Playing = false;
+        }
+    }
+
+    public virtual IEnumerator RecordAfterTime(float time)
+    {
+        if (Recording) yield break;
+        Recording = true;
+        Index = 0;
+        yield return new WaitForSeconds(time);
+        //After countdown, only begin the recording process if it wasn't cancelled
+        if (!Recording) yield break;
+        Debug.Log("Start recording " + PlayerName);
+        //FrameList.Clear();
+        Playing = true;
+        _starttime = Time.time;
     }
 }

@@ -68,7 +68,19 @@ public class WekitPlayer_Base : MonoBehaviour
 
     public virtual void Replay()
     {
-        Debug.Log("Replay");
+        if (Recording) return;
+        Replaying = !Replaying;
+        if (Replaying)
+        {
+            Playing = true;
+            PreviousIndex = -1;
+        }
+        else
+        {
+            Index = 0;
+            Speed = 1;
+            Playing = false;
+        }
     }
 
     public virtual void Pause()
