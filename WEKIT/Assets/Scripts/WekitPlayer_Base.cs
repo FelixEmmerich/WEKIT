@@ -73,7 +73,12 @@ public class WekitPlayer_Base : MonoBehaviour
 
     public virtual void Pause()
     {
-        Debug.Log("Pause");
+        if (!Replaying) return;
+        Playing = !Playing;
+        if (Playing)
+        {
+            PreviousIndex = -1;
+        }
     }
 
     public virtual void Enabled(bool value)

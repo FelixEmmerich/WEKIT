@@ -244,16 +244,6 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
         }
     }
 
-    public override void Pause()
-    {
-        if (!Replaying) return;
-        Playing = !Playing;
-        if (Playing)
-        {
-            PreviousIndex = -1;
-        }
-    }
-
     public override void Replay()
     {
         if (Recording) return;
