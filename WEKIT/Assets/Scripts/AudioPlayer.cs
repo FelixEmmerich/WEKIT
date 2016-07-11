@@ -103,7 +103,6 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         {
             int lastSample = Microphone.GetPosition(null);
             Microphone.End(null); //Stop the audio recording
-
             AudioSource.clip = TrimClip(_clip, lastSample);
         }
     }
@@ -133,13 +132,31 @@ public class AudioPlayer : WekitPlayer<bool,bool>
         return newClip;
     }
 
-    public override IEnumerator RecordAfterTime(float time)
+    /*public override IEnumerator RecordAfterTime(float time)
     {
         if (Recording) yield break;
         Recording = true;
         yield return new WaitForSeconds(time);
         //After countdown, only begin the recording process if it wasn't cancelled
         if (!Recording) yield break;
+        Debug.Log("Start recording " + PlayerName);
+        Playing = true;
+        //Currently the max audio recording time is 30 seconds
+        _clip = Microphone.Start(null, true, 30, _maxFreq);
+
+        //Halt EVERYTHING until the microphone is ready. Otherwise the recording may have a noticeable delay
+        while (!(Microphone.GetPosition(null) > 0))
+        {
+        }
+    }*/
+
+    public override void SetUpRecording()
+    {
+        Recording = true;
+    }
+
+    public override void InitiateRecording()
+    {
         Debug.Log("Start recording " + PlayerName);
         Playing = true;
         //Currently the max audio recording time is 30 seconds

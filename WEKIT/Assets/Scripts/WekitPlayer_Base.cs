@@ -116,10 +116,19 @@ public class WekitPlayer_Base : MonoBehaviour
     {
     }
 
-
     public virtual void SetFocus(bool focus)
     {
         //Always true if focus is enforced
         Focus = ForceFocus || focus;
+    }
+
+    public virtual void SetUpRecording()
+    {
+        Debug.Log("SetUpRecording");
+    }
+
+    public virtual void InitiateRecording()
+    {
+        Debug.Log("InitiateRecording");
     }
 }

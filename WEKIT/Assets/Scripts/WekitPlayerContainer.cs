@@ -115,7 +115,28 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             player.CountDown = CountDown;
             //player.Stepsize = Stepsize;
             player.CurrentStep = CurrentStep;
-            player.Record();
+            if (!Recording)
+            {
+                player.Record();
+            }
+        }
+    }
+
+    public override void SetUpRecording()
+    {
+        base.SetUpRecording();
+        foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+        {
+            player.SetUpRecording();
+        }
+    }
+
+    public override void InitiateRecording()
+    {
+        base.InitiateRecording();
+        foreach (WekitPlayer_Base player in ActiveWekitPlayers)
+        {
+            player.InitiateRecording();
         }
     }
 
@@ -145,7 +166,6 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                     if (FrameList[j].MyName == player.PlayerName)
                     {
                         player.MakeDataContainerFromObject(FrameList[j].MyObject);
-                        //Debug.Log(String.Format("Player: {0} | FrameCount: {1} | ReplayFps: {2}", player.PlayerName, player.FrameCount, player.ReplayFps));
 
                         if (player.FrameCount > localMaxFrames)
                         {

@@ -260,7 +260,7 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
             {
                 ReplayFps = (ReplayFps + Time.deltaTime)/2*Stepsize;
             }
-            else
+            else if (_coroutine != null)
             {
                 StopCoroutine(_coroutine);
             }
@@ -282,15 +282,24 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
     public virtual IEnumerator RecordAfterTime(float time)
     {
         if (Recording) yield break;
-        Recording = true;
-        Index = 0;
+        SetUpRecording();
         yield return new WaitForSeconds(time);
         //After countdown, only begin the recording process if it wasn't cancelled
         if (!Recording) yield break;
-        Debug.Log("Start recording " + PlayerName);
+        InitiateRecording();
+    }
+
+    public override void InitiateRecording()
+    {
         FrameList.Clear();
         Playing = true;
         ReplayFps = Time.deltaTime;
+    }
+
+    public override void SetUpRecording()
+    {
+        Recording = true;
+        Index = 0;
     }
 
     //Method is necessary if the type of FrameList isn't known
