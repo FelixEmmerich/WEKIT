@@ -30,9 +30,10 @@ public class TextPlayer : WekitPlayer_Base
     }
 
     public TextData Data;
-    public int CurrentTextIndex;
+    private int _currentTextIndex=-1;
     private IEnumerator _coroutine;
     private float _starttime;
+
 
     public void Reset()
     {
@@ -120,12 +121,12 @@ public class TextPlayer : WekitPlayer_Base
             {
                 if (Data.TextElements[i].StartTime <= Index && Data.TextElements[i].EndTime > Index)
                 {
-                    CurrentTextIndex = i;
+                    _currentTextIndex = i;
                     return;
                 }
             }
         }
-        CurrentTextIndex = -1;
+        _currentTextIndex = -1;
     }
 
     public override void Record()
@@ -147,5 +148,12 @@ public class TextPlayer : WekitPlayer_Base
     public override void SetUpRecording()
     {
         //Just don't Debug.Log
+    }
+
+    private void OnGUI()
+    {
+        var centeredStyle = GUI.skin.GetStyle("Label");
+        centeredStyle.alignment = TextAnchor.UpperCenter;
+        GUI.Label(new Rect(Screen.width/2f-50, Screen.height*0.75f-10, 100, 20),_currentTextIndex==-1||Data==null||Data.TextElements.Length<=_currentTextIndex?"":Data.TextElements[_currentTextIndex].Text, centeredStyle);
     }
 }
