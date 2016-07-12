@@ -46,6 +46,33 @@ public class TextPlayer : WekitPlayer_Base
         ReplayFps = 0.1f;
     }
 
+    void Update()
+    {
+        if (Replaying&&Playing)
+        {
+            SetIndex(Index+Time.time-_starttime,false);
+            _starttime = Time.time;
+        }
+    }
+
+    public override void Replay()
+    {
+        base.Replay();
+        if (Replaying)
+        {
+            _starttime = Time.time;
+        }
+    }
+
+    public override void Pause()
+    {
+        base.Pause();
+        if (Playing)
+        {
+            _starttime = Time.time;
+        }
+    }
+
     public override bool Load(bool zip, string fileName, string entryName)
     {
         if (!UseZip)
@@ -103,40 +130,22 @@ public class TextPlayer : WekitPlayer_Base
 
     public override void Record()
     {
-        if (Replaying) return;
-        //If not recording, begin recording, otherwise stop
+        Replaying = false;
+        Recording = !Recording;
         if (!Recording)
         {
-            //Start countdown
-            _coroutine = RecordAfterTime(CountDown);
-            StartCoroutine(_coroutine);
-        }
-        else
-        {
-            if (Playing)
-            {
-                ReplayFps = (ReplayFps + Time.deltaTime) / 2 * Stepsize;
-            }
-            else
-            {
-                StopCoroutine(_coroutine);
-            }
-            Recording = false;
-            Playing = false;
+            Data.TotalLength = Time.time - _starttime;
         }
     }
 
-    public virtual IEnumerator RecordAfterTime(float time)
+    public override void InitiateRecording()
     {
-        if (Recording) yield break;
-        Recording = true;
-        Index = 0;
-        yield return new WaitForSeconds(time);
-        //After countdown, only begin the recording process if it wasn't cancelled
-        if (!Recording) yield break;
-        Debug.Log("Start recording " + PlayerName);
-        //FrameList.Clear();
-        Playing = true;
         _starttime = Time.time;
+        Recording = true;
+    }
+
+    public override void SetUpRecording()
+    {
+        //Just don't Debug.Log
     }
 }
