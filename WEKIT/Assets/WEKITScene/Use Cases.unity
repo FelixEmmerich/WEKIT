@@ -174,7 +174,7 @@ MonoBehaviour:
   - Name: FineMotorSkill
     Elements:
     - Player: {fileID: 2119502951}
-      Text: Connect Leap Motion
+      Text: Connect Leap
     - Player: {fileID: 0}
       Text: Connect POV-Camera
   - Name: GrossMotorSkill
@@ -430,12 +430,7 @@ MonoBehaviour:
   FrameList: []
   Provider: 1
   UncompressedFileExtension: WEKITData
-  WekitPlayers:
-  - {fileID: 2119502951}
-  - {fileID: 373142367}
-  - {fileID: 970503736}
-  - {fileID: 1521848345}
-  - {fileID: 1764280020}
+  WekitPlayers: []
   ActiveWekitPlayers: []
   SingleSaveFile: 1
   RecordGUI: 1
@@ -786,12 +781,6 @@ MonoBehaviour:
 Transform:
   m_PrefabParentObject: {fileID: 488724, guid: ac4e4a48f80f2cb4dbdb5aea99b1e649, type: 2}
   m_PrefabInternal: {fileID: 1242318539}
---- !u!114 &1521848345 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11475058, guid: b43c519a021870149b3a88b95b167731,
-    type: 2}
-  m_PrefabInternal: {fileID: 845081352}
-  m_Script: {fileID: 11500000, guid: 460745ebe165e3246a0828a8899fd964, type: 3}
 --- !u!1 &1551368674
 GameObject:
   m_ObjectHideFlags: 0
