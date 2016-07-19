@@ -170,23 +170,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e0d5a9e16b4b594b8971e244719a836, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseCases:
-  - Name: FineMotorSkill
-    Elements:
-    - Player: {fileID: 2119502951}
-      Text: Connect Leap
-    - Player: {fileID: 0}
-      Text: Connect POV-Camera
-  - Name: GrossMotorSkill
-    Elements:
-    - Player: {fileID: 373142367}
-      Text: Connect Kinect
-    - Player: {fileID: 0}
-      Text: Connect Static Camera
-  UseCaseIndex: -1
+  UseCases: []
+  UseCaseIndex: -2
   UseCaseElementIndex: 0
   Container: {fileID: 604643276}
   ButtonSize: 100
+  Players:
+  - {fileID: 2119502951}
+  - {fileID: 373142367}
+  - {fileID: 970503736}
+  - {fileID: 845081353}
+  - {fileID: 1764280020}
 --- !u!4 &245027829
 Transform:
   m_ObjectHideFlags: 0
@@ -628,6 +622,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b43c519a021870149b3a88b95b167731, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &845081353 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11475058, guid: b43c519a021870149b3a88b95b167731,
+    type: 2}
+  m_PrefabInternal: {fileID: 845081352}
+  m_Script: {fileID: 11500000, guid: 460745ebe165e3246a0828a8899fd964, type: 3}
 --- !u!1 &970503735
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,7 +1313,7 @@ GameObject:
   - 4: {fileID: 2119502953}
   - 114: {fileID: 2119502951}
   m_Layer: 0
-  m_Name: Player
+  m_Name: LeapPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
