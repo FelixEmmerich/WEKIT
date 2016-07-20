@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<UseCaseList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <UseCases>
+    <UseCase>
+      <UseCaseName>Element0</UseCaseName>
+      <Elements>
+        <UseCaseElement>
+          <PlayerName>Leap</PlayerName>
+          <Message>Connect Leap</Message>
+        </UseCaseElement>
+      </Elements>
+    </UseCase>
+    <UseCase>
+      <UseCaseName>Element1</UseCaseName>
+      <Elements>
+        <UseCaseElement>
+          <PlayerName>Kinect</PlayerName>
+          <Message>Connect Kinect</Message>
+        </UseCaseElement>
+      </Elements>
+    </UseCase>
+    <UseCase>
+      <UseCaseName>Element2</UseCaseName>
+      <Elements>
+        <UseCaseElement>
+          <PlayerName>Myo</PlayerName>
+          <Message>Connect Myo</Message>
+        </UseCaseElement>
+      </Elements>
+    </UseCase>
+    <UseCase>
+      <UseCaseName>Element3</UseCaseName>
+      <Elements>
+        <UseCaseElement>
+          <PlayerName>Audio</PlayerName>
+          <Message>Connect Audio</Message>
+        </UseCaseElement>
+      </Elements>
+    </UseCase>
+    <UseCase>
+      <UseCaseName>Element4</UseCaseName>
+      <Elements>
+        <UseCaseElement>
+          <PlayerName>Text</PlayerName>
+          <Message>Connect Text</Message>
+        </UseCaseElement>
+      </Elements>
+    </UseCase>
+  </UseCases>
+</UseCaseList>

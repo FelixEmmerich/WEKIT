@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.Serialization;
 
 public class UseCaseSelector : MonoBehaviour
@@ -20,6 +21,12 @@ public class UseCaseSelector : MonoBehaviour
 		public string Message;
 	}
 
+	[Serializable]
+	public class UseCaseList
+	{
+		public UseCase[] UseCases;
+	}
+
 	public UseCase[] UseCases;
 	public int UseCaseIndex=-1;
 	public int UseCaseElementIndex;
@@ -31,6 +38,7 @@ public class UseCaseSelector : MonoBehaviour
 	void Start()
 	{
 		//Players = Resources.FindObjectsOfTypeAll(typeof(WekitPlayer_Base)) as WekitPlayer_Base[];
+		LoadUseCases();
 	}
 
 	public virtual void OnGUI()
@@ -85,24 +93,46 @@ public class UseCaseSelector : MonoBehaviour
 		{
 			transform.root.gameObject.SetActive(false); 
 		}
-		if (Input.GetKeyDown(KeyCode.A))
-		{
-			CreateExampleXml("");
-		}
 	}
 
 	//Creates an example XML text file containing the names of all players (except container (this assumes only one container in the scene)) in case the original gets deleted or broken
-	void CreateExampleXml(string name)
+	void CreateExampleXml(string path)
 	{
 		UseCases=new UseCase[Players.Length];
 		for (int i = 0; i < Players.Length; i++)
 		{
-			UseCases[i]=new UseCase();
-			UseCases[i].UseCaseName = "Element" + i;
-			UseCases[i].Elements = new UseCaseElement[1];
-			UseCases[i].Elements[0]=new UseCaseElement();
-			UseCases[i].Elements[0].PlayerName = Players[i].PlayerName;
-			UseCases[i].Elements[0].Message = "Connect "+Players[i].PlayerName;
+			UseCases[i] = new UseCase
+			{
+				UseCaseName = "Element" + i,
+				Elements = new UseCaseElement[1]
+			};
+			UseCases[i].Elements[0] = new UseCaseElement
+			{
+				PlayerName = Players[i].PlayerName,
+				Message = "Connect " + Players[i].PlayerName
+			};
+		}
+		UseCaseList example = new UseCaseList {UseCases = UseCases};
+		XmlSerializer serializer = new XmlSerializer(typeof(UseCaseList));
+		FileStream file = File.Open(path, FileMode.OpenOrCreate);
+		serializer.Serialize(file, example);
+		file.Close();
+	}
+
+	void LoadUseCases()
+	{
+		string path = Application.streamingAssetsPath + @"/UseCases.txt";
+		if (File.Exists(path))
+		{
+			XmlSerializer serializer = new XmlSerializer(typeof(WekitGui.XMLData));
+			StreamReader reader = new StreamReader(path);
+			UseCases = ((UseCaseList) serializer.Deserialize(reader)).UseCases;
+			reader.Close();
+		}
+		//Create file if it doesn't exist
+		else
+		{
+			CreateExampleXml(path);
 		}
 	}
 
