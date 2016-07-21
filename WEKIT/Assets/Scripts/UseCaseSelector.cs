@@ -124,7 +124,7 @@ public class UseCaseSelector : MonoBehaviour
 		string path = Application.streamingAssetsPath + @"/UseCases.txt";
 		if (File.Exists(path))
 		{
-			XmlSerializer serializer = new XmlSerializer(typeof(WekitGui.XMLData));
+			XmlSerializer serializer = new XmlSerializer(typeof(UseCaseList));
 			StreamReader reader = new StreamReader(path);
 			UseCases = ((UseCaseList) serializer.Deserialize(reader)).UseCases;
 			reader.Close();

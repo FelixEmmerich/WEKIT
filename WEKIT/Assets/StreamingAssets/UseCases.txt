@@ -2,11 +2,15 @@
 <UseCaseList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <UseCases>
     <UseCase>
-      <UseCaseName>Element0</UseCaseName>
+      <UseCaseName>Precision Task</UseCaseName>
       <Elements>
         <UseCaseElement>
           <PlayerName>Leap</PlayerName>
           <Message>Connect Leap</Message>
+        </UseCaseElement>
+        <UseCaseElement>
+          <PlayerName></PlayerName>
+          <Message>Connect POV-Camera</Message>
         </UseCaseElement>
       </Elements>
     </UseCase>
