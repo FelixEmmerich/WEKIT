@@ -6,8 +6,6 @@ public class DisplayColor : MonoBehaviour {
 	
 	public DeviceOrEmulator devOrEmu;
 	private Kinect.KinectInterface kinect;
-
-    public KinectVideoPlayer Player; 
 	
 	private Texture2D tex;
 	
@@ -22,17 +20,17 @@ public class DisplayColor : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (kinect.pollColor()||(Player!=null && Player.Replaying))
+		if (kinect.pollColor())
 		{
 			//tex.SetPixels32(kinect.getColor());
-		    /*if (Player != null && Player.Replaying)
-		    {
-                tex.SetPixels32(mipmapImg(Player.GetCurrentFrame().Colors, 640, 480));
-            }
-		    else*/
-		    {
-                tex.SetPixels32(mipmapImg(kinect.getColor(), 640, 480));
-            }
+			/*if (Player != null && Player.Replaying)
+			{
+				tex.SetPixels32(mipmapImg(Player.GetCurrentFrame().Colors, 640, 480));
+			}
+			else*/
+			{
+				tex.SetPixels32(mipmapImg(kinect.getColor(), 640, 480));
+			}
 			tex.Apply(false);
 		}
 	}
@@ -51,7 +49,7 @@ public class DisplayColor : MonoBehaviour {
 				int BLidx = (xx * 2) + (yy * 2 + 1) * width;
 				int BRidx = (xx * 2 + 1) + (yy * 2 + 1) * width;
 				dst[xx + yy * newWidth] = Color32.Lerp(Color32.Lerp(src[BLidx],src[BRidx],.5F),
-				                                       Color32.Lerp(src[TLidx],src[TRidx],.5F),.5F);
+													   Color32.Lerp(src[TLidx],src[TRidx],.5F),.5F);
 			}
 		}
 		return dst;

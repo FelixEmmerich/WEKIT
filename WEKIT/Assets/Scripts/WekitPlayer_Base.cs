@@ -4,7 +4,7 @@ public class WekitPlayer_Base : MonoBehaviour
 {
 
     [HideInInspector]
-    public bool UseZip, UseCompoundArchive, Recording, Playing, Replaying, ForceFocus=false;
+    public bool UseZip, UseCompoundArchive, Recording, Playing, Replaying, ForceFocus=false, HasGui, GuiIsActive=true;
 
     [HideInInspector] public string FileName = "Replay Name",
         LoadFileName = "Replay Name",
@@ -41,29 +41,29 @@ public class WekitPlayer_Base : MonoBehaviour
 
     public virtual void Save()
     {
-        Debug.Log("Save");
+        Debug.Log(PlayerName + ": Save");
     }
 
     public virtual bool Load()
     {
-        Debug.Log("Load");
+        Debug.Log(PlayerName + ": Load");
         return true;
     }
 
     public virtual bool Load(bool zip, string fileName, string entryName)
     {
-        Debug.Log("Load");
+        Debug.Log(PlayerName + ": Load");
         return true;
     }
 
     public virtual void Delete()
     {
-        Debug.Log("Delete");
+        Debug.Log(PlayerName + ": Delete");
     }
 
     public virtual void Record()
     {
-        Debug.Log("Record");
+        Debug.Log(PlayerName + ": Record");
     }
 
     public virtual void Replay()
@@ -101,6 +101,7 @@ public class WekitPlayer_Base : MonoBehaviour
 
     public virtual void ClearFrameList()
     {
+        Debug.Log(PlayerName + ": ClearFrameList");
     }
 
     public virtual object GetListAsObject()
@@ -124,11 +125,24 @@ public class WekitPlayer_Base : MonoBehaviour
 
     public virtual void SetUpRecording()
     {
-        Debug.Log("SetUpRecording");
+        Debug.Log(PlayerName + ": SetUpRecording");
     }
 
     public virtual void InitiateRecording()
     {
-        Debug.Log("InitiateRecording");
+        Debug.Log(PlayerName+": InitiateRecording");
+    }
+
+    public virtual void OnGUI()
+    {
+        if (HasGui && GuiIsActive)
+        {
+            CustomGUI();
+        }
+    }
+
+    public virtual void CustomGUI()
+    {
+        Debug.Log(PlayerName + ": CustomGUI");
     }
 }
