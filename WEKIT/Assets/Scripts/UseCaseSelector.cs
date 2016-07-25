@@ -37,7 +37,7 @@ public class UseCaseSelector : MonoBehaviour
 
 	void Start()
 	{
-		//Players = Resources.FindObjectsOfTypeAll(typeof(WekitPlayer_Base)) as WekitPlayer_Base[];
+		
 		LoadUseCases();
 	}
 
@@ -119,6 +119,7 @@ public class UseCaseSelector : MonoBehaviour
 		file.Close();
 	}
 
+	//Load UseCases text file or create it if it doesn't exist
 	void LoadUseCases()
 	{
 		string path = Application.streamingAssetsPath + @"/UseCases.txt";
