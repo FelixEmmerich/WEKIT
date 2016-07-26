@@ -71,6 +71,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             if (player.gameObject.activeInHierarchy)
             {
                 ActiveWekitPlayers.Add(player);
+                player.GuiIsActive = false;
             }
             player.CountDown = CountDown;
         }
@@ -285,33 +286,50 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     //Buttons to activate/deactivate players, etc
     public override void OnGUI()
     {
+        if (Recording) return;
         base.OnGUI();
+        SingleSaveFile = GUI.Toggle(new Rect(0, Screen.height / 20 * 2, Screen.width / 6f, Screen.height / 20f), SingleSaveFile, "Save as 1 file");
+        if (!GuiIsActive)
+        {
+            
+        }
     }
 
     public override void CustomGUI()
     {
-        if (Recording) return;
         float x = Screen.width / 2f - _buttonWidth * WekitPlayers.Count / 2;
+        
         for (int i = 0; i < WekitPlayers.Count; i++)
         {
             bool contained = ActiveWekitPlayers.Contains(WekitPlayers[i]);
 
-            if (RecordGUI)
+            if (contained&&RecordGUI)
             {
-                SingleSaveFile = GUI.Toggle(new Rect(0, Screen.height / 20 * 2, Screen.width / 6f, Screen.height / 20f), SingleSaveFile, "Save as 1 file");
-
-                WekitPlayers[i].Stepsize = (int)GUI.HorizontalSlider(new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f * 2), _buttonWidth, Screen.height / 20f), WekitPlayers[i].Stepsize, 1, 3);
-
-                if (contained)
+                bool focus =
+                    GUI.Toggle(
+                        new Rect(x + i*_buttonWidth, Screen.height - (Screen.height/20f*4), _buttonWidth,
+                            Screen.height/20f), WekitPlayers[i].ForceFocus, "Force focus");
+                if (focus != WekitPlayers[i].ForceFocus)
                 {
-                    bool focus = GUI.Toggle(new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f * 3), _buttonWidth, Screen.height / 20f), WekitPlayers[i].ForceFocus, "Force focus");
-                    if (focus != WekitPlayers[i].ForceFocus)
-                    {
-                        WekitPlayers[i].ForceFocus = focus;
-                        WekitPlayers[i].SetFocus(true);
-                    }
+                    WekitPlayers[i].ForceFocus = focus;
+                    WekitPlayers[i].SetFocus(true);
                 }
-
+                WekitPlayers[i].Stepsize =
+                    (int)
+                        GUI.HorizontalSlider(
+                            new Rect(x + i*_buttonWidth, Screen.height - (Screen.height/20f*3), _buttonWidth,
+                                Screen.height/20f), WekitPlayers[i].Stepsize, 1, 3);
+                if (WekitPlayers[i].HasGui)
+                {
+                    if (
+                                GUI.Button(
+                                    new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f * 2), _buttonWidth,
+                                        Screen.height / 20f), WekitPlayers[i].PlayerName + " options"))
+                    {
+                        GuiIsActive = false;
+                        WekitPlayers[i].GuiIsActive = true;
+                    } 
+                }
             }
 
             if (!GUI.Button(new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f), _buttonWidth, Screen.height / 20f),
