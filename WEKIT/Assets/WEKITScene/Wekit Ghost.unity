@@ -306,6 +306,8 @@ MonoBehaviour:
   CompoundZipName: Archive Name
   PlayerName: Kinect
   CustomDirectory: Kinect
+  HasGui: 0
+  GuiIsActive: 1
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   CountDown: 3
   ReplayFps: 0
@@ -570,6 +572,8 @@ MonoBehaviour:
   CompoundZipName: Archive Name
   PlayerName: Container
   CustomDirectory: 
+  HasGui: 1
+  GuiIsActive: 1
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   CountDown: 3
   ReplayFps: 0
@@ -867,6 +871,8 @@ MonoBehaviour:
   CompoundZipName: Archive Name
   PlayerName: Myo
   CustomDirectory: Myo
+  HasGui: 0
+  GuiIsActive: 1
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   CountDown: 3
   ReplayFps: 0
@@ -1441,6 +1447,8 @@ MonoBehaviour:
   CompoundZipName: Archive Name
   PlayerName: Leap
   CustomDirectory: Leap
+  HasGui: 0
+  GuiIsActive: 1
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays
   CountDown: 3
   ReplayFps: 0

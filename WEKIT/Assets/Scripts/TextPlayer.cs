@@ -157,4 +157,9 @@ public class TextPlayer : WekitPlayer_Base
         centeredStyle.alignment = TextAnchor.UpperCenter;
         GUI.Label(new Rect(Screen.width/2f-50, Screen.height*0.75f-10, 100, 20),_currentTextIndex==-1||Data==null||Data.TextElements.Length<=_currentTextIndex?"":Data.TextElements[_currentTextIndex].Text, centeredStyle);
     }
+
+    public override void CustomGUI()
+    {
+        
+    }
 }

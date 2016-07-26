@@ -4,7 +4,7 @@ public class WekitPlayer_Base : MonoBehaviour
 {
 
     [HideInInspector]
-    public bool UseZip, UseCompoundArchive, Recording, Playing, Replaying, ForceFocus=false, HasGui, GuiIsActive=true;
+    public bool UseZip, UseCompoundArchive, Recording, Playing, Replaying, ForceFocus=false;
 
     [HideInInspector] public string FileName = "Replay Name",
         LoadFileName = "Replay Name",
@@ -14,6 +14,8 @@ public class WekitPlayer_Base : MonoBehaviour
 
     //Directory within persistent datapath that files are saved in and loaded from
     public string CustomDirectory;
+
+    public bool HasGui, GuiIsActive = true;
 
     public static implicit operator string(WekitPlayer_Base wekit)
     {
