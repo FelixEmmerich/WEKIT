@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Leap;
 using Leap.Unity;
+using UnityEngine;
 
 public class LeapPlayer : WekitPlayer<LeapPlayer.HandList,LeapProvider>
 {
@@ -42,5 +43,13 @@ public class LeapPlayer : WekitPlayer<LeapPlayer.HandList,LeapProvider>
     public override HandList AddFrame()
     {
         return Provider.CurrentFrame.Hands;
+    }
+
+    public override void CustomGUI()
+    {
+        if (GUI.Button(new Rect(Screen.width/2f, Screen.height/2f, 100,50), "Gui stuff"))
+        {
+            Debug.Log("Good job");
+        }
     }
 }

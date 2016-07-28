@@ -31,11 +31,13 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     [HideInInspector]
     public List<WekitPlayer_Base> ActiveWekitPlayers;
 
-    private float _buttonWidth = 100;
+    private float _buttonWidth;
 
     public bool SingleSaveFile=true;
 
     public bool RecordGUI=true;
+
+    private int _activeGuiIndex = -1;
 
     public override void Reset()
     {
@@ -282,6 +284,19 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             player.SetIndex(index / FrameCount, true);
         }
     }
+
+    void SetCustomGuiActive(int index, bool active)
+    {
+        if ((index >= 0) && (index < WekitPlayers.Count))
+        {
+            GuiIsActive = !active;
+            WekitPlayers[index].GuiIsActive = active;
+        }
+        else
+        {
+            Debug.Log("Index can't be found");
+        }
+    }
     
     //Buttons to activate/deactivate players, etc
     public override void OnGUI()
@@ -291,7 +306,10 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         SingleSaveFile = GUI.Toggle(new Rect(0, Screen.height / 20 * 2, Screen.width / 6f, Screen.height / 20f), SingleSaveFile, "Save as 1 file");
         if (!GuiIsActive)
         {
-            
+            if (GUI.Button(new Rect(Screen.width - _buttonWidth, Screen.height*0.95f, _buttonWidth, Screen.height/20f), "Close"))
+            {
+                SetCustomGuiActive(_activeGuiIndex, false);
+            }
         }
     }
 
@@ -326,8 +344,8 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                                     new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f * 2), _buttonWidth,
                                         Screen.height / 20f), WekitPlayers[i].PlayerName + " options"))
                     {
-                        GuiIsActive = false;
-                        WekitPlayers[i].GuiIsActive = true;
+                        _activeGuiIndex = i;
+                        SetCustomGuiActive(i, true);
                     } 
                 }
             }
