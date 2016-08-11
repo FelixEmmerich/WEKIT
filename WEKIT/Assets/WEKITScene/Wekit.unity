@@ -573,6 +573,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 174594, guid: b43c519a021870149b3a88b95b167731, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b43c519a021870149b3a88b95b167731, type: 2}
   m_IsPrefabParent: 0
@@ -816,7 +820,7 @@ MonoBehaviour:
   CustomDirectory: Text
   HasGui: 0
   GuiIsActive: 1
-  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays//
+  SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays/Text/
   CountDown: 3
   ReplayFps: 0
   PreviousIndex: -1

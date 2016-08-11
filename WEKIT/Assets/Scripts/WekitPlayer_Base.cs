@@ -48,8 +48,7 @@ public class WekitPlayer_Base : MonoBehaviour
 
     public virtual bool Load()
     {
-        Debug.Log(PlayerName + ": Load");
-        return true;
+        return Load(UseZip, UseZip && UseCompoundArchive ? CompoundZipName : LoadFileName, LoadFileName);
     }
 
     public virtual bool Load(bool zip, string fileName, string entryName)

@@ -31,15 +31,14 @@ public class TextPlayer : WekitPlayer_Base
 
     public TextData Data;
     private int _currentTextIndex=-1;
-    private IEnumerator _coroutine;
     private float _starttime;
 
 
     public void Reset()
     {
-        SavePath = Application.streamingAssetsPath + @"/Replays/" + CustomDirectory + "/";
         CustomDirectory = "Text";
         PlayerName = "Text";
+        SavePath = Application.streamingAssetsPath + @"/Replays/" + CustomDirectory + "/";
     }
 
     void Start()
@@ -78,10 +77,10 @@ public class TextPlayer : WekitPlayer_Base
     {
         if (!UseZip)
         {
-            string path = SavePath + "/" + CustomDirectory + "/" + LoadFileName + ".txt";
+            string path = SavePath + "/" + fileName + ".txt";
             if (File.Exists(path))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(WekitGui.XMLData));
+                XmlSerializer serializer = new XmlSerializer(typeof(TextData));
                 StreamReader reader = new StreamReader(path);
                 Data = (TextData)serializer.Deserialize(reader);
                 reader.Close();
@@ -91,23 +90,25 @@ public class TextPlayer : WekitPlayer_Base
         }
         else
         {
-            Data = Compression.GetItemFromCompoundArchive<TextData>(SavePath + "/" + CustomDirectory + "/" + (UseCompoundArchive ? CompoundZipName : LoadFileName) + ".zip", LoadFileName + ".txt", new XmlSerializer(typeof(TextData)));
+            Data = Compression.GetItemFromCompoundArchive<TextData>(SavePath + "/" + fileName + ".zip", entryName + ".txt", new XmlSerializer(typeof(TextData)));
             return Data!=null&&Data.TextElements.Length>0;
         }
     }
 
     public override void Save()
     {
+        Directory.CreateDirectory(SavePath);
+
         if (!UseZip)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(TextData));
-            FileStream file = File.Open(SavePath + "/" + CustomDirectory + "/" + FileName + ".txt", FileMode.OpenOrCreate);
+            FileStream file = File.Open(SavePath + "/" + FileName + ".txt", FileMode.OpenOrCreate);
             serializer.Serialize(file, Data);
             file.Close();
         }
         else
         {
-            string filestring = SavePath + "/" + CustomDirectory + "/" + (UseCompoundArchive ? CompoundZipName : FileName) + ".zip";
+            string filestring = SavePath + "/" + (UseCompoundArchive ? CompoundZipName : FileName) + ".zip";
             Compression.AddItemToCompoundArchive(filestring, FileName + ".txt", Data, new XmlSerializer(typeof(TextData)));
         }
     }
@@ -160,6 +161,13 @@ public class TextPlayer : WekitPlayer_Base
 
     public override void CustomGUI()
     {
-        
+        if (Data != null && Data.TotalLength <= 0)
+        {
+            GUI.Label(new Rect(Screen.width/2f, Screen.height/2f, 50, 20), "Record or load a replay");
+        }
+        else
+        {
+            
+        }
     }
 }

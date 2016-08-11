@@ -92,11 +92,6 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
         Debug.Log("Saved " + filestring);
     }
 
-    public override bool Load()
-    {
-        return Load(UseZip, UseZip && UseCompoundArchive ? CompoundZipName : LoadFileName, LoadFileName);
-    }
-
     public override bool Load(bool useZip, string fileName, string entryName)
     {
         string filestring = SavePath;

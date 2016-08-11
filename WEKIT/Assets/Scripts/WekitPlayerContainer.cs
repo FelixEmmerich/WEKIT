@@ -159,6 +159,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         if (!base.Load(useZip,fileName,entryName)) return false;
         int localMaxFrames = 0;
 
+        //Single save file
         if (FrameList.Count>0&&FrameList[0].MyName=="SingleSave"&&(bool)FrameList[0].MyObject)
         {
             for (int i = WekitPlayers.Count - 1; i >= 0; i--)
@@ -195,6 +196,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                 }
             }
         }
+        //Multiple files
         else
         {
             for (int i = WekitPlayers.Count - 1; i >= 0; i--)
@@ -332,17 +334,10 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                     WekitPlayers[i].ForceFocus = focus;
                     WekitPlayers[i].SetFocus(true);
                 }
-                WekitPlayers[i].Stepsize =
-                    (int)
-                        GUI.HorizontalSlider(
-                            new Rect(x + i*_buttonWidth, Screen.height - (Screen.height/20f*3), _buttonWidth,
-                                Screen.height/20f), WekitPlayers[i].Stepsize, 1, 3);
+                WekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*_buttonWidth, Screen.height - (Screen.height/20f*3), _buttonWidth,Screen.height/20f), WekitPlayers[i].Stepsize, 1, 3);
                 if (WekitPlayers[i].HasGui)
                 {
-                    if (
-                                GUI.Button(
-                                    new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f * 2), _buttonWidth,
-                                        Screen.height / 20f), WekitPlayers[i].PlayerName + " options"))
+                    if (GUI.Button(new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f * 2), _buttonWidth, Screen.height / 20f), WekitPlayers[i].PlayerName + " options"))
                     {
                         _activeGuiIndex = i;
                         SetCustomGuiActive(i, true);
