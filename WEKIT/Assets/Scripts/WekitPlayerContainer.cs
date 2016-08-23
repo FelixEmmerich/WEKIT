@@ -317,7 +317,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
     public override void CustomGUI()
     {
-        float x = Screen.width / 2f - _buttonWidth * WekitPlayers.Count / 2;
+        float x = (Screen.width*(5f/6)) / 2f - _buttonWidth * WekitPlayers.Count / 2;
         
         for (int i = 0; i < WekitPlayers.Count; i++)
         {
