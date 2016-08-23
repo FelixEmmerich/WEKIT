@@ -168,7 +168,7 @@ public class WekitGui : MonoBehaviour
                 }
 
                 //Multi-replay handling
-                if (XmlData!=null&&XmlData.Files.Length>0)
+                if (XmlData!=null&&XmlData.Files.Length>1)
                 {
                     
                     // Progress bar
