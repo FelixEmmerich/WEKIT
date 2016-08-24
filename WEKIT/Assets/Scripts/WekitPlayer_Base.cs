@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class WekitPlayer_Base : MonoBehaviour
+public abstract class WekitPlayer_Base : MonoBehaviour
 {
 
     [HideInInspector]
@@ -41,31 +41,21 @@ public class WekitPlayer_Base : MonoBehaviour
         get { return 0; }
     }
 
-    public virtual void Save()
-    {
-        Debug.Log(PlayerName + ": Save");
-    }
+    public abstract void Save();
 
     public virtual bool Load()
     {
         return Load(UseZip, UseZip && UseCompoundArchive ? CompoundZipName : LoadFileName, LoadFileName);
     }
 
-    public virtual bool Load(bool zip, string fileName, string entryName)
-    {
-        Debug.Log(PlayerName + ": Load");
-        return true;
-    }
+    public abstract bool Load(bool zip, string fileName, string entryName);
 
     public virtual void Delete()
     {
         Debug.Log(PlayerName + ": Delete");
     }
 
-    public virtual void Record()
-    {
-        Debug.Log(PlayerName + ": Record");
-    }
+    public abstract void Record();
 
     public virtual void Replay()
     {
