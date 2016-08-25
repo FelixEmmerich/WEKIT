@@ -219,11 +219,18 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
         return myFrame;
     }
 
+    /// <summary>
+    /// Returns default value for a frame. Used by AddFrame by default.
+    /// </summary>
+    /// <returns></returns>
     public virtual T DefaultFrame()
     {
         return default(T);
     }
 
+    /// <summary>
+    /// Called once per frame, updates index if replaying, adds frames if recording.
+    /// </summary>
     public virtual void Update()
     {
         //Resets whether the (replay) index was updated this frame
@@ -265,15 +272,20 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
     }
 
     /// <summary>
-    /// Override to suit input device
+    /// Adds a frame to the recording. Override to suit input device.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>DefaultFrame or whatever is specified</returns>
     public virtual T AddFrame()
     {
         Debug.Log("Add frame");
         return DefaultFrame();
     }
 
+    /// <summary>
+    /// Coroutine for calling SetUpRecording immediately and InitiateRecording after a timer if Recording still equals true then.
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
     public virtual IEnumerator RecordAfterTime(float time)
     {
         if (Recording) yield break;
@@ -297,7 +309,9 @@ public class WekitPlayer <T,TProvider>: WekitPlayer_Base
         Index = 0;
     }
 
-    //Method is necessary if the type of FrameList isn't known
+    /// <summary>
+    /// Clears the FrameList. Using a separate method is necessary if the type of FrameList isn't known.
+    /// </summary>
     public override void ClearFrameList()
     {
         FrameList.Clear();

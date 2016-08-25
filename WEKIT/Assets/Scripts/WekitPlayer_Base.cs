@@ -43,11 +43,22 @@ public abstract class WekitPlayer_Base : MonoBehaviour
 
     public abstract void Save();
 
+    /// <summary>
+    /// Loads file using default values
+    /// </summary>
+    /// <returns>Was loading successful?</returns>
     public virtual bool Load()
     {
         return Load(UseZip, UseZip && UseCompoundArchive ? CompoundZipName : LoadFileName, LoadFileName);
     }
 
+    /// <summary>
+    /// Loads a file
+    /// </summary>
+    /// <param name="zip">Whether the file in question is a .zip file</param>
+    /// <param name="fileName"></param>
+    /// <param name="entryName">Name of the entry when loading a .zip file</param>
+    /// <returns></returns>
     public abstract bool Load(bool zip, string fileName, string entryName);
 
     public virtual void Delete()
@@ -55,6 +66,9 @@ public abstract class WekitPlayer_Base : MonoBehaviour
         Debug.Log(PlayerName + ": Delete");
     }
 
+    /// <summary>
+    /// Called immediately after the record button is hit. Should distinguish between beginning and end of recording. 
+    /// </summary>
     public abstract void Record();
 
     public virtual void Replay()
@@ -90,35 +104,61 @@ public abstract class WekitPlayer_Base : MonoBehaviour
         transform.root.gameObject.SetActive(value);
     }
 
+    /// <summary>
+    /// Clears the frame list in WekitPlayer-derived classes. Implementation may differ for other classes (see AudioPlayer).
+    /// </summary>
     public virtual void ClearFrameList()
     {
         Debug.Log(PlayerName + ": ClearFrameList");
     }
 
+    /// <summary>
+    /// Get Replay data as a generic object. Used by WekitPlayerContainer for saving multiple replays in a single file.
+    /// </summary>
+    /// <returns></returns>
     public virtual object GetListAsObject()
     {
         return new object();
     }
 
+    /// <summary>
+    /// Get Replay data from a generic object. Used by WekitPlayerContainer for loading multiple replays from a single file.
+    /// </summary>
     public virtual void MakeDataContainerFromObject(object source)
     {
     }
 
+    /// <summary>
+    /// Set player Index. If relative, expects a normalized value.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="relative"></param>
     public virtual void SetIndex(float index, bool relative)
     {
     }
 
+    /// <summary>
+    /// Focus can be used to e.g. disable rendering of the kinect skeleton when no input is detected.
+    /// Conditions for this must be defined according to use case.
+    /// </summary>
+    /// <param name="focus"></param>
     public virtual void SetFocus(bool focus)
     {
         //Always true if focus is enforced
         Focus = ForceFocus || focus;
     }
 
+    /// <summary>
+    /// Actions performed after the record button was clicked but before the countdown is finished (e.g. setting up the microphone in AudioPlayer).
+    /// </summary>
     public virtual void SetUpRecording()
     {
         Debug.Log(PlayerName + ": SetUpRecording");
     }
 
+    /// <summary>
+    /// Begins the recording (e.g. after the countdown is finished). Should set the Recording variable to true. 
+    /// </summary>
     public virtual void InitiateRecording()
     {
         Debug.Log(PlayerName+": InitiateRecording");
@@ -132,6 +172,9 @@ public abstract class WekitPlayer_Base : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Custom GUI. By default only called if HasGui && GuiIsActive. Used by WekitPlayer_Container.
+    /// </summary>
     public virtual void CustomGUI()
     {
         Debug.Log(PlayerName + ": CustomGUI");

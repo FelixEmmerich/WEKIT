@@ -6,8 +6,16 @@ using System.Xml.Serialization;
 using Ionic.Zip;
 using UnityEngine;
 
+/// <summary>
+/// Class with static methods for saving and loading compressed data.
+/// </summary>
 public class Compression
 {
+    /// <summary>
+    /// Add the contents of a memorystream as an entry in a .zip archive
+    /// </summary>
+    /// <param name="fullpath">the full path, including the .zip file extension</param>
+    /// <param name="entryName">the full entry name, including possible file extensions</param>
     public static void AddItemToCompoundArchive(MemoryStream mStream, string fullpath, string entryName)
     {
         bool fileExists = File.Exists(fullpath);
@@ -26,6 +34,13 @@ public class Compression
         }
     }
 
+    /// <summary>
+    /// Add an object of type T as an entry in a .zip archive
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="fullpath">the full path, including the .zip file extension</param>
+    /// <param name="entryName">the full entry name, including possible file extensions</param>
+    /// <param name="item"></param>
     public static void AddItemToCompoundArchive<T>(MemoryStream mStream,string fullpath, string entryName, T item)
     {
         if (!item.GetType().IsSerializable)
@@ -40,12 +55,28 @@ public class Compression
         }
     }
 
+    /// <summary>
+    /// Add an object of type T as an entry in a .zip archive
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="fullpath">the full path, including the .zip file extension</param>
+    /// <param name="entryName">the full entry name, including possible file extensions</param>
+    /// <param name="item"></param>
     public static void AddItemToCompoundArchive<T>(string fullpath, string entryName, T item)
     {
         AddItemToCompoundArchive(new MemoryStream(), fullpath,entryName,item);
     }
 
-    //Despite appearing similar to the above method, they can not be combined/simplified in a sensible way since XmlSerializer does not implement IFormatter
+    //Despite appearing similar to the above method, they can not be combined/simplified in a sensible way since XmlSerializer does not actually implement IFormatter
+
+    /// <summary>
+    /// Adds an object of type T to a .zip archive as an XML-formatted file
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="fullpath">the full path, including the .zip file extension</param>
+    /// <param name="entryName">the full entry name, including possible file extensions</param>
+    /// <param name="item"></param>
+    /// <param name="formatter"></param>
     public static void AddItemToCompoundArchive<T>(string fullpath, string entryName, T item, XmlSerializer formatter)
     {
         if (!item.GetType().IsSerializable)
@@ -69,6 +100,13 @@ public class Compression
         }
     }
 
+    /// <summary>
+    /// Returns an object of type T from an entry of a .zip archive.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="fullpath">the full path, including the .zip file extension</param>
+    /// <param name="entryName">the full entry name, including possible file extensions</param>
+    /// <returns></returns>
     public static T GetItemFromCompoundArchive<T>(string fullpath, string entryName)
     {
         //get the stream from the archive
@@ -92,6 +130,12 @@ public class Compression
 
     }
 
+    /// <summary>
+    /// Returns an entry from a .zip archive in the form of a byte array.
+    /// </summary>
+    /// <param name="fullpath">the full path, including the .zip file extension</param>
+    /// <param name="entryName">the full entry name, including possible file extensions</param>
+    /// <returns></returns>
     public static byte[] GetByteArrayFromCompoundArchive(string fullpath, string entryName)
     {
         //get the stream from the archive
@@ -111,6 +155,14 @@ public class Compression
         }
     }
 
+    /// <summary>
+    /// Returns an object of type T from an XML-formatted  text file in a .zip archive
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="fullpath">the full path, including the .zip file extension</param>
+    /// <param name="entryName">the full entry name, including possible file extensions</param>
+    /// <param name="formatter"></param>
+    /// <returns></returns>
     public static T GetItemFromCompoundArchive<T>(string fullpath, string entryName, XmlSerializer formatter)
     {
         //get the stream from the archive
@@ -133,10 +185,10 @@ public class Compression
     }
 
     /// <summary>
-    /// Returns whether deletion was successful
+    /// Removes a single entry from a .zip archive
     /// </summary>
-    /// <param name="fullpath"></param>
-    /// <param name="entryName"></param>
+    /// <param name="fullpath">the full path, including the .zip file extension</param>
+    /// <param name="entryName">the full entry name, including possible file extensions</param>
     /// <param name="deleteIfEmpty">Should file be deleted if the last entry was removed?</param>
     /// <returns></returns>
     public static bool RemoveItemFromCompoundArchive(string fullpath, string entryName, bool deleteIfEmpty)
@@ -161,6 +213,12 @@ public class Compression
         }
     }
 
+    /// <summary>
+    /// Returns a byte array from an object of type T.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <returns></returns>
     public static byte[] ConvertToBytes<T>(T source)
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -170,6 +228,12 @@ public class Compression
         return m.ToArray();
     }
 
+    /// <summary>
+    /// Returns an object of type T from a byte array.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <returns></returns>
     public static T GetFromBytes<T>(byte[] source)
     {
         MemoryStream m = new MemoryStream(source);

@@ -1,9 +1,11 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
+/// <summary>
+/// Class for selecting "use cases" at the start of a session - these contain user instructions and activate (only the) desired WekitPlayer_Base-derived classes. 
+/// </summary>
 public class UseCaseSelector : MonoBehaviour
 {
 
@@ -37,7 +39,6 @@ public class UseCaseSelector : MonoBehaviour
 
 	void Start()
 	{
-		
 		LoadUseCases();
 	}
 
@@ -86,7 +87,9 @@ public class UseCaseSelector : MonoBehaviour
 		}
 	}
 
-	//Disabling the gameobject inside OnGUI causes a Unity error, so this function is called instead
+	/// <summary>
+	/// Called once a frame. Disables this gameobject. Doing so inside OnGUI causes a Unity error, so this function is used instead.
+	/// </summary>
 	void Update()
 	{
 		if (_disable)
@@ -95,7 +98,10 @@ public class UseCaseSelector : MonoBehaviour
 		}
 	}
 
-	//Creates an example XML text file containing the names of all players (except container (this assumes only one container in the scene)) in case the original gets deleted or broken
+	/// <summary>
+	/// Creates an example XML text file containing the names of all players (except container (this assumes only one container in the scene)) in case the original gets deleted or broken
+	/// </summary>
+	/// <param name="path"></param>
 	void CreateExampleXml(string path)
 	{
 		UseCases=new UseCase[Players.Length];
@@ -119,7 +125,9 @@ public class UseCaseSelector : MonoBehaviour
 		file.Close();
 	}
 
-	//Load UseCases text file or create it if it doesn't exist
+	/// <summary>
+	/// Load UseCases text file or create it if it doesn't exist.
+	/// </summary>
 	void LoadUseCases()
 	{
 		string path = Application.streamingAssetsPath + @"/UseCases.txt";

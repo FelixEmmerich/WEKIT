@@ -94,6 +94,9 @@ public class WekitGui : MonoBehaviour
         _noProgressBar.Apply();
     }
 
+    /// <summary>
+    /// Updates once a frame. Checks for key inputs.
+    /// </summary>
     public virtual void Update()
     {
         if (Input.GetKeyDown(HideKey))
