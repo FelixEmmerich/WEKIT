@@ -151,6 +151,16 @@ public class TextPlayer : WekitPlayer_Base
         //Just don't Debug.Log
     }
 
+    public override object GetListAsObject()
+    {
+        return Data;
+    }
+
+    public override void MakeDataContainerFromObject(object source)
+    {
+        Data = (TextData) source;
+    }
+
     public override void OnGUI()
     {
         base.OnGUI();
