@@ -26,7 +26,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     }
 
     //[SerializeField]
-    public List<WekitPlayer_Base> WekitPlayers = new List<WekitPlayer_Base>();
+    public List<WekitPlayer_Base> WekitPlayers = new List<WekitPlayer_Base>(), OverWriteWekitPlayers;
 
     [HideInInspector]
     public List<WekitPlayer_Base> ActiveWekitPlayers;
@@ -67,12 +67,14 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     public override void Start()
     {
         base.Start();
-        ActiveWekitPlayers = new List<WekitPlayer_Base>(/*WekitPlayers*/);
+        ActiveWekitPlayers = new List<WekitPlayer_Base>();
+        OverWriteWekitPlayers = new List<WekitPlayer_Base>();
         foreach (WekitPlayer_Base player in WekitPlayers)
         {
             if (player.gameObject.activeInHierarchy)
             {
                 ActiveWekitPlayers.Add(player);
+                OverWriteWekitPlayers.Add(player);
                 player.GuiIsActive = false;
             }
             player.CountDown = CountDown;
@@ -122,7 +124,14 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
             player.CurrentStep = CurrentStep;
             if (!Recording)
             {
-                player.Record();
+                if (player.Recording)
+                {
+                    player.Record(); 
+                }
+                else if (player.Replaying)
+                {
+                    player.Replay();
+                }
             }
         }
     }
@@ -132,7 +141,10 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         base.SetUpRecording();
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
-            player.SetUpRecording();
+            if (OverWriteWekitPlayers.Contains(player))
+            {
+                player.SetUpRecording(); 
+            }
         }
     }
 
@@ -141,7 +153,16 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
         base.InitiateRecording();
         foreach (WekitPlayer_Base player in ActiveWekitPlayers)
         {
-            player.InitiateRecording();
+            if (OverWriteWekitPlayers.Contains(player))
+            {
+                player.InitiateRecording();
+            }
+            else
+            {
+                player.Replaying = false;
+                player.Speed = Speed;
+                player.Replay();
+            }
         }
     }
 
@@ -193,6 +214,10 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                     {
                         ActiveWekitPlayers.Add(player);
                     }
+                    if (OverWriteWekitPlayers.Contains(player))
+                    {
+                        OverWriteWekitPlayers.Remove(player);
+                    }
                 }
             }
         }
@@ -214,6 +239,10 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                     if (!ActiveWekitPlayers.Contains(player))
                     {
                         ActiveWekitPlayers.Add(player);
+                    }
+                    if (OverWriteWekitPlayers.Contains(player))
+                    {
+                        OverWriteWekitPlayers.Remove(player);
                     }
 
                     if (player.FrameCount > localMaxFrames)
@@ -325,6 +354,25 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
 
             if (contained&&RecordGUI)
             {
+                //Overwrite toggle
+                bool inOverwriteList= OverWriteWekitPlayers.Contains(WekitPlayers[i]);
+                bool overwrite = 
+                    GUI.Toggle(
+                        new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f * 5), _buttonWidth,
+                            Screen.height / 20f), inOverwriteList, "Overwrite");
+                if (overwrite != inOverwriteList)
+                {
+                    if (overwrite)
+                    {
+                        OverWriteWekitPlayers.Add(WekitPlayers[i]);
+                    }
+                    else
+                    {
+                        OverWriteWekitPlayers.Remove(WekitPlayers[i]);
+                    }
+                }
+
+                //Force focus toggle
                 bool focus =
                     GUI.Toggle(
                         new Rect(x + i*_buttonWidth, Screen.height - (Screen.height/20f*4), _buttonWidth,
@@ -334,6 +382,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                     WekitPlayers[i].ForceFocus = focus;
                     WekitPlayers[i].SetFocus(true);
                 }
+                //Step size slider
                 WekitPlayers[i].Stepsize =(int)GUI.HorizontalSlider(new Rect(x + i*_buttonWidth, Screen.height - (Screen.height/20f*3), _buttonWidth,Screen.height/20f), WekitPlayers[i].Stepsize, 1, 3);
                 if (WekitPlayers[i].HasGui)
                 {
@@ -345,6 +394,7 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
                 }
             }
 
+            //Player active button
             if (!GUI.Button(new Rect(x + i * _buttonWidth, Screen.height - (Screen.height / 20f), _buttonWidth, Screen.height / 20f),
                 WekitPlayers[i].PlayerName + (contained ? " active" : " inactive"))) continue;
 
