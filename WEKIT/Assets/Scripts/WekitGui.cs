@@ -8,29 +8,29 @@ public class WekitGui : MonoBehaviour
 {
 
     [Serializable]
-    public class XMLData
+    public class MultiReplayData
     {
-        public XMLFileInfo[] Files;
+        public FileInfo[] Files;
 
-        public XMLData(XMLFileInfo fileInfo)
+        public MultiReplayData(FileInfo fileInfo)
         {
-            Files = new XMLFileInfo[1];
+            Files = new FileInfo[1];
             Files[0] = fileInfo;
         }
 
-        public XMLData(XMLFileInfo[] fileInfo)
+        public MultiReplayData(FileInfo[] fileInfo)
         {
             Files = fileInfo;
         }
 
-        public XMLData()
+        public MultiReplayData()
         {
-            Files = new XMLFileInfo[0];
+            Files = new FileInfo[0];
         }
     }
 
     [Serializable]
-    public class XMLFileInfo
+    public class FileInfo
     {
         public string FileName;
         /// <summary>
@@ -39,14 +39,14 @@ public class WekitGui : MonoBehaviour
         public string EntryName;
         public bool Zip;
 
-        public XMLFileInfo(string fileName, string entryName, bool zip)
+        public FileInfo(string fileName, string entryName, bool zip)
         {
             FileName = fileName;
             EntryName = entryName;
             Zip = zip;
         }
 
-        public XMLFileInfo()
+        public FileInfo()
         {
             FileName = "";
             EntryName = "";
@@ -54,7 +54,7 @@ public class WekitGui : MonoBehaviour
         }
     }
 
-    public XMLData XmlData;
+    public MultiReplayData XmlData;
     internal int XmlDataIndex;
     internal bool UseXml;
 
@@ -184,7 +184,7 @@ public class WekitGui : MonoBehaviour
                         if (GUI.Button(new Rect(0, Screen.height/2f, Screen.width/10f, Screen.height/5f), "Previous"))
                         {
                             XmlDataIndex--;
-                            XMLFileInfo data = XmlData.Files[XmlDataIndex];
+                            FileInfo data = XmlData.Files[XmlDataIndex];
                             Player.Load(data.Zip, data.FileName, data.EntryName);
                             Player.SetIndex(0, false);
                             Player.Speed = 1;
@@ -198,7 +198,7 @@ public class WekitGui : MonoBehaviour
                             "Next"))
                         {
                             XmlDataIndex++;
-                            XMLFileInfo data = XmlData.Files[XmlDataIndex];
+                            FileInfo data = XmlData.Files[XmlDataIndex];
                             Player.Load(data.Zip, data.FileName, data.EntryName);
                             Player.SetIndex(0, false);
                             Player.Speed = 1;
@@ -222,15 +222,15 @@ public class WekitGui : MonoBehaviour
                 string path = Player.SavePath + "/" + Player.CustomDirectory + "/" + Player.LoadFileName + ".txt";
                 if (File.Exists(path))
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
+                    XmlSerializer serializer = new XmlSerializer(typeof(MultiReplayData));
                     StreamReader reader = new StreamReader(path);
-                    XmlData = (XMLData)serializer.Deserialize(reader);
+                    XmlData = (MultiReplayData)serializer.Deserialize(reader);
                     reader.Close();
                 }
             }
             else
             {
-                XmlData = Compression.GetItemFromCompoundArchive<XMLData>(Player.SavePath + "/" + Player.CustomDirectory + "/" + (Player.UseCompoundArchive ? Player.CompoundZipName : Player.LoadFileName) + ".zip", Player.LoadFileName + ".txt", new XmlSerializer(typeof(XMLData)));
+                XmlData = Compression.GetItemFromCompoundArchive<MultiReplayData>(Player.SavePath + "/" + Player.CustomDirectory + "/" + (Player.UseCompoundArchive ? Player.CompoundZipName : Player.LoadFileName) + ".zip", Player.LoadFileName + ".txt", new XmlSerializer(typeof(MultiReplayData)));
             }
             XmlDataIndex = 0;
         }
@@ -241,11 +241,11 @@ public class WekitGui : MonoBehaviour
         Player.Save();
         if (UseXml)
         {
-            XMLData data = new XMLData(new XMLFileInfo(Player.UseZip && Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName, Player.FileName, Player.UseZip));
+            MultiReplayData data = new MultiReplayData(new FileInfo(Player.UseZip && Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName, Player.FileName, Player.UseZip));
 
             if (!Player.UseZip)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(XMLData));
+                XmlSerializer serializer = new XmlSerializer(typeof(MultiReplayData));
                 FileStream file = File.Open(Player.SavePath + "/" + Player.CustomDirectory + "/" + Player.FileName + ".txt", FileMode.OpenOrCreate);
                 serializer.Serialize(file, data);
                 file.Close();
@@ -253,7 +253,7 @@ public class WekitGui : MonoBehaviour
             else
             {
                 string filestring = Player.SavePath + "/" + Player.CustomDirectory + "/" + (Player.UseCompoundArchive ? Player.CompoundZipName : Player.FileName) + ".zip";
-                Compression.AddItemToCompoundArchive(filestring, Player.FileName + ".txt", data, new XmlSerializer(typeof(XMLData)));
+                Compression.AddItemToCompoundArchive(filestring, Player.FileName + ".txt", data, new XmlSerializer(typeof(MultiReplayData)));
             }
         }
     }
