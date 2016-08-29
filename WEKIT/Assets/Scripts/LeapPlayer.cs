@@ -23,7 +23,7 @@ public class LeapPlayer : WekitPlayer<LeapPlayer.HandList,LeapProvider>
 
         public static implicit operator List<Hand>(HandList list)
         {
-            return list.Hands;
+            return (list??(list=new HandList())).Hands ?? (list.Hands=new List<Hand>());
         }
 
         public static implicit operator HandList(List<Hand> list)

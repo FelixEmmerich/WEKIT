@@ -92,7 +92,7 @@ public class ThalmicMyo : MonoBehaviour
             //pose = _myoPose;
 
             //Felix
-            if (Player != null && Player.Replaying)
+            if (Player != null && Player.Replaying && Player.FrameCount>0)
             {
                 MyoData mData = Player.GetCurrentFrame();
                 pose = mData.Pose;
