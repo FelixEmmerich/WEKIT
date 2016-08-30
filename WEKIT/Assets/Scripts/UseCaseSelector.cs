@@ -104,18 +104,45 @@ public class UseCaseSelector : MonoBehaviour
 	/// <param name="path"></param>
 	void CreateExampleXml(string path)
 	{
-		UseCases=new UseCase[Players.Length];
-		for (int i = 0; i < Players.Length; i++)
+		UseCases=new UseCase[Players.Length+2];
+
+		#region special cases
+		//Use case 0 is "precision task", with multiple elements, one of which is not a player
+		UseCases[0] = new UseCase
+		{
+			UseCaseName = "Precision Task",
+			Elements = new UseCaseElement[2]
+		};
+		UseCases[0].Elements[0] = new UseCaseElement
+		{
+			PlayerName = "Leap",
+			Message = "Connect Leap Motion"
+		};
+		UseCases[0].Elements[1] = new UseCaseElement
+		{
+			PlayerName = "",
+			Message = "Connect Point-of-view camera"
+		};
+
+		//Last UseCase contains all players
+		UseCases[UseCases.Length-1] = new UseCase
+		{
+			UseCaseName = "All players",
+			Elements = new UseCaseElement[Players.Length]
+		};
+		#endregion
+
+		for (int i = 1; i <= Players.Length; i++)
 		{
 			UseCases[i] = new UseCase
 			{
-				UseCaseName = "Element" + i,
+				UseCaseName = Players[i - 1].PlayerName,
 				Elements = new UseCaseElement[1]
 			};
-			UseCases[i].Elements[0] = new UseCaseElement
+			UseCases[UseCases.Length - 1].Elements[i-1]=UseCases[i].Elements[0] = new UseCaseElement
 			{
-				PlayerName = Players[i].PlayerName,
-				Message = "Connect " + Players[i].PlayerName
+				PlayerName = Players[i-1].PlayerName,
+				Message = "Connect " + Players[i-1].PlayerName
 			};
 		}
 		UseCaseList example = new UseCaseList {UseCases = UseCases};

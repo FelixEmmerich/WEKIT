@@ -135,7 +135,7 @@ Use cases are loaded from the file UseCases.txt in the StreamingAssets folder. T
 <PlayerName>	The name of the player activated after the user clicks the <Message>. If this is left blank or does not correspond to a player in the scene, nothing will be activated. This is useful if you want to tell the user to connect or do something that is not supported by the system, like a point-of-view camera. 
 <Message		Message displayed to the user
 
-If the StreamingAssets folder does not contain a file called UseCases.txt, one will be created on starting a scene with a UseCaseSelector. This example file will include one use case for each player in the scene.
+If the StreamingAssets folder does not contain a file called UseCases.txt, one will be created on starting a scene with a UseCaseSelector. This example file will include one use case for each player in the scene, plus some special cases.
 
    ___ _____ _  _ ___ ___    ___ _      _   ___ ___ ___ ___ 
   / _ \_   _| || | __| _ \  / __| |    /_\ / __/ __| __/ __|
