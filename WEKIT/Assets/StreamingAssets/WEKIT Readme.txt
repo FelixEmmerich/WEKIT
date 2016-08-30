@@ -29,6 +29,8 @@ Record/Stop			F8			Start or stop the recording process.
 								The slider below sets a step size from 1 to 3, i.e. a setting of 1 records every frame, 
 								a setting of 2 every second frame, etc. Can be used to reduce file size.
 								If you are using a WekitPlayerContainer, each device will have its own TimeStep slider situated above its name.
+								Additionally, a WekitPlayerContainer allows you to record over existing replays by setting the overwrite toggle 
+								to true on players that you want to create a new replay on. Other players will start their replay upon pressing Record.
 
 Replay/Stop			F9			Replay or stop replaying the data that was last recorded or loaded. 
 								A slider underneath the Pause/Unpause switch indicates the currently played frame and 
@@ -86,34 +88,34 @@ It is possible to create a sequence of replays by using XML files. To do this, s
 For example, if your replay is called Demo and was not saved as a zip file, the XML file might look like this:
 
 <?xml version="1.0" encoding="Windows-1252"?>
-<XMLData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<MultiReplayData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Files>
-	<XMLFileInfo>
+	<FileInfo>
 	  <FileName>Demo</FileName>
 	  <EntryName>Demo</EntryName>
 	  <Zip>false</Zip>
-	</XMLFileInfo>
+	</FileInfo>
   </Files>
-</XMLData>
+</MultiReplayData>
 
 To append other replays, simply copy the <XMLFileInfo> section, paste it right after the original, and replace the information as necessary. 
 For example:
 
 <?xml version="1.0" encoding="Windows-1252"?>
-<XMLData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<MultiReplayData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Files>
-	<XMLFileInfo>
+	<FileInfo>
 	  <FileName>Demo</FileName>
 	  <EntryName>Demo</EntryName>
 	  <Zip>false</Zip>
-	</XMLFileInfo>
-	<XMLFileInfo>
+	</FileInfo>
+	<FileInfo>
 	  <FileName>Demo2</FileName>
 	  <EntryName>Demo2Entry</EntryName>
 	  <Zip>true</Zip>
-	</XMLFileInfo>
+	</FileInfo>
   </Files>
-</XMLData>
+</MultiReplayData>
 
 In this case, the second replay is saved in a zipfile called Demo2.zip, with the entry being named Demo2Entry. An easy way to get the correct XMLFileInfo is to save an XML file for each replay in the collection and then copy the data from there.
 Please note that the XML system only searches in the custom folder for your WekitPlayer. For example if your scene only contains a LeapPlayer and you try to add a reference to a replay in the kinect folder, it won't be found. The best way to avoid this is by using a WekitPlayerContainer in your scene.

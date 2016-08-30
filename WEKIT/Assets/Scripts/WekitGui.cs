@@ -188,6 +188,8 @@ public class WekitGui : MonoBehaviour
                             Player.Load(data.Zip, data.FileName, data.EntryName);
                             Player.SetIndex(0, false);
                             Player.Speed = 1;
+                            Player.Replay();
+                            Player.Replay();
                         }
                     }
                     //Next replay
@@ -202,6 +204,8 @@ public class WekitGui : MonoBehaviour
                             Player.Load(data.Zip, data.FileName, data.EntryName);
                             Player.SetIndex(0, false);
                             Player.Speed = 1;
+                            Player.Replay();
+                            Player.Replay();
                         }
                     }
                 }
