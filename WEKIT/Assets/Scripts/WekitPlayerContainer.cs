@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-//Class for managing multiple players. Type bool is used to keep the data small.
+//Class for managing multiple players. Type bool is used for the provider as this class does not actually receive data during recording.
 public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithName, bool>
 {
 
@@ -26,10 +26,10 @@ public class WekitPlayerContainer : WekitPlayer<WekitPlayerContainer.ObjectWithN
     }
 
     //[SerializeField]
-    public List<WekitPlayer_Base> WekitPlayers = new List<WekitPlayer_Base>(), OverWriteWekitPlayers;
+    public List<WekitPlayer_Base> WekitPlayers = new List<WekitPlayer_Base>();
 
     [HideInInspector]
-    public List<WekitPlayer_Base> ActiveWekitPlayers;
+    public List<WekitPlayer_Base> ActiveWekitPlayers, OverWriteWekitPlayers;
 
     private float _buttonWidth;
 

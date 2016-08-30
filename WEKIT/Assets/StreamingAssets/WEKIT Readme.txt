@@ -156,3 +156,76 @@ A class for controlling multiple players at once. In the Unity editor, simply dr
 
 Allows you to control a WekitPlayer_Base class through keyboard input. 
 Currently, only the Record, Replay and Pause key are supported, to prevent the other methods from being called erroneously. 
+
+  _  _ _____      __  ___ _      ___   _____ ___  ___ 
+ | \| | __\ \    / / | _ \ |    /_\ \ / / __| _ \/ __|
+ | .` | _| \ \/\/ /  |  _/ |__ / _ \ V /| _||   /\__ \
+ |_|\_|___| \_/\_/   |_| |____/_/ \_\_| |___|_|_\|___/
+													  
+Below is a tutorial for implementing new players based on the WekitPlayer class.
+This class receives and provides data in discreet steps and doesn't require save files to have any special formatting.
+If you want a more specialised player class, it may need to implement additional modifications (compare e.g. AudioPlayer 
+and WekitPlayerContainer) or inherit directly from WekitPlayer_Base (see TextPlayer).
+
+Begin by creating your class. As stated above, you will generally want to inherit from WekitPlayer. 
+In that case, you will have to provide 2 pieces of information in your class header: 
+T, which is your data format and 
+TProvider, which is where you get your data from when recording.
+
+In LeapPlayer it looks like this:
+
+public class LeapPlayer : WekitPlayer<LeapPlayer.HandList,LeapProvider>
+
+LeapPlayer.HandList being the data format and LeapProvider being the source of the data.
+
+Since LeapPlayer takes care of most things for you, you will only need to provide some basic information and methods. 
+The more important variables can be given default values by overriding Reset():
+
+	public override void Reset()
+	{
+		base.Reset();
+		UncompressedFileExtension = "LeapData";
+		CustomDirectory = "Leap";
+		PlayerName = "Leap";
+	}
+
+UncompressedFileExtension is the file extension under which your data is saved when not zipped. 
+Under the above example, "Replay" would be saved as Replay.LeapData.
+Custom Directory is what the save directory in the Replay folder (/StreamingAssets/Replays) will be called. 
+If the folder doesn't exist yet, it will be created once you save something.
+PlayerName is the name used to identify your player. It is used in various places, like the WekitPlayerContainer GUI and UseCase file.
+
+Next, override the AddFrame method. It provides the class with the data to be recorded at any given step.
+
+	public override HandList AddFrame()
+	{
+		return Provider.CurrentFrame.Hands;
+	}
+
+
+Here, CurrentFrame.Hands is part of the Unity implementation of Leap Motion.
+
+Finally, if you want to visualise your saved data when replaying, implement it in the appropriate place by checking the Replaying boolean 
+and grabbing the data using the GetCurrentFrame() method. 
+In the Leap example, this is performed in the class LeapHandController; if the player is in a replay, get the current frame, otherwise get the curent input.
+
+if (Player == null || !Player.Replaying)
+			{
+				Frame frame = provider.CurrentFrame;
+				if (frame != null && graphicsEnabled)
+				{
+					UpdateHandRepresentations(graphicsReps, ModelType.Graphics, frame);
+					//UpdateHandRepresentations(frame.Hands, graphicsReps, ModelType.Graphics);
+				}
+			}
+			else if (Player != null)
+			{
+				_hl = Player.GetCurrentFrame();
+				if ((int)Player.Index != Player.PreviousIndex)
+				{
+					UpdateHandRepresentations(_hl, graphicsReps, ModelType.Graphics);
+				}
+			}
+
+Once your player is complete, place it on a gameobject in a scene (like the Wekit and/or UseCases scene).
+Set the necessary variables, most importantly the Provider. If the scene contains a WekitPlayerContainer, drag your player's gameobject into the container's "Wekit Players" list.
