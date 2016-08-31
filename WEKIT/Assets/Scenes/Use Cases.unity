@@ -430,6 +430,7 @@ MonoBehaviour:
   UncompressedFileExtension: WEKITData
   WekitPlayers: []
   ActiveWekitPlayers: []
+  OverWriteWekitPlayers: []
   SingleSaveFile: 1
   RecordGUI: 1
 --- !u!4 &604643277
@@ -864,7 +865,7 @@ MonoBehaviour:
   CompoundZipName: Archive Name
   PlayerName: Text
   CustomDirectory: Text
-  HasGui: 0
+  HasGui: 1
   GuiIsActive: 1
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays//
   CountDown: 3
@@ -1351,7 +1352,7 @@ MonoBehaviour:
   CompoundZipName: Archive Name
   PlayerName: Leap
   CustomDirectory: Leap
-  HasGui: 0
+  HasGui: 1
   GuiIsActive: 1
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays//
   CountDown: 3

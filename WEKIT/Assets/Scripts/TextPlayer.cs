@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -33,12 +34,19 @@ public class TextPlayer : WekitPlayer_Base
     private int _currentTextIndex=-1;
     private float _starttime;
 
+    public List<TextElement> SubtitleList=new List<TextElement>();
+
+
+    private string _tempsubtitle="";
+    private float _tempstarttime=0;
+    private float _tempendtime=0;
 
     public void Reset()
     {
         CustomDirectory = "Text";
         PlayerName = "Text";
         SavePath = Application.streamingAssetsPath + @"/Replays/" + CustomDirectory + "/";
+        HasGui = true;
     }
 
     void Start()
@@ -83,6 +91,11 @@ public class TextPlayer : WekitPlayer_Base
                 XmlSerializer serializer = new XmlSerializer(typeof(TextData));
                 StreamReader reader = new StreamReader(path);
                 Data = (TextData)serializer.Deserialize(reader);
+                SubtitleList.Clear();
+                foreach (TextElement element in Data.TextElements)
+                {
+                    SubtitleList.Add(element);
+                }
                 reader.Close();
                 return true;
             }
@@ -91,6 +104,11 @@ public class TextPlayer : WekitPlayer_Base
         else
         {
             Data = Compression.GetItemFromCompoundArchive<TextData>(SavePath + "/" + fileName + ".zip", entryName + ".txt", new XmlSerializer(typeof(TextData)));
+            SubtitleList.Clear();
+            foreach (TextElement element in Data.TextElements)
+            {
+                SubtitleList.Add(element);
+            }
             return Data!=null&&Data.TextElements.Length>0;
         }
     }
@@ -98,6 +116,12 @@ public class TextPlayer : WekitPlayer_Base
     public override void Save()
     {
         Directory.CreateDirectory(SavePath);
+
+        Data.TextElements=new TextElement[SubtitleList.Count];
+        for (int i = 0; i < SubtitleList.Count; i++)
+        {
+            Data.TextElements[i] = SubtitleList[i];
+        }
 
         if (!UseZip)
         {
@@ -116,11 +140,11 @@ public class TextPlayer : WekitPlayer_Base
     public override void SetIndex(float index, bool relative)
     {
         Index = relative ? FrameCount * index : index;
-        if (Data != null && Data.TextElements.Length>0)
+        if (SubtitleList.Count>0)
         {
-            for (int i = 0; i < Data.TextElements.Length; i++)
+            for (int i = 0; i < SubtitleList.Count; i++)
             {
-                if (Data.TextElements[i].StartTime <= Index && Data.TextElements[i].EndTime > Index)
+                if (SubtitleList[i].StartTime <= Index && SubtitleList[i].EndTime > Index)
                 {
                     _currentTextIndex = i;
                     return;
@@ -168,7 +192,7 @@ public class TextPlayer : WekitPlayer_Base
         centeredStyle.alignment = TextAnchor.UpperCenter;
         if (Replaying)
         {
-            GUI.Label(new Rect(Screen.width / 2f - 50, Screen.height * 0.75f - 10, 100, 20), _currentTextIndex == -1 || Data == null || Data.TextElements.Length <= _currentTextIndex ? "" : Data.TextElements[_currentTextIndex].Text, centeredStyle);
+            GUI.Label(new Rect(Screen.width / 2f - 50, Screen.height * 0.75f - 10, 100, 20), _currentTextIndex == -1 || SubtitleList.Count <= _currentTextIndex ? "" : SubtitleList[_currentTextIndex].Text, centeredStyle);
 
         }
     }
@@ -177,11 +201,33 @@ public class TextPlayer : WekitPlayer_Base
     {
         if (Data != null && Data.TotalLength <= 0)
         {
-            GUI.Label(new Rect(Screen.width/2f, Screen.height/2f, 50, 20), "Record or load a replay");
+            GUI.Label(new Rect(Screen.width/2f-50f, Screen.height/2f, 100, 20), "Record or load a replay");
         }
         else
         {
-            
+            GUI.Label(new Rect(Screen.width / 2f - 50f, (Screen.height / 2f)-20f, 100, 20),"Total Length: "+Data.TotalLength);
+            _tempsubtitle = GUI.TextField(new Rect(Screen.width / 2f - 50f, Screen.height / 2f, 100, 20), _tempsubtitle , 25);
+            _tempstarttime = Single.Parse(GUI.TextField(new Rect(Screen.width / 2f - 50f, (Screen.height / 2f)+20f, 100, 20), _tempstarttime.ToString(), 25));
+            _tempendtime = Single.Parse(GUI.TextField(new Rect(Screen.width / 2f - 50f, (Screen.height / 2f) + 40f, 100, 20), _tempendtime.ToString(), 25));
+            //Submit
+            if (GUI.Button(new Rect(Screen.width / 2f - 50f, (Screen.height / 2f) + 60f, 100, 20), "Submit"))
+            {
+                TextElement te = new TextElement()
+                {
+                    StartTime = _tempstarttime,
+                    EndTime = _tempendtime,
+                    Text = _tempsubtitle
+                };
+                SubtitleList.Add(te);
+            }
+            //Clear
+            if (GUI.Button(new Rect(Screen.width / 2f - 50f, (Screen.height / 2f) + 80f, 100, 20), "Clear"))
+            {
+                SubtitleList.Clear();
+                _tempstarttime = 0;
+                _tempendtime = 0;
+                _tempsubtitle = "";
+            }
         }
     }
 }

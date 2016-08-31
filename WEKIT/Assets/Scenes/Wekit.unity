@@ -384,6 +384,7 @@ MonoBehaviour:
   - {fileID: 1521848345}
   - {fileID: 1764280020}
   ActiveWekitPlayers: []
+  OverWriteWekitPlayers: []
   SingleSaveFile: 1
   RecordGUI: 1
 --- !u!4 &604643277
@@ -818,8 +819,8 @@ MonoBehaviour:
   CompoundZipName: Archive Name
   PlayerName: Text
   CustomDirectory: Text
-  HasGui: 0
-  GuiIsActive: 1
+  HasGui: 1
+  GuiIsActive: 0
   SavePath: C:/Users/Felix/Desktop/Git/WEKIT/WEKIT/Assets/StreamingAssets/Replays/Text/
   CountDown: 3
   ReplayFps: 0
